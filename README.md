@@ -26,7 +26,7 @@ Clone the repository or copy the script.
 Run the script with Node.js:
 
 ```bash
-node your-script.js
+node metrics.js
 ```
 
 ```bash
