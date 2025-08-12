@@ -1,0 +1,17 @@
+{
+  "name": "metrics-api",
+  "version": "1.0.0",
+  "description": "simple device resource server",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Emberalive",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "nodemon": "^3.1.10"
+  }
+}

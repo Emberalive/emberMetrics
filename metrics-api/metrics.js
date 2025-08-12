@@ -1,10 +1,9 @@
 const os = require('os')
 
-let metrics = {
-    hostName: os.hostname(),
-}
+let metrics = {}
 //getting Device information
 
+module.exports = metrics
 
 const deviceData = [
     { label: 'Platform', value: os.platform() },
@@ -12,17 +11,8 @@ const deviceData = [
     { label: 'Release', value: os.release() },
     { label: 'Version', value: os.version() },
     { label: 'Architecture', value: os.arch() },
-    {label: 'HostName', value: os.hostname() },
 ];
 
-console.log("Device Data:\n" + JSON.stringify(deviceData));
-
-metrics = (prev => {
-    return {
-        ...prev,
-        deviceData: deviceData
-    }
-})
 
 // processing cpu data initial
 let oldCpus = os.cpus()
@@ -38,8 +28,6 @@ const interval = setInterval(() => {
 
     const memoryAvailable = (os.freemem() / os.totalmem()) * 100
     const memoryUsed = 100 - memoryAvailable
-
-    console.log("Memory available: " + memoryAvailable + "\nMemory used: " + memoryUsed)
 
     const newCpus = os.cpus()
     const cpuUsagePercentage = []
@@ -58,27 +46,36 @@ const interval = setInterval(() => {
         const usage = ((total - deltaIdle) / total) * 100;
 
         cpuUsagePercentage.push({
-            usage: usage.toFixed(2)
-            // no: i
+            usage: usage.toFixed(2),
+            no: i
         });
     }
 
-    metrics = (prev => {
-        return {
-            ...prev,
-            cpuUsage: cpuUsagePercentage
-        }
-    })
     oldCpus = newCpus
-    console.log("CPU Usage:\n" + JSON.stringify(cpuUsagePercentage))
-    let totalCPU = 0
-    cpuUsagePercentage.forEach(cpu => {
-        totalCPU += parseFloat(cpu.usage)
-    })
-    console.log("TotalCPU:\n" + totalCPU.toFixed(2))
-    // console.log(JSON.stringify(metrics))
+    let totalCPU = cpuUsagePercentage.reduce(
+        (sum, cpu) => sum + parseInt(cpu.usage),0) / cpuUsagePercentage.length
+
+    metrics = {
+        hostName: os.hostname(),
+        deviceData: deviceData,
+        memoryUsage: {
+            usage: memoryUsed,
+            available: memoryAvailable
+        },
+        cpuUsage: {
+            cores: cpuUsagePercentage,
+            total: totalCPU
+        },
+
+    }
 }, 1000)
-// return () => clearInterval(interval) //stops the process from running if it is unmounted
+
+function getMetrics () {
+    return metrics
+}
+
+module.exports = getMetrics
+
 
 //for one loop of the module:
 
