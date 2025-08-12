@@ -47,7 +47,7 @@ const interval = setInterval(() => {
 
         cpuUsagePercentage.push({
             usage: usage.toFixed(2),
-            no: i
+            no: i + 1
         });
     }
 
