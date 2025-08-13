@@ -1,5 +1,10 @@
 import {useEffect, useState} from "react";
 
+import Header from "./components/Header";
+import DeviceData from "./components/DeviceData.jsx";
+import CpuData from "./components/CpuData.jsx";
+import MemoryData from "./components/MemoryData.jsx";
+
 export default function App() {
 const [metrics, setMetrics] = useState(null)
 
@@ -28,37 +33,18 @@ const [metrics, setMetrics] = useState(null)
 
   return (
       <>
-          <h1>EmberMetrics</h1>
           {metrics !== null && <>
-              <h2>{metrics.hostName}</h2>
-              <ul>
-                  {
-                      metrics.deviceData.map((label, value) => {
-                          return (
-                              <li key={label}>
-                                  <strong>{value}</strong>
-                              </li>
-                          )
-                      })
-                  }
-              </ul>
-              <h3>CPU's</h3>
-              <ul>
-                  <li>{metrics.cpuUsage.total}</li>
+              <Header metrics={metrics} />
+              <DeviceData metrics={metrics} />
 
-                  {metrics.cpuUsage.cores.map((core) => {
-                      return (
-                          <li key={core.no}>
-                              <h3>{core.no}</h3>
-                              <strong>{core.usage}</strong>
-                          </li>
-                      )
-                  })}
-                  {}
-              </ul>
-              <h3>Memory</h3>
-              <p>Memory Used: <strong>{metrics.memoryUsage.usage}</strong></p>
-              <p>Memory Available: <strong>{metrics.memoryUsage.available}</strong></p>
+              <h3>CPU's</h3>
+                  <CpuData metrics={metrics}/>
+
+              <MemoryData metrics={metrics}/>
+
+              {/*<h3>Memory</h3>*/}
+              {/*<p>Memory Used: <strong>{metrics.memoryUsage.usage}</strong></p>*/}
+              {/*<p>Memory Available: <strong>{metrics.memoryUsage.available}</strong></p>*/}
           </>}
       </>
   )
