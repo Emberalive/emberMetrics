@@ -11,7 +11,7 @@ export default function Header (props) {
         }}>
             <button>blaggghhhh</button>
             <h1>EmberMetrics</h1>
-            <h2>{metrics.hostName}</h2>
+            {metrics && <h2>{metrics.hostName}</h2>}
             <button>blaggghhhh</button>
         </header>
     )

@@ -33,8 +33,9 @@ const [metrics, setMetrics] = useState(null)
 
   return (
       <>
+          <Header metrics={metrics} />
+
           {metrics !== null && <>
-              <Header metrics={metrics} />
               <DeviceData metrics={metrics} />
 
               <h3>CPU's</h3>
