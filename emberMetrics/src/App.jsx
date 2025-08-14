@@ -1,12 +1,18 @@
 import {useEffect, useState} from "react";
 
+import './index.css'
 import Header from "./components/Header";
 import DeviceData from "./components/DeviceData.jsx";
 import CpuData from "./components/CpuData.jsx";
 import MemoryData from "./components/MemoryData.jsx";
 
 export default function App() {
-const [metrics, setMetrics] = useState(null)
+    const [metrics, setMetrics] = useState(null)
+    const [isDarkMode, setIsDarkMode] = useState("false");
+
+    function toggleView(){
+        document.documentElement.classList.toggle('dark-mode');
+    }
 
     useEffect( () => {
         console.log("[APP_METRICS] Getting metrics")
@@ -33,20 +39,23 @@ const [metrics, setMetrics] = useState(null)
 
   return (
       <>
-          <Header metrics={metrics} />
+          <Header metrics={metrics}
+                  toggleView={toggleView}
+                  setIsDarkMode={setIsDarkMode}
+                  isDarkMode={isDarkMode}
+          />
+          <main>
+              {metrics !== null && <>
+                  <div className={"left-column"}>
+                      <DeviceData metrics={metrics} />
+                      <MemoryData metrics={metrics}/>
+                  </div>
 
-          {metrics !== null && <>
-              <DeviceData metrics={metrics} />
-
-              <h3>CPU's</h3>
-                  <CpuData metrics={metrics}/>
-
-              <MemoryData metrics={metrics}/>
-
-              {/*<h3>Memory</h3>*/}
-              {/*<p>Memory Used: <strong>{metrics.memoryUsage.usage}</strong></p>*/}
-              {/*<p>Memory Available: <strong>{metrics.memoryUsage.available}</strong></p>*/}
-          </>}
+                <div className={"right-column"}>
+                    <CpuData metrics={metrics}/>
+                </div>
+              </>}
+          </main>
       </>
   )
 }

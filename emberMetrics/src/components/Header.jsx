@@ -1,18 +1,16 @@
 export default function Header (props) {
     const metrics = props.metrics
     return (
-        <header style={{
-            border: "1px solid ",
-            borderRadius: "10px",
-            padding: "10px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-        }}>
-            <button>blaggghhhh</button>
+        <header className="header">
             <h1>EmberMetrics</h1>
-            {metrics && <h2>{metrics.hostName}</h2>}
-            <button>blaggghhhh</button>
+            {metrics && <div>
+                <h2>Device:</h2>
+                <p>{metrics.hostName}</p>
+            </div>}
+            <button onClick={() => {
+                props.setIsDarkMode(prevState => !prevState);
+                props.toggleView()
+            }}>{props.isDarkMode ? "Light Mode" : "Dark Mode"}</button>
         </header>
     )
 }

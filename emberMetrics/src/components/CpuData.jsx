@@ -5,11 +5,7 @@ export default function CpuData (props) {
         return cpuList.map((core) => {
             return (
                 <li style={{
-                    listStyleType: 'none',
-                    paddingLeft: '10px',
-                    border: '1px solid black',
-                    borderRadius: '10px',
-                    display: 'flex',
+
                 }}
                     key={core.no}>
                     <p>Core - {core.no}</p>
@@ -25,13 +21,14 @@ export default function CpuData (props) {
         cpuUsagePercents = renderCpuUsage(cpuUsage.cores)
 
         return (
-            <section style={{}}>
-                <h1>Total {cpuUsage.total.toFixed(2)}%</h1>
+            <section className={"cpu-cores"}>
+                <header className="cpu-header">
+                    <h1>CPU's</h1>
+                    <h2>Total {cpuUsage.total.toFixed(2)}%</h2>
+                </header>
 
                 <ul style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(2, 1fr)",
-                    gap: "10px",
+
                 }}>
                     {cpuUsagePercents}
                 </ul>

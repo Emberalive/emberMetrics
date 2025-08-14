@@ -4,20 +4,17 @@ export default function DeviceData (props) {
     const deviceDataList = deviceData.map(value => {
         return (
             <li key={value.label}>
-                <p><strong>{value.label}</strong></p>
-                <p>{value.value}</p>
+                <p className={"data-item-label"}><strong>{value.label}</strong></p>
+                <p className={"data-item-value"}>{value.value}</p>
             </li>
         )
     })
 
     return (
-        <section style={{
-            border: "1px solid ",
-            borderRadius: "10px",
-            padding: "30px",
-            margin: "10px",
-        }}>
-            {deviceDataList}
+        <section className="device-data">
+            <ul>
+                {deviceDataList}
+            </ul>
         </section>
     )
 }
