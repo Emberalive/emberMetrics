@@ -22,7 +22,7 @@ const interval = setInterval(() => {
     metrics = (prev => {
         return {
             ...prev,
-            memoryUsage: (os.freemem() / os.totalmem()) * 100
+            memoryUsage: ((os.freemem() / os.totalmem()) * 100)
         }
     })
 
@@ -59,8 +59,8 @@ const interval = setInterval(() => {
         hostName: os.hostname(),
         deviceData: deviceData,
         memoryUsage: {
-            usage: memoryUsed,
-            available: memoryAvailable
+            usage: memoryUsed.toFixed(2),
+            available: memoryAvailable.toFixed(2)
         },
         cpuUsage: {
             cores: cpuUsagePercentage,
