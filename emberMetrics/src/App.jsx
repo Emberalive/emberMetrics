@@ -5,10 +5,42 @@ import Header from "./components/Header";
 import DeviceData from "./components/DeviceData.jsx";
 import CpuData from "./components/CpuData.jsx";
 import MemoryData from "./components/MemoryData.jsx";
+import Settings from "./components/Settings.jsx";
 
 export default function App() {
+    const [activeView, setActiveView] = useState("resources")
+
     const [metrics, setMetrics] = useState(null)
     const [isDarkMode, setIsDarkMode] = useState("false");
+
+    const [viewPort,setViewPort ] = useState([]);
+
+    let windowWidth = window.innerWidth
+
+    useEffect(() => {
+        const handleResize = () => {
+            setViewPort(window.innerWidth)
+        }
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    }, [windowWidth])
+
+    const savedTheme = JSON.parse(localStorage.getItem("theme"));
+
+
+    useEffect(() => {
+        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            toggleView()
+        }
+        if (savedTheme) {
+            document.documentElement.style.setProperty("--secondary", savedTheme.colour.secondary);
+            document.documentElement.style.setProperty("--tertiary", savedTheme.colour.tertiary);
+
+            document.documentElement.style.setProperty("--dm-tertiary", savedTheme.colour.tertiary)
+            document.documentElement.style.setProperty("--dm-secondary", savedTheme.colour.secondary)
+        }
+    }, [])
+
 
     function toggleView(){
         document.documentElement.classList.toggle('dark-mode');
@@ -43,19 +75,28 @@ export default function App() {
                   toggleView={toggleView}
                   setIsDarkMode={setIsDarkMode}
                   isDarkMode={isDarkMode}
+                  setActiveView={setActiveView}
+                  activeView={activeView}
           />
-          <main>
-              {metrics !== null && <>
+          {metrics !== null &&<main>
+              {activeView === "resources" &&<>
                   <div className={"left-column"}>
-                      <DeviceData metrics={metrics} />
-                      <MemoryData metrics={metrics}/>
+                      <DeviceData metrics={metrics}/>
+                      <MemoryData metrics={metrics}
+                                  viewPort={viewPort}
+                      />
                   </div>
 
-                <div className={"right-column"}>
-                    <CpuData metrics={metrics}/>
-                </div>
+                  <div className={"right-column"}>
+                      <CpuData metrics={metrics}/>
+                  </div>
               </>}
-          </main>
+              {activeView === "settings" &&<Settings setActiveView={setActiveView}
+                                                     setIsDarkMode={setIsDarkMode}
+                                                     toggleView={toggleView}
+                                                     isDarkMode={isDarkMode}
+              />}
+          </main>}
       </>
   )
 }
