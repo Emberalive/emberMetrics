@@ -8,6 +8,10 @@ import MemoryData from "./components/MemoryData.jsx";
 import Settings from "./components/Settings.jsx";
 
 export default function App() {
+
+    const [fontClicked, setFontClicked] = useState("medium");
+
+
     const [activeView, setActiveView] = useState("resources")
 
     const [metrics, setMetrics] = useState(null)
@@ -95,6 +99,8 @@ export default function App() {
                                                      setIsDarkMode={setIsDarkMode}
                                                      toggleView={toggleView}
                                                      isDarkMode={isDarkMode}
+                                                     fontClicked={fontClicked}
+                                                     setFontClicked={setFontClicked}
               />}
           </main>}
       </>

@@ -7,6 +7,8 @@
     --border-radius: 10px;
     --section-padding: 1rem;
     --element-padding: 0.5rem;
+    --font-size: 20px;
+    --font-size-header: 30px;
 
     /* Light Mode Color Palette (default) */
     --primary: #F8F9FA;        /* Light background */
@@ -102,9 +104,9 @@ main {
     color: var(--tertiary);
 }
 .general-button {
-    width: 150px;
-    font-size: var(--button-size);
+    width: fit-content;
     font-weight: bold;
+    font-size: var(--button-size);
     border-radius: var(--border-radius);
     border: none;
     outline: none;
@@ -112,9 +114,14 @@ main {
     cursor: pointer;
 }
 
-.header > button:hover {
+.general-button__clicked {
     background-color: var(--highlight);
 }
+
+.general-button:hover {
+    background-color: var(--highlight);
+}
+
 
 /* Column Layout */
 .left-column, .right-column {
@@ -160,6 +167,7 @@ section {
 }
 
 .device-data > ul {
+    font-size: var(--font-size);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -167,6 +175,7 @@ section {
 }
 
 .device-data > ul > li {
+    font-size: var(--font-size);
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -177,15 +186,17 @@ section {
 }
 
 .data-item-label {
+    font-size: var(--font-size);
     font-weight: bold;
     border-right: 1px solid var(--border-color);
     padding-right: var(--element-padding);
-    min-width: 100px;
-    max-width: 100px;
+    min-width: 130px;
+    max-width: 130px;
     color: var(--secondary);
 }
 
 .data-item-value {
+    font-size: var(--font-size);
     padding-right: var(--element-padding);
     color: var(--text-primary);
 }
@@ -204,7 +215,13 @@ section {
     margin-bottom: var(--element-padding);
 }
 
+.cpu-header > * {
+    font-size: var(--font-size-header);
+}
+
 .cpu-cores > ul {
+    font-size: var(--font-size);
+    font-weight: bold;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
@@ -214,6 +231,7 @@ section {
 }
 
 .cpu-cores > ul > li {
+    font-size: var(--font-size);
     background-color: var(--neutral);
     list-style: none;
     display: flex;
@@ -311,12 +329,19 @@ section {
 }
 
 .settings-entry {
-    width: 50%;
+    width: 70%;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     padding: var(--element-padding);
     border-radius: var(--border-radius);
+}
+
+.settings-entry__label {
+    border-right: 2px solid var(--border-color);
+    padding-right: 30px;
+    max-width: 130px;
+    min-width: 130px;
 }
 
 /*Themes*/
