@@ -9,15 +9,33 @@ module.exports = metrics
 
 async function monitorGraphics() {
     try {
+        //when actually implementing it, if there is no data to access (integrated graphics, set a tertiary check so
+        // that i can set it as N/A instead of undefined)
         const data = await si.graphics();
+
+        let gpus = []
+
         data.controllers.forEach((gpu, index) => {
-            console.log(`GPU ${index + 1}: ${gpu.model}`);
-            console.log(`Memory Information: \nUsed - ${gpu.memoryUsed}MB \nTotal - ${gpu.memoryTotal}MB\nFree - ${gpu.memoryFree}\nUtilization - ${gpu.utilizationMemory}`);
-            console.log(`Utilization: ${gpu.utilizationGpu}`)
-            console.log(`Temp: ${gpu.temperatureGpu}`);
-            console.log(`Power: ${gpu.powerDraw}`)
-            console.log(`Clocks: ${gpu.clockCore} MHz, Memory ${gpu.clockMemory}MHz`);
+            const gpuData = {
+                model: gpu.model,
+                memory: {
+                    used: gpu.memoryUsed !== undefined ? gpu.memoryUsed : 'N/A',
+                    total: gpu.memoryTotal !== undefined ? gpu.memoryTotal : 'N/A',
+                    free: gpu.memoryFree !== undefined ? gpu.memoryFree : 'N/A',
+                    utilization: gpu.utilizationMemory !== undefined ? gpu.utilizationMemory : 'N/A',
+                },
+                utilization: gpu.utilizationGpu !== undefined ? gpu.utilizationGpu : 'N/A',
+                temp: gpu.temperatureGpu !== undefined ? gpu.temperatureGpu : 'N/A',
+                power: gpu.powerDraw !== undefined ? gpu.powerDraw : 'N/A',
+                clocks: {
+                    core: gpu.clockCore !== undefined ? gpu.clockCore : 'N/A',
+                    memory: gpu.clockMemory !== undefined ? gpu.clockMemory : 'N/A',
+                }
+            }
+            gpus.push(gpuData)
         })
+        return gpus
+
     } catch (err) {
         console.error(`There was an issue monitoring the gpu:\n ${err.message}`)
     }
@@ -36,7 +54,7 @@ const deviceData = [
 let oldCpus = os.cpus()
 
 //constantly updates cpu and memory data
-const interval = setInterval(() => {
+const interval = setInterval(async () => {
     metrics = (prev => {
         return {
             ...prev,
@@ -71,7 +89,7 @@ const interval = setInterval(() => {
 
     oldCpus = newCpus
     let totalCPU = cpuUsagePercentage.reduce(
-        (sum, cpu) => sum + parseInt(cpu.usage),0) / cpuUsagePercentage.length
+        (sum, cpu) => sum + parseInt(cpu.usage), 0) / cpuUsagePercentage.length
 
     metrics = {
         hostName: os.hostname(),
@@ -86,7 +104,8 @@ const interval = setInterval(() => {
         },
     }
 
-    monitorGraphics()
+    const gpu = await monitorGraphics()
+    console.log(JSON.stringify(gpu, null, 2))
 }, 1000)
 
 function getMetrics () {
