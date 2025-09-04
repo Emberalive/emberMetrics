@@ -1,9 +1,27 @@
 const os = require('os')
+const si = require('systeminformation')
+
 
 let metrics = {}
 //getting Device information
 
 module.exports = metrics
+
+async function monitorGraphics() {
+    try {
+        const data = await si.graphics();
+        data.controllers.forEach((gpu, index) => {
+            console.log(`GPU ${index + 1}: ${gpu.model}`);
+            console.log(`Memory Information: \nUsed - ${gpu.memoryUsed}MB \nTotal - ${gpu.memoryTotal}MB\nFree - ${gpu.memoryFree}\nUtilization - ${gpu.utilizationMemory}`);
+            console.log(`Utilization: ${gpu.utilizationGpu}`)
+            console.log(`Temp: ${gpu.temperatureGpu}`);
+            console.log(`Power: ${gpu.powerDraw}`)
+            console.log(`Clocks: ${gpu.clockCore} MHz, Memory ${gpu.clockMemory}MHz`);
+        })
+    } catch (err) {
+        console.error(`There was an issue monitoring the gpu:\n ${err.message}`)
+    }
+}
 
 const deviceData = [
     { label: 'Platform', value: os.platform() },
@@ -66,8 +84,9 @@ const interval = setInterval(() => {
             cores: cpuUsagePercentage,
             total: totalCPU
         },
-
     }
+
+    monitorGraphics()
 }, 1000)
 
 function getMetrics () {
