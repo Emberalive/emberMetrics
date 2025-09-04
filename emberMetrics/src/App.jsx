@@ -6,6 +6,7 @@ import DeviceData from "./components/DeviceData.jsx";
 import CpuData from "./components/CpuData.jsx";
 import MemoryData from "./components/MemoryData.jsx";
 import Settings from "./components/Settings.jsx";
+import GpuData from "./components/GpuData.jsx";
 
 export default function App() {
 
@@ -93,6 +94,7 @@ export default function App() {
 
                   <div className={"right-column"}>
                       <CpuData metrics={metrics}/>
+                      <GpuData metrics={metrics}/>
                   </div>
               </>}
               {activeView === "settings" &&<Settings setActiveView={setActiveView}
