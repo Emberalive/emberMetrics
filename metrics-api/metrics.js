@@ -9,8 +9,6 @@ module.exports = metrics
 
 async function monitorGraphics() {
     try {
-        //when actually implementing it, if there is no data to access (integrated graphics, set a tertiary check so
-        // that i can set it as N/A instead of undefined)
         const data = await si.graphics();
 
         let gpus = []
@@ -102,10 +100,8 @@ const interval = setInterval(async () => {
             cores: cpuUsagePercentage,
             total: totalCPU
         },
+        gpuData: await monitorGraphics()
     }
-
-    const gpu = await monitorGraphics()
-    console.log(JSON.stringify(gpu, null, 2))
 }, 1000)
 
 function getMetrics () {
