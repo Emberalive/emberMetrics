@@ -55,7 +55,7 @@ export default function App() {
         console.log("[APP_METRICS] Getting metrics")
         try {
             const interval = setInterval(async () => {
-                const response = await fetch(`http://localhost:3000/`)
+                const response = await fetch(`http://86.20.86.223:3000`)
 
                 if (response.status === 200) {
                     const resData = await response.json()
