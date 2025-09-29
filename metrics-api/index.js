@@ -11,7 +11,7 @@ app.use(express.json())
 app.use(cors(
     {
         //for dev, all for now
-        origin: "https:/metrics.emberalive.com, 86.20.86.223:5173",
+        origin: ["https://metrics.emberalive.com", "86.20.86.223:5173"],
         methods: ["GET", "HEAD"]
     }
 ));
