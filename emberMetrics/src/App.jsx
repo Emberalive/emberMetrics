@@ -55,7 +55,7 @@ export default function App() {
         console.log("[APP_METRICS] Getting metrics")
         try {
             const interval = setInterval(async () => {
-                const response = await fetch(`https://metrics.emberalive.com/`)
+                const response = await fetch(`https://metrics-api.emberalive.com/`)
 
                 if (response.status === 200) {
                     const resData = await response.json()
