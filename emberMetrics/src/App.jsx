@@ -56,15 +56,18 @@ export default function App() {
         try {
             const interval = setInterval(async () => {
                 const response = await fetch(`https://metrics-api.emberalive.com/`)
+                if (response.ok) {
+                    if (response.status === 200) {
+                        const resData = await response.json()
 
-                if (response.status === 200) {
-                    const resData = await response.json()
-
-                    if (resData === null) {
-                        console.error("[APP_METRICS] There was an error fetching metrics")
-                    } else {
-                        setMetrics(resData)
-                        console.log(JSON.stringify(resData))
+                        if (resData === null) {
+                            console.error("[APP_METRICS] There was an error fetching metrics")
+                        } else {
+                            setMetrics(resData)
+                            console.log(JSON.stringify(resData))
+                        }
+                    }else {
+                        console.log("[APP_METRICS] There was an error fetching metrics")
                     }
                 }
             }, 1000)
