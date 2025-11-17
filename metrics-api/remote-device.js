@@ -16,7 +16,7 @@ app.use(cors(
 
 app.get("/", (req, res) => {
     const fileName = path.join(__dirname, 'files/remote-device/remote-device.zip');
-
+    console.log("[Server - /] - Sent a remote device to a user");
     res.download(fileName, 'remote-device.zip');
 });
 
