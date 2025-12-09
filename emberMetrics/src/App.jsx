@@ -7,11 +7,17 @@ import CpuData from "./components/CpuData.jsx";
 import MemoryData from "./components/MemoryData.jsx";
 import Settings from "./components/Settings.jsx";
 import GpuData from "./components/GpuData.jsx";
+import DeviceManagement from "./components/DeviceManagement.jsx";
 
 export default function App() {
 
-    const [fontClicked, setFontClicked] = useState("medium");
+    useEffect(() => {
+        localStorage.setItem("devices", "");
+    }, [])
 
+    const [devices, setDevices] = useState(localStorage.getItem("devices") ? JSON.parse(localStorage.getItem("devices")) : {})
+
+    const [fontClicked, setFontClicked] = useState("medium");
 
     const [activeView, setActiveView] = useState("resources")
 
@@ -55,7 +61,7 @@ export default function App() {
         console.log("[APP_METRICS] Getting metrics")
         try {
             const interval = setInterval(async () => {
-                const response = await fetch(`https://metrics-api.emberalive.com/`)
+                const response = await fetch(`http://localhost:3000`)
                 if (response.ok) {
                     if (response.status === 200) {
                         const resData = await response.json()
@@ -107,6 +113,7 @@ export default function App() {
                                                      fontClicked={fontClicked}
                                                      setFontClicked={setFontClicked}
               />}
+              {activeView === "devices" &&<DeviceManagement devices={devices} setDevices={setDevices} />}
           </main>}
       </>
   )

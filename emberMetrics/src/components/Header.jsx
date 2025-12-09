@@ -18,6 +18,14 @@ export default function Header (props) {
             }}>
                 {props.activeView === "settings" ? "Metrics" : "Settings"}
             </button>
+            <button className="settings-button general-button" onClick={() => {
+                props.setActiveView("Devices")
+                props.activeView === "devices" ? props.setActiveView("resources") : props.setActiveView("devices")
+                console.log("view set to Devices")
+            }}>
+                {props.activeView === "devices" ? "Metrics" : "devices"}
+
+            </button>
 
         </header>
     )

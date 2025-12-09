@@ -369,6 +369,57 @@ section {
     min-width: 130px;
 }
 
+
+/*Device management*/
+.device-management__wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 85vh;
+    width: 100%;
+}
+
+.device-management__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    width: 80%;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
+    background-color: var(--primary);
+    padding: var(--element-padding);
+}
+
+.device-management__container > .device-management__header {
+    display: flex;
+    align-items: flex-start;
+    width: 80%;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.device-management__form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: var(--element-padding);
+}
+
+.device-management__form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.device-management__form-element {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
 /*Themes*/
 .themes-container {
     height: auto;
