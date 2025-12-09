@@ -8,12 +8,15 @@ import MemoryData from "./components/MemoryData.jsx";
 import Settings from "./components/Settings.jsx";
 import GpuData from "./components/GpuData.jsx";
 import DeviceManagement from "./components/DeviceManagement.jsx";
+import Notification from "./components/Notification.jsx";
 
 export default function App() {
 
     useEffect(() => {
         localStorage.setItem("devices", "");
     }, [])
+
+    const [notification, setNotification] = useState("");
 
     const [devices, setDevices] = useState(localStorage.getItem("devices") ? JSON.parse(localStorage.getItem("devices")) : {})
 
@@ -27,6 +30,13 @@ export default function App() {
     const [viewPort,setViewPort ] = useState([]);
 
     let windowWidth = window.innerWidth
+
+    function handleNotification (type, message) {
+        setNotification({type: type, message: message})
+        setTimeout(() => {
+            setNotification("")
+        }, 2000)
+    }
 
     useEffect(() => {
         const handleResize = () => {
@@ -80,11 +90,13 @@ export default function App() {
             return () => clearInterval(interval)
         } catch (err) {
             console.error("[APP_METRICS] Error getting metrics: ", err.message)
+            handleNotification("error", "There was an error fetching metrics")
         }
     }, [])
 
   return (
       <>
+          <Notification notification={notification} setNotification={setNotification} />
           <Header metrics={metrics}
                   toggleView={toggleView}
                   setIsDarkMode={setIsDarkMode}
@@ -113,7 +125,7 @@ export default function App() {
                                                      fontClicked={fontClicked}
                                                      setFontClicked={setFontClicked}
               />}
-              {activeView === "devices" &&<DeviceManagement devices={devices} setDevices={setDevices} />}
+              {activeView === "devices" &&<DeviceManagement devices={devices} setDevices={setDevices} handleNotification={handleNotification}/>}
           </main>}
       </>
   )
