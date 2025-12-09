@@ -60,12 +60,12 @@ export default function Themes (){
 
     const themeList = themes.map(theme => {
         return (
-            <div className={"theme_wrapper"} onClick={() => {
+            <div key={theme.name} className={"theme_wrapper"} onClick={() => {
                 console.log("clicked Theme: " + theme.name)
                 changeTheme(theme);
                 setThemeClicked(theme)
             }}>
-                <div key={theme.name} className={(themeClicked === theme) || (storedTheme && JSON.parse(storedTheme).name === theme.name) ? "theme-container theme_wrapper_clicked" : "theme-container"}>
+                <div className={(themeClicked === theme) || (storedTheme && JSON.parse(storedTheme).name === theme.name) ? "theme-container theme_wrapper_clicked" : "theme-container"}>
                     <div className={"theme"} style={{
                         backgroundColor: theme.colour.tertiary,
 

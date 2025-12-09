@@ -413,13 +413,13 @@ section {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    padding: var(--element-padding);
+    padding: 10px 20px 0 20px;
 }
 
 .device-management__form-container {
     display: flex;
     flex-direction: column;
-    padding: 10px 20px;
+    padding: 10px 20px 0 20px;
     justify-content: center;
 }
 
@@ -619,4 +619,31 @@ section {
     min-height: 50px;
     width: 300px;
     padding: 5px;
+}
+
+/*device lists*/
+.device-container {
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - 40px);
+    padding: 20px;
+    gap: 10px;
+}
+
+.device-container__seperator {
+    height: 1px;
+    width: 90%;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.device-container__ipAddr {
+    background-color: var(--neutral);
+    padding: var(--element-padding);
+    font-size: 20px;
+    border-radius: var(--border-radius);
+    margin: 0;
+}
+
+.device-container__name {
+    margin: 0;
 }

@@ -18,7 +18,11 @@ export default function App() {
 
     const [notification, setNotification] = useState("");
 
-    const [devices, setDevices] = useState(localStorage.getItem("devices") ? JSON.parse(localStorage.getItem("devices")) : {})
+    const [devices, setDevices] = useState(() => {
+        const devicesString = localStorage.getItem("devices") ? JSON.parse(localStorage.getItem("devices")) : []
+        console.error(devicesString);
+        return (devicesString);
+    })
 
     const [fontClicked, setFontClicked] = useState("medium");
 
@@ -37,6 +41,11 @@ export default function App() {
             setNotification("")
         }, 2000)
     }
+
+    useEffect(() => {
+        //stores state changes in localStorage for the devices
+        localStorage.setItem("devices", JSON.stringify(devices));
+    }, [devices])
 
     useEffect(() => {
         const handleResize = () => {
@@ -125,7 +134,7 @@ export default function App() {
                                                      fontClicked={fontClicked}
                                                      setFontClicked={setFontClicked}
               />}
-              {activeView === "devices" &&<DeviceManagement devices={devices} setDevices={setDevices} handleNotification={handleNotification}/>}
+              {activeView === "devices" &&<DeviceManagement devices={devices} setDevices={setDevices} handleNotification={handleNotification} />}
           </main>}
       </>
   )
