@@ -11,6 +11,10 @@ export default function AddDevice(props) {
             props.handleNotification("error", "Please enter a valid public and IPv4 address")
             return
         }
+        if (!name) {
+            props.handleNotification("error", "Please enter a name for your device")
+            return
+        }
         props.handleNotification("notice", `successfully added the device "${ip}"`)
         console.log(`Adding the ${ip} device.`)
         props.setDevices((prev) => {
@@ -20,6 +24,7 @@ export default function AddDevice(props) {
                 name: name,},
             ]
         })
+        e.target.reset()
     }
     return (
         <form onSubmit={submit} className="device-management__form">

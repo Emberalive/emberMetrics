@@ -29,7 +29,14 @@ export default function App() {
     const [activeView, setActiveView] = useState("resources")
 
     const [metrics, setMetrics] = useState(null)
-    const [isDarkMode, setIsDarkMode] = useState("false");
+    const [isDarkMode, setIsDarkMode] = useState(() => {
+        const darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+        if (darkMode) {
+            return true
+        } else {
+            return false
+        }
+    });
 
     const [viewPort,setViewPort ] = useState([]);
 
@@ -59,9 +66,9 @@ export default function App() {
 
 
     useEffect(() => {
-        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            toggleView()
-        }
+        // if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        //     toggleView()
+        // }
         if (savedTheme) {
             document.documentElement.style.setProperty("--secondary", savedTheme.colour.secondary);
             document.documentElement.style.setProperty("--tertiary", savedTheme.colour.tertiary);
@@ -72,9 +79,12 @@ export default function App() {
     }, [])
 
 
-    function toggleView(){
-        document.documentElement.classList.toggle('dark-mode');
-    }
+    useEffect(() => {
+        if (isDarkMode) {
+            document.documentElement.classList.add("dark-mode");
+        } else {
+            document.documentElement.classList.remove("dark-mode");
+        }    }, [isDarkMode])
 
     useEffect( () => {
         console.log("[APP_METRICS] Getting metrics")
@@ -107,7 +117,6 @@ export default function App() {
       <>
           <Notification notification={notification} setNotification={setNotification} />
           <Header metrics={metrics}
-                  toggleView={toggleView}
                   setIsDarkMode={setIsDarkMode}
                   isDarkMode={isDarkMode}
                   setActiveView={setActiveView}
@@ -129,10 +138,12 @@ export default function App() {
               </>}
               {activeView === "settings" &&<Settings setActiveView={setActiveView}
                                                      setIsDarkMode={setIsDarkMode}
-                                                     toggleView={toggleView}
+                                                     // toggleView={toggleView}
                                                      isDarkMode={isDarkMode}
                                                      fontClicked={fontClicked}
                                                      setFontClicked={setFontClicked}
+                                                     windowWidth={windowWidth}
+                                                     handleNotification={handleNotification}
               />}
               {activeView === "devices" &&<DeviceManagement devices={devices} setDevices={setDevices} handleNotification={handleNotification} />}
           </main>}
