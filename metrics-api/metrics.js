@@ -166,7 +166,7 @@ async function deleteDevice (device) {
     return await writeDevices(devices)
 }
 
-module.exports = [getMetrics, getDevices, addDevice, deleteDevice];
+module.exports = {getMetrics, getDevices, addDevice, deleteDevice};
 
 
 //for one loop of the module:

@@ -9,50 +9,52 @@ const port = 3000
 app.use(express.json())
 app.use(cors({
     origin: "*",
-    methods: ["GET", "HEAD"],
+    methods: ["GET", "HEAD", "OPTIONS", "POST","DELETE"],
 }));
 
 //returns the metrics
 app.get('/', (req, res) => {
-    // I need to add some form of authentication? maybe
-    const metrics = getMetrics()
-    // checks if metrics is available
-    if (!metrics || metrics === {} || metrics === null) res.status(500).send('Metrics Data not available')
-    res.status(200).send(metrics)
-})
+    const metrics = getMetrics();
 
-app.get('/devices', (req, res) => {
-    const devices = getDevices()
+    if (!metrics || (typeof metrics === 'object' && Object.keys(metrics).length === 0)) {
+        return res.status(500).json({ error: 'Metrics Data not available' });
+    }
+
+    res.status(200).json(metrics); // always send JSON
+});
+
+app.get('/devices', async (req, res) => {
+    const devices = await getDevices()
     if (!devices) {
-        res.status(500).send('Devices Data not available')
+        res.status(500).json('Devices Data not available')
     } else {
-        res.status(200).send(devices)
+        res.status(200).json(devices)
     }
 })
 
-app.post('/devices', (req, res) => {
-    const response = addDevice(req.body.device)
+app.post('/devices', async (req, res) => {
+    const response = await addDevice(req.body.device)
     if (response.success) {
         res.status(200).send(response)
     } else {
-        res.status(500).send({
+        res.status(500).json({
             success: false,
         })
     }
 })
 
-app.delete('/devices/', (req, res) => {
-    const deviceId = req.params.device
+app.delete('/devices', async (req, res) => {
+    const deviceId = req.body.device
     if (!deviceId) {
         res.status(400).send({
             success: false,
         })
     } else {
-        const response = deleteDevice(deviceId)
+        const response = await deleteDevice(deviceId)
         if (response.success) {
-            res.status(200).send(response)
+            res.status(200).json(response)
         } else {
-            res.status(500).send({
+            res.status(500).json({
                 success: false,
             })
         }
