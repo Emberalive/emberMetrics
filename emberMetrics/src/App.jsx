@@ -43,17 +43,25 @@ export default function App() {
         }
     });
 
-    const [devices, setDevices] = useState(async () => {
-        try {
-            const response = await fetch(`http://${hostIp}:3000/devices`);
-            if (!response.ok) {
-                return await response.json();
-            }
+    const [devices, setDevices] = useState([])
 
-        } catch (e) {
-            console.error('error getting devices from the host', e.message);
+    useEffect(() => {
+        async function getInitialDevices () {
+            try {
+                const response = await fetch(`http://localhost:3000/devices`);
+                if (response.ok) {
+                    const resData = await response.json();
+                    const devices = resData.devices
+                    setDevices(devices);
+                } else {
+                    setDevices([])
+                }
+            } catch (e) {
+                console.error('error getting devices from the host', e.message);
+            }
         }
-    })
+        getInitialDevices()
+    }, [hostIp]);
 
     useEffect(() => {
         //stores the deviceType in state
@@ -79,7 +87,8 @@ export default function App() {
     }, [deviceType, devices])
 
     const [selectedDevice, setSelectedDevice] = useState(() => {
-            return devices.length !== 0 ? devices[0].ip : null
+        if (devices) return ""
+        return devices.length !== 0 ? devices[0].ip : null
     });
 
     const [fontClicked, setFontClicked] = useState("medium");
@@ -177,13 +186,13 @@ export default function App() {
         setMetrics(null)
     }
 
-    let deviceButtonList
-
-    if (devices.length !== 0) {
-        deviceButtonList = devices.map((device) => {
-            return(<button className={"general-button"} onClick={() => changeRemoteDevice(device.ip)}>{device.name}</button>)
-        })
-    }
+    var deviceButtonList
+    console.error(devices)
+        if (devices){
+            deviceButtonList = devices.map((device) => {
+                return(<button className={"general-button"} onClick={() => changeRemoteDevice(device.ip)}>{device.name}</button>)
+            })
+        }
 
   return (
       <>
@@ -194,9 +203,9 @@ export default function App() {
                   setActiveView={setActiveView}
                   activeView={activeView}
           />
-          {devices.length !== 0 && <section
+          {devices && <section
               style={{display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
-              {deviceButtonList ? deviceButtonList : ""}
+              {deviceButtonList}
           </section>}
           <main>
               {deviceType === "" && <DeviceTypeSelection setDeviceType={setDeviceType}/>}
