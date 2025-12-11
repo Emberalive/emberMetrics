@@ -19,10 +19,22 @@ export default function App() {
     const [notification, setNotification] = useState("");
 
     const [devices, setDevices] = useState(() => {
-        const devicesString = localStorage.getItem("devices") ? JSON.parse(localStorage.getItem("devices")) : []
-        console.error(devicesString);
-        return (devicesString);
+        const devicesList = localStorage.getItem("devices") ? JSON.parse(localStorage.getItem("devices")) : []
+        if (!devicesList[0]) {
+            devicesList.push({
+                ip: "127.0.0.1",
+                name: "localhost"
+            })
+        } else if (devicesList[0].name !== "localhost") {
+            devicesList.push({
+                ip: "127.0.0.1",
+                name: "localhost"
+            })
+        }
+        return (devicesList);
     })
+
+    const [selectedDevice, setSelectedDevice] = useState(devices[0].ip);
 
     const [fontClicked, setFontClicked] = useState("medium");
 
@@ -66,9 +78,6 @@ export default function App() {
 
 
     useEffect(() => {
-        // if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        //     toggleView()
-        // }
         if (savedTheme) {
             document.documentElement.style.setProperty("--secondary", savedTheme.colour.secondary);
             document.documentElement.style.setProperty("--tertiary", savedTheme.colour.tertiary);
@@ -90,7 +99,7 @@ export default function App() {
         console.log("[APP_METRICS] Getting metrics")
         try {
             const interval = setInterval(async () => {
-                const response = await fetch(`http://localhost:3000`)
+                const response = await fetch(`http://${selectedDevice}:3000`)
                 if (response.ok) {
                     if (response.status === 200) {
                         const resData = await response.json()
@@ -111,7 +120,22 @@ export default function App() {
             console.error("[APP_METRICS] Error getting metrics: ", err.message)
             handleNotification("error", "There was an error fetching metrics")
         }
-    }, [])
+    }, [selectedDevice])
+
+    useEffect(() => {
+        console.error("[APP_METRICS] selected device for resources", selectedDevice)
+    }, [selectedDevice])
+
+    function changeRemoteDevice(ip) {
+        setSelectedDevice(ip)
+        console.log("[APP_METRICS] Change remote device: ", ip)
+        handleNotification("notice", `changed Remote Device to:\n ${ip}`)
+        setMetrics(null)
+    }
+
+    const deviceButtonList = devices.map((device) => {
+        return(<button className={"general-button"} onClick={() => changeRemoteDevice(device.ip)}>{device.name}</button>)
+    })
 
   return (
       <>
@@ -122,6 +146,9 @@ export default function App() {
                   setActiveView={setActiveView}
                   activeView={activeView}
           />
+          <section className={"memory-info"}>
+              {deviceButtonList}
+          </section>
           {metrics !== null &&<main>
               {activeView === "resources" &&<>
                   <div className={"left-column"}>
@@ -138,7 +165,6 @@ export default function App() {
               </>}
               {activeView === "settings" &&<Settings setActiveView={setActiveView}
                                                      setIsDarkMode={setIsDarkMode}
-                                                     // toggleView={toggleView}
                                                      isDarkMode={isDarkMode}
                                                      fontClicked={fontClicked}
                                                      setFontClicked={setFontClicked}

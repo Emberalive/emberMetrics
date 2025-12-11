@@ -1,12 +1,12 @@
 import * as rangeCheck from "range_check";
 
 export default function AddDevice(props) {
-    function submit (e) {
+    async function submit(e) {
         e.preventDefault()
         const ip = e.target.ipAddress.value
         const name = e.target.deviceName.value
-        //this only allows the ip[ address to be public ipv4 and valid ip addresses to be created
-        if ( (!rangeCheck.isIP(ip)) || (rangeCheck.version(ip) !== 4) || (rangeCheck.isPrivateIP(ip)) ) {
+        //this only allows the ip[ address to be public ipv4 and valid ip addresses to be created  || (rangeCheck.isPrivateIP(ip))
+        if ((!rangeCheck.isIP(ip)) || (rangeCheck.version(ip) !== 4)) {
             console.log("Please enter a valid public and IPv4 address")
             props.handleNotification("error", "Please enter a valid public and IPv4 address")
             return
@@ -20,10 +20,37 @@ export default function AddDevice(props) {
         props.setDevices((prev) => {
             return [
                 ...prev,
-                {ip: ip,
-                name: name,},
+                {
+                    ip: ip,
+                    name: name,
+                },
             ]
         })
+        try {
+            const response = await fetch("http://localhost:3001/")
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+
+                const link = document.createElement("a");
+                link.className = "device-management__blob-link";
+                link.href = url;
+                link.download = "remote-device.zip";  // must match your filename
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+
+                //in the case where the browser is slow
+                setTimeout(() => {
+                    window.URL.revokeObjectURL(url);
+                }, 1000);
+
+                props.handleNotification("success", "Downloaded your remote device script")
+            }
+        } catch (e) {
+            props.handleNotification("error", "couldn't download your remote device script")
+            console.error("Could not download the device script", e.message)
+        }
         e.target.reset()
     }
     return (

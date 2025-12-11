@@ -10,10 +10,10 @@ export default function Settings (props) {
     }
 
     return (
+        <div className="settings-wrapper">
             <div className="settings">
                 <header className="settings-header">
                     <h1>Settings</h1>
-
                 </header>
                 <div className="settings-entry">
                     <p className="settings-entry__label">Display Mode: </p>
@@ -58,6 +58,7 @@ export default function Settings (props) {
                     }}>Themes</h1>
                     <Themes />
                 </div>
+            </div>
         </div>
     )
 }

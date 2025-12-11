@@ -3,7 +3,7 @@ import AddDevice from "./AddDevice.jsx";
 export default function DeviceManagement (props) {
     const devicesList = props.devices.map((device) => {
         return (
-            <div className="device-container" key={device}>
+            <div className="device-container" key={device.ip}>
                 <p className="device-container__name">{device.name}</p>
                 <p className="device-container__ipAddr">
                     {device.ip}

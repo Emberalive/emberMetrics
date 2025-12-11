@@ -12,20 +12,23 @@ export default function Header (props) {
                 </div>}
             </div>
             <div className={"header__buttons"}>
-                <button className="settings-button general-button" onClick={() => {
+                <button className={props.activeView === "resources"? "general-button general-button__clicked": "general-button"} onClick={() => {
+                    props.setActiveView("resources")
+                    console.log("view set to Metrics")
+                }}>
+                    Metrics
+                </button>
+                <button className={props.activeView === "settings"? "general-button general-button__clicked": "general-button"} onClick={() => {
                     props.setActiveView("settings")
-                    props.activeView === "settings" ? props.setActiveView("resources") : props.setActiveView("settings")
                     console.log("view set to settings")
                 }}>
-                    {props.activeView === "settings" ? "Metrics" : "Settings"}
+                    Settings
                 </button>
-                <button className="settings-button general-button" onClick={() => {
-                    props.setActiveView("Devices")
-                    props.activeView === "devices" ? props.setActiveView("resources") : props.setActiveView("devices")
+                <button className={props.activeView === "devices"? "general-button general-button__clicked": "general-button"} onClick={() => {
+                    props.setActiveView("devices")
                     console.log("view set to Devices")
                 }}>
-                    {props.activeView === "devices" ? "Metrics" : "devices"}
-
+                    Devices
                 </button>
             </div>
         </header>
