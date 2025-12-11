@@ -8,13 +8,10 @@ const port = 3000
 
 
 app.use(express.json())
-app.use(cors(
-    {
-        //for dev, all for now
-        origin: ["*"],
-        methods: ["GET", "HEAD"]
-    }
-));
+app.use(cors({
+    origin: "*",
+    methods: ["GET", "HEAD"],
+}));
 
 //returns the metrics
 app.get('/', (req, res) => {
