@@ -1,6 +1,8 @@
 const os = require('os')
 const si = require('systeminformation')
+const fs = require('fs').promises;
 
+const filePath = './devices.json'
 
 let metrics = {}
 //getting Device information
@@ -108,7 +110,63 @@ function getMetrics () {
     return metrics
 }
 
-module.exports = getMetrics
+async function readDevices () {
+    const rawDevices = await fs.readFile(filePath, 'utf8')
+    return JSON.parse(rawDevices)
+}
+
+async function writeDevices (newDevices) {
+    try {
+        await fs.writeFile(filePath, JSON.stringify(newDevices), 'utf8')
+        return {
+            success: true,
+        }
+    } catch (e) {
+        console.error("Error writing to devices: ", e);
+        return {
+            success: false,
+        }
+    }
+}
+
+async function getDevices () {
+    try {
+        const devices = await readDevices()
+
+        return {
+            devices: devices,
+            success: true
+        }
+    } catch (e) {
+        console.error('Error reading devices:', e)
+    }
+}
+
+async function addDevice (device) {
+    try {
+        const deviceDate = await readDevices()
+        deviceData.push(device)
+
+        return await writeDevices(deviceDate)
+    } catch (e) {
+        console.error('Error adding device:', e)
+    }
+}
+
+async function deleteDevice (device) {
+    const devices = await readDevices()
+    const index = devices.indexOf(device)
+
+    if (index === -1) {
+        return {
+            success: false,
+        }
+    }
+    devices.splice(index, 1)
+    return await writeDevices(devices)
+}
+
+module.exports = [getMetrics, getDevices, addDevice, deleteDevice];
 
 
 //for one loop of the module:
