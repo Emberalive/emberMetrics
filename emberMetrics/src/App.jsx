@@ -9,32 +9,78 @@ import Settings from "./components/Settings.jsx";
 import GpuData from "./components/GpuData.jsx";
 import DeviceManagement from "./components/DeviceManagement.jsx";
 import Notification from "./components/Notification.jsx";
+import DeviceTypeSelection from "./components/DeviceTypeSelection.jsx";
 
 export default function App() {
 
+    const [hostIp, setHostIP] = useState(() => {
+        const hostPublicIP = localStorage.getItem('hostPublicIP')
+        if (hostPublicIP) {
+            return hostPublicIP
+        }else {
+            return ""
+        }
+    });
+
     useEffect(() => {
-        localStorage.setItem("devices", "");
-    }, [])
+        async function getPublicIP() {
+            const res = await fetch("http://api.ipify.org?format=json");
+            const data = await res.json();
+            localStorage.setItem("hostPublicIP", data.ip);
+            setHostIP(data.ip);
+        }
+        getPublicIP();
+    }, []);
 
     const [notification, setNotification] = useState("");
 
-    const [devices, setDevices] = useState(() => {
-        const devicesList = localStorage.getItem("devices") ? JSON.parse(localStorage.getItem("devices")) : []
-        if (!devicesList[0]) {
-            devicesList.push({
-                ip: "127.0.0.1",
-                name: "localhost"
-            })
-        } else if (devicesList[0].name !== "localhost") {
-            devicesList.push({
-                ip: "127.0.0.1",
-                name: "localhost"
-            })
+    const [deviceType, setDeviceType] = useState(() => {
+        const localStoreDeviceType = localStorage.getItem("deviceType");
+        if (localStoreDeviceType === null || localStoreDeviceType === undefined || !localStoreDeviceType) {
+            return ""
+        } else {
+            return localStoreDeviceType;
         }
-        return (devicesList);
+    });
+
+    const [devices, setDevices] = useState(async () => {
+        try {
+            const response = await fetch(`http://${hostIp}:3000/devices`);
+            if (!response.ok) {
+                return await response.json();
+            }
+
+        } catch (e) {
+            console.error('error getting devices from the host', e.message);
+        }
     })
 
-    const [selectedDevice, setSelectedDevice] = useState(devices[0].ip);
+    useEffect(() => {
+        //stores the deviceType in state
+            localStorage.setItem("deviceType", deviceType);
+        //if the device type is the host, it adds localhost to the devices state
+        if (deviceType === "host") {
+            console.log("device type is " + deviceType);
+            const devicesList = localStorage.getItem("devices") ? JSON.parse(localStorage.getItem("devices")) : []
+            if (!devicesList[0]) {
+                devices.push({
+                    ip: "127.0.0.1",
+                    name: "localhost"
+                })
+            } else if (devicesList[0].name !== "localhost") {
+                devices.push({
+                    ip: "127.0.0.1",
+                    name: "localhost"
+                })
+            }
+            setSelectedDevice("127.0.0.1")
+        }
+        localStorage.setItem("devices", JSON.stringify(devices));
+    }, [deviceType, devices])
+
+    const [selectedDevice, setSelectedDevice] = useState(() => {
+            return devices.length !== 0 ? devices[0].ip : null
+    });
 
     const [fontClicked, setFontClicked] = useState("medium");
 
@@ -60,11 +106,6 @@ export default function App() {
             setNotification("")
         }, 2000)
     }
-
-    useEffect(() => {
-        //stores state changes in localStorage for the devices
-        localStorage.setItem("devices", JSON.stringify(devices));
-    }, [devices])
 
     useEffect(() => {
         const handleResize = () => {
@@ -98,6 +139,9 @@ export default function App() {
     useEffect( () => {
         console.log("[APP_METRICS] Getting metrics")
         try {
+            if(!selectedDevice) {
+                return;
+            }
             const interval = setInterval(async () => {
                 const response = await fetch(`http://${selectedDevice}:3000`)
                 if (response.ok) {
@@ -133,9 +177,13 @@ export default function App() {
         setMetrics(null)
     }
 
-    const deviceButtonList = devices.map((device) => {
-        return(<button className={"general-button"} onClick={() => changeRemoteDevice(device.ip)}>{device.name}</button>)
-    })
+    let deviceButtonList
+
+    if (devices.length !== 0) {
+        deviceButtonList = devices.map((device) => {
+            return(<button className={"general-button"} onClick={() => changeRemoteDevice(device.ip)}>{device.name}</button>)
+        })
+    }
 
   return (
       <>
@@ -146,23 +194,30 @@ export default function App() {
                   setActiveView={setActiveView}
                   activeView={activeView}
           />
-          <section className={"memory-info"}>
-              {deviceButtonList}
-          </section>
-          {metrics !== null &&<main>
-              {activeView === "resources" &&<>
-                  <div className={"left-column"}>
-                      <DeviceData metrics={metrics}/>
-                      <MemoryData metrics={metrics}
-                                  viewPort={viewPort}
-                      />
-                  </div>
+          {devices.length !== 0 && <section
+              style={{display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
+              {deviceButtonList ? deviceButtonList : ""}
+          </section>}
+          <main>
+              {deviceType === "" && <DeviceTypeSelection setDeviceType={setDeviceType}/>}
 
-                  <div className={"right-column"}>
-                      <CpuData metrics={metrics}/>
-                      <GpuData metrics={metrics}/>
-                  </div>
-              </>}
+              {metrics !== null &&
+                  <>
+                      {activeView === "resources" &&<>
+                          <div className={"left-column"}>
+                              <DeviceData metrics={metrics}/>
+                              <MemoryData metrics={metrics}
+                                          viewPort={viewPort}
+                              />
+                          </div>
+
+                          <div className={"right-column"}>
+                              <CpuData metrics={metrics}/>
+                              <GpuData metrics={metrics}/>
+                          </div>
+                      </>}
+                  </>
+              }
               {activeView === "settings" &&<Settings setActiveView={setActiveView}
                                                      setIsDarkMode={setIsDarkMode}
                                                      isDarkMode={isDarkMode}
@@ -172,7 +227,7 @@ export default function App() {
                                                      handleNotification={handleNotification}
               />}
               {activeView === "devices" &&<DeviceManagement devices={devices} setDevices={setDevices} handleNotification={handleNotification} />}
-          </main>}
+          </main>
       </>
   )
 }

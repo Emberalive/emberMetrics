@@ -161,6 +161,12 @@ main {
     cursor: pointer;
 }
 
+.disabled-button {
+    pointer-events: none;
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
 .general-button__clicked {
     background-color: var(--neutral);
 }
@@ -753,4 +759,83 @@ section {
     min-height: 50px;
     width: 300px;
     padding: 5px;
+}
+
+/*Device type selection*/
+.device-type-selection__wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 60vh;
+}
+
+.device-type-selection {
+    display: flex;
+    flex-direction: column;
+    width: calc(60% - 2rem);
+}
+.device-type-selection > h1 {
+    margin: 0;
+    text-align: center;
+}
+
+.description-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--border-color);
+    width: calc(100% - 40px);
+    margin: 0 20px;
+    max-width: 500px;
+    align-self: center;
+}
+
+.description-container__title {
+    align-self: flex-start;
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 0;
+}
+
+.description-container__paragraph {
+    text-align: center;
+    border-radius: 5px;
+    background-color: var(--neutral);
+    padding: var(--element-padding);
+}
+
+.description-container__form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.container__form__radio-container > input[type="radio"] {
+    -webkit-appearance:none;
+    width: 20px;
+    height: 20px;
+    background-color: var(--neutral);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+}
+
+.container__form__radio-container > input[type='radio']:hover {
+    box-shadow: 0 0 4px 2px var(--secondary) inset;
+}
+.container__form__radio-container > input[type='radio']:checked {
+    background-color: var(--secondary);
+}
+
+.container__form__radio-container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    width: 30%;
 }

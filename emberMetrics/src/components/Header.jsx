@@ -12,19 +12,37 @@ export default function Header (props) {
                 </div>}
             </div>
             <div className={"header__buttons"}>
-                <button className={props.activeView === "resources"? "general-button general-button__clicked": "general-button"} onClick={() => {
+                <button     className={
+                    localStorage.getItem('deviceType') === ""
+                        ? "general-button disabled-button"
+                        : props.activeView === "resources"
+                            ? "general-button general-button__clicked"
+                            : "general-button"
+                } onClick={() => {
                     props.setActiveView("resources")
                     console.log("view set to Metrics")
                 }}>
                     Metrics
                 </button>
-                <button className={props.activeView === "settings"? "general-button general-button__clicked": "general-button"} onClick={() => {
+                <button className={
+                    localStorage.getItem('deviceType') === ""
+                        ? "general-button disabled-button"
+                        : props.activeView === "settings"
+                            ? "general-button general-button__clicked"
+                            : "general-button"
+                } onClick={() => {
                     props.setActiveView("settings")
                     console.log("view set to settings")
                 }}>
                     Settings
                 </button>
-                <button className={props.activeView === "devices"? "general-button general-button__clicked": "general-button"} onClick={() => {
+                <button className={
+                    localStorage.getItem('deviceType') === ""
+                        ? "general-button disabled-button"
+                        : props.activeView === "devices"
+                            ? "general-button general-button__clicked"
+                            : "general-button"
+                } onClick={() => {
                     props.setActiveView("devices")
                     console.log("view set to Devices")
                 }}>
