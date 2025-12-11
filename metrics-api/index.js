@@ -22,6 +22,6 @@ app.get('/', (req, res) => {
     res.status(200).send(metrics)
 })
 
-app.listen(port, () => {
+app.listen(port, "0.0.0.0", () => {
     console.log(`[Server] API Listening on port ${port}`)
 })
