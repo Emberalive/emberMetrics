@@ -10,6 +10,7 @@ import GpuData from "./components/GpuData.jsx";
 import DeviceManagement from "./components/DeviceManagement.jsx";
 import Notification from "./components/Notification.jsx";
 import DeviceTypeSelection from "./components/DeviceTypeSelection.jsx";
+import * as punycode from "node:punycode";
 
 export default function App() {
 
@@ -29,8 +30,8 @@ export default function App() {
             localStorage.setItem("hostPublicIP", data.ip);
             setHostIP(data.ip);
         }
-        getPublicIP();
-    }, []);
+        if (hostIp === "") getPublicIP();
+    }, [hostIp]);
 
     const [notification, setNotification] = useState("");
 
@@ -47,12 +48,38 @@ export default function App() {
 
     useEffect(() => {
         async function getInitialDevices () {
+            //
             try {
-                const response = await fetch(`http://localhost:3000/devices`);
+                const response = await fetch(`http://${deviceType === "remote-access" ? hostIp : "localhost"}:3000/devices`);
                 if (response.ok) {
                     const resData = await response.json();
-                    const devices = resData.devices
-                    setDevices(devices);
+                    const resData_devices = resData.devices
+                    const newDevices = [...resData_devices];
+                    if (deviceType === "") return
+                    if (deviceType === "remote-access") {
+                        const index = newDevices.findIndex(
+                            (d) => {
+                                return d.ip === "localhost" && d.name === "localhost"
+                            }
+                        );
+                        console.log("index of localhost", index);
+                        if (index !== -1) {
+                            console.log("[App.jsx - getInitialDevices] - removing localhost for remote-access device")
+                            newDevices.splice(index, 1);
+                        }
+                        if (hostIp) {
+                            console.log("[App.jsx - getInitialDevices] - adding hostDevice to remote-access device")
+                            newDevices.push({
+                                name: "Host-Device",
+                                ip: hostIp,
+                            });
+                        }
+                        setDevices(newDevices);
+                        setSelectedDevice(newDevices[0].ip);
+                        return;
+                    }
+                    setDevices(newDevices);
+                    setSelectedDevice(newDevices[0].ip);
                 } else {
                     setDevices([])
                 }
@@ -61,30 +88,12 @@ export default function App() {
             }
         }
         getInitialDevices()
-    }, [hostIp]);
+    }, [hostIp, deviceType]);
 
     useEffect(() => {
         //stores the deviceType in state
             localStorage.setItem("deviceType", deviceType);
-        //if the device type is the host, it adds localhost to the devices state
-        if (deviceType === "host") {
-            console.log("device type is " + deviceType);
-            const devicesList = localStorage.getItem("devices") ? JSON.parse(localStorage.getItem("devices")) : []
-            if (!devicesList[0]) {
-                devices.push({
-                    ip: "127.0.0.1",
-                    name: "localhost"
-                })
-            } else if (devicesList[0].name !== "localhost") {
-                devices.push({
-                    ip: "127.0.0.1",
-                    name: "localhost"
-                })
-            }
-            setSelectedDevice("127.0.0.1")
-        }
-        localStorage.setItem("devices", JSON.stringify(devices));
-    }, [deviceType, devices])
+    }, [deviceType])
 
     const [selectedDevice, setSelectedDevice] = useState(() => {
         if (devices) return ""
@@ -175,10 +184,6 @@ export default function App() {
         }
     }, [selectedDevice])
 
-    useEffect(() => {
-        console.error("[APP_METRICS] selected device for resources", selectedDevice)
-    }, [selectedDevice])
-
     function changeRemoteDevice(ip) {
         setSelectedDevice(ip)
         console.log("[APP_METRICS] Change remote device: ", ip)
@@ -186,11 +191,11 @@ export default function App() {
         setMetrics(null)
     }
 
-    var deviceButtonList
+    let deviceButtonList
     console.error(devices)
         if (devices){
             deviceButtonList = devices.map((device) => {
-                return(<button className={"general-button"} onClick={() => changeRemoteDevice(device.ip)}>{device.name}</button>)
+                return(<button className={selectedDevice === device.ip ?"general-button disabled-button": "general-button"} onClick={() => changeRemoteDevice(device.ip)}>{device.name}</button>)
             })
         }
 
@@ -235,7 +240,7 @@ export default function App() {
                                                      windowWidth={windowWidth}
                                                      handleNotification={handleNotification}
               />}
-              {activeView === "devices" &&<DeviceManagement devices={devices} setDevices={setDevices} handleNotification={handleNotification} />}
+              {activeView === "devices" &&<DeviceManagement devices={devices} setDevices={setDevices} handleNotification={handleNotification} hostIp={hostIp} deviceType={deviceType}/>}
           </main>
       </>
   )

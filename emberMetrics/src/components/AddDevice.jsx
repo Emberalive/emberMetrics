@@ -15,41 +15,64 @@ export default function AddDevice(props) {
             props.handleNotification("error", "Please enter a name for your device")
             return
         }
-        props.handleNotification("notice", `successfully added the device "${ip}"`)
-        console.log(`Adding the ${ip} device.`)
-        props.setDevices((prev) => {
-            return [
-                ...prev,
-                {
-                    ip: ip,
-                    name: name,
-                },
-            ]
-        })
         try {
-            const response = await fetch("http://localhost:3001/")
+            const response = await fetch(`http://192.168.0.67:3000/devices`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    device: {
+                        name: name,
+                        ip: ip,
+                    }
+                })
+            })
             if (response.ok) {
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-
-                const link = document.createElement("a");
-                link.className = "device-management__blob-link";
-                link.href = url;
-                link.download = "remote-device.zip";  // must match your filename
-                document.body.appendChild(link);
-                link.click();
-                link.remove();
-
-                //in the case where the browser is slow
-                setTimeout(() => {
-                    window.URL.revokeObjectURL(url);
-                }, 1000);
-
-                props.handleNotification("success", "Downloaded your remote device script")
+                const resData = await response.json()
+                if (resData.success) {
+                    props.handleNotification("notice", `successfully added the device "${ip}"`)
+                    console.log(`Adding the ${ip} device.`)
+                    props.setDevices((prev) => {
+                        return [
+                            ...prev,
+                            {
+                                ip: ip,
+                                name: name,
+                            },
+                        ]
+                    })
+                }
             }
         } catch (e) {
-            props.handleNotification("error", "couldn't download your remote device script")
-            console.error("Could not download the device script", e.message)
+            console.error('Error attempting to add a device to the api', e.message)
+        }
+        if (props.deviceType === "host") {
+            try {
+                const response = await fetch("http://localhost:3001/")
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+
+                    const link = document.createElement("a");
+                    link.className = "device-management__blob-link";
+                    link.href = url;
+                    link.download = "remote-device.zip";  // must match your filename
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+
+                    //in the case where the browser is slow
+                    setTimeout(() => {
+                        window.URL.revokeObjectURL(url);
+                    }, 1000);
+
+                    props.handleNotification("success", "Downloaded your remote device script")
+                }
+            } catch (e) {
+                props.handleNotification("error", "couldn't download your remote device script")
+                console.error("Could not download the device script", e.message)
+            }
         }
         e.target.reset()
     }
