@@ -15,6 +15,10 @@ export default function AddDevice(props) {
             props.handleNotification("error", "Please enter a name for your device")
             return
         }
+        const newDevice = {
+            name: name,
+            ip: ip,
+        }
         try {
             const response = await fetch(`http://192.168.0.67:3000/devices`, {
                 method: "POST",
@@ -22,10 +26,7 @@ export default function AddDevice(props) {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    device: {
-                        name: name,
-                        ip: ip,
-                    }
+                    device: newDevice
                 })
             })
             if (response.ok) {
@@ -36,10 +37,7 @@ export default function AddDevice(props) {
                     props.setDevices((prev) => {
                         return [
                             ...prev,
-                            {
-                                ip: ip,
-                                name: name,
-                            },
+                            newDevice
                         ]
                     })
                 }

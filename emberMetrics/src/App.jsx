@@ -10,7 +10,6 @@ import GpuData from "./components/GpuData.jsx";
 import DeviceManagement from "./components/DeviceManagement.jsx";
 import Notification from "./components/Notification.jsx";
 import DeviceTypeSelection from "./components/DeviceTypeSelection.jsx";
-import * as punycode from "node:punycode";
 
 export default function App() {
 
