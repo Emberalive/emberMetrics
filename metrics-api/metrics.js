@@ -132,7 +132,7 @@ async function writeDevices (newDevices) {
 async function getDevices () {
     try {
         const devices = await readDevices()
-
+        console.log("[Server - GET | devices] devices to send: " + JSON.stringify(devices))
         return {
             devices: devices,
             success: true
