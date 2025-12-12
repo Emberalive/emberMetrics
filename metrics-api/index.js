@@ -33,6 +33,7 @@ app.get('/devices', async (req, res) => {
 })
 
 app.post('/devices', async (req, res) => {
+    console.log("[Server - POST | devices] starting route access")
     const response = await addDevice(req.body.device)
     if (response.success) {
         res.status(200).send(response)

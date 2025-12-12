@@ -144,10 +144,12 @@ async function getDevices () {
 
 async function addDevice (device) {
     try {
-        const deviceDate = await readDevices()
-        deviceData.push(device)
+        console.log(`[Server - POST | devices] addDevice: ${device} ]`)
+        let deviceData = await readDevices()
 
-        return await writeDevices(deviceDate)
+        deviceData.push(device)
+        console.log(`[Server - POST | devices] updatedDevices: ${JSON.stringify(deviceData)}`)
+        return await writeDevices(deviceData)
     } catch (e) {
         console.error('Error adding device:', e)
     }

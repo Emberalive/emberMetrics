@@ -1,6 +1,1 @@
-[
-  {
-    "ip": "86.20.86.223",
-    "name": "localhost"
-  }
-]
+[{"ip":"86.20.86.223","name":"localhost"},{"name":"My Server","ip":"192.168.0.67"}]
