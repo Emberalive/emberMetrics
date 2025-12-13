@@ -11,43 +11,43 @@ export default function Header (props) {
                     }}    >{metrics.hostName}</p>
                 </div>}
             </div>
-            <div className={"header__buttons"}>
-                <button     className={
+            <div className={"header-navigation"}>
+                <a     className={
                     localStorage.getItem('deviceType') === ""
-                        ? "general-button disabled-button"
+                        ? "header-navigation__links disabled-button"
                         : props.activeView === "resources"
-                            ? "general-button general-button__clicked"
-                            : "general-button"
+                            ? "header-navigation__links disabled-button"
+                            : "header-navigation__links"
                 } onClick={() => {
                     props.setActiveView("resources")
                     console.log("view set to Metrics")
                 }}>
                     Metrics
-                </button>
-                <button className={
+                </a>
+                <a className={
                     localStorage.getItem('deviceType') === ""
-                        ? "general-button disabled-button"
+                        ? "header-navigation__links disabled-button"
                         : props.activeView === "settings"
-                            ? "general-button general-button__clicked"
-                            : "general-button"
+                            ? "header-navigation__links disabled-button"
+                            : "header-navigation__links"
                 } onClick={() => {
                     props.setActiveView("settings")
                     console.log("view set to settings")
                 }}>
                     Settings
-                </button>
-                <button className={
+                </a>
+                <a className={
                     localStorage.getItem('deviceType') === ""
-                        ? "general-button disabled-button"
+                        ? "header-navigation__links__end disabled-button"
                         : props.activeView === "devices"
-                            ? "general-button general-button__clicked"
-                            : "general-button"
+                            ? "header-navigation__links__end disabled-button"
+                            : "header-navigation__links__end"
                 } onClick={() => {
                     props.setActiveView("devices")
                     console.log("view set to Devices")
                 }}>
                     Devices
-                </button>
+                </a>
             </div>
         </header>
     )

@@ -11,7 +11,7 @@ export default function Settings (props) {
 
     return (
         <div className="settings-wrapper">
-            <div className="settings">
+            <section className="settings">
                 <header className="settings-header">
                     <h1>Settings</h1>
                 </header>
@@ -58,7 +58,7 @@ export default function Settings (props) {
                     }}>Themes</h1>
                     <Themes />
                 </div>
-            </div>
+            </section>
         </div>
     )
 }

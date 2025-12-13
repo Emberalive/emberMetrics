@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {createRef, useEffect, useState} from "react";
 
 import './index.css'
 import Header from "./components/Header";
@@ -194,10 +194,20 @@ export default function App() {
     console.error(devices)
         if (devices){
             deviceButtonList = devices.map((device) => {
-                return(<button className={selectedDevice === device.ip ?"general-button disabled-button": "general-button"} onClick={() => changeRemoteDevice(device.ip)}>{device.name}</button>)
+                return(<button className={selectedDevice === device.ip ?"general-button disabled-button": "general-button"} onClick={() => changeRemoteDevice(device.ip)} style={{
+                    minWidth: "fit-content",
+                    maxWidth: "fit-content",
+                }}>{device.name}</button>)
             })
         }
 
+    const groupsRef = createRef()
+    const handleWheel = (e) => {
+        if (groupsRef.current) {
+            e.preventDefault()
+            groupsRef.current.scrollLeft += e.deltaY;
+        }
+    }
   return (
       <>
           <Notification notification={notification} setNotification={setNotification} />
@@ -207,10 +217,11 @@ export default function App() {
                   setActiveView={setActiveView}
                   activeView={activeView}
           />
-          {devices && <section
-              style={{display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
-              {deviceButtonList}
-          </section>}
+          {devices && <div className={"device-list__wrapper"} ref={groupsRef} onWheel={handleWheel}>
+              <div className={"device-list"}>
+                  {deviceButtonList}
+              </div>
+          </div>}
           <main>
               {deviceType === "" && <DeviceTypeSelection setDeviceType={setDeviceType}/>}
 
