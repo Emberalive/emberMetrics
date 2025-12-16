@@ -1,8 +1,8 @@
 const os = require('os')
 const si = require('systeminformation')
 const fs = require('fs').promises;
-
 const filePath = './devices.json'
+const network = require('network');
 
 
 let metrics = {}
@@ -48,6 +48,40 @@ const deviceData = [
     { label: 'Version', value: os.version() },
     { label: 'Architecture', value: os.arch() },
 ];
+
+async function getNetworkInterfaces () {
+    try {
+        const data = await si.networkInterfaces()
+        return data.map(interfaceObject => ({
+                name: interfaceObject.iface,
+                default: interfaceObject.default,
+        }))
+    } catch (e) {
+        console.error(`There was an error getting the interfaces\n ${e.message}`)
+    }
+}
+
+async function getInterfaceData () {
+    try {
+        const interfaces = await getNetworkInterfaces()
+
+        return await Promise.all(
+            interfaces.map(async interfaceObject => {
+                const [stats] = await si.networkStats(interfaceObject.name)
+                return {
+                    name: interfaceObject.name,
+                    data: {
+                        transmitted: stats.tx_sec,
+                        received: stats.rx_sec
+                    }
+                }
+            })
+        )
+    } catch (e) {
+        console.error('Error fetching network stats:', e);
+    }
+}
+
 
 async function getChildProcesses (){
     try {
@@ -146,10 +180,11 @@ const interval = setInterval(async () => {
         cpuUsage: {
             cores: cpuUsagePercentage,
             total: totalCPU,
-            temps: (await getCpuTemperature())
+            temps: await getCpuTemperature()
         },
         gpuData: await monitorGraphics(),
         childProcesses: await getChildProcesses(),
+        interfaces: await getInterfaceData()
     }
 }, 1000)
 

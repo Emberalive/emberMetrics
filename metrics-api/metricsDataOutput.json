@@ -1,0 +1,65 @@
+{
+  "hostName": "sam-book",
+  "deviceData": [
+    { "label": "Platform", "value": "linux" },
+    { "label": "Name", "value": "Linux" },
+    { "label": "Release", "value": "6.14.0-37-generic" },
+    { "label": "Version", "value": "#37~24.04.1-Ubuntu SMP PREEMPT_DYNAMIC Thu Nov 20 10:25:38 UTC 2" },
+    { "label": "Architecture", "value": "x64" }
+  ],
+  "memoryUsage": {
+    "usage": "49.98",
+    "available": "50.02"
+  },
+  "cpuUsage": {
+    "cores": [
+      { "no": 1, "usage": "12.87" },
+      { "no": 2, "usage": "1.01" },
+      { "no": 3, "usage": "12.37" },
+      { "no": 4, "usage": "2.04" },
+      { "no": 5, "usage": "9.09" },
+      { "no": 6, "usage": "3.03" },
+      { "no": 7, "usage": "17.00" },
+      { "no": 8, "usage": "3.03" },
+      { "no": 9, "usage": "11.00" },
+      { "no": 10, "usage": "4.00" },
+      { "no": 11, "usage": "14.29" },
+      { "no": 12, "usage": "9.00" },
+      { "no": 13, "usage": "8.25" },
+      { "no": 14, "usage": "4.04" },
+      { "no": 15, "usage": "26.53" },
+      { "no": 16, "usage": "7.00" }
+    ],
+    "total": 8.875,
+    "temps": {
+      "mainTemp": 71.6,
+      "maxTemp": null
+    }
+  },
+  "gpuData": [
+    {
+      "model": "Barcelo",
+      "memory": { "used": "N/A", "total": "N/A", "free": "N/A", "utilization": "N/A" },
+      "utilization": "N/A",
+      "temp": "N/A",
+      "power": "N/A",
+      "clocks": { "core": "N/A", "memory": "N/A" }
+    }
+  ],
+  "childProcesses": [
+    { "pid": 1939937, "name": "node", "cpu": 3.8485804416403786, "memory": 0.5, "user": "samuel" },
+    { "pid": 5172, "name": "", "cpu": 3.470031545741325, "memory": 6.8, "user": "samuel" },
+    { "pid": 2971, "name": "gnome-shell", "cpu": 0.5678233438485805, "memory": 2.3, "user": "samuel" },
+    { "pid": 3802, "name": "webstorm", "cpu": 0.44164037854889593, "memory": 17, "user": "samuel" },
+    { "pid": 5368, "name": "firefox", "cpu": 0.18927444794952686, "memory": 2.3, "user": "samuel" },
+    { "pid": 1188, "name": "@dbus-daemon", "cpu": 0.12618296529968456, "memory": 0, "user": "messagebus" },
+    { "pid": 1288, "name": "NetworkManager", "cpu": 0.12618296529968456, "memory": 0.1, "user": "root" },
+    { "pid": 634003, "name": "node", "cpu": 0.12618296529968456, "memory": 1.2, "user": "samuel" },
+    { "pid": 286, "name": "irq", "cpu": 0.06309148264984228, "memory": 0, "user": "root" },
+    { "pid": 479, "name": "systemd-journald", "cpu": 0.06309148264984228, "memory": 0.1, "user": "root" }
+  ],
+  "interfaces": [
+    { "name": "lo", "data": { "transmitted": 30311.17824773414, "received": 30311.17824773414 } },
+    { "name": "wlp1s0", "data": { "transmitted": 10421.95367573011, "received": 6380.664652567976 } }
+  ]
+}
