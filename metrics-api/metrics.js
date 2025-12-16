@@ -4,9 +4,9 @@ const fs = require('fs').promises;
 
 const filePath = './devices.json'
 
+
 let metrics = {}
 //getting Device information
-
 module.exports = metrics
 
 async function monitorGraphics() {
@@ -49,6 +49,25 @@ const deviceData = [
     { label: 'Architecture', value: os.arch() },
 ];
 
+async function getCpuTemperature() {
+    try {
+        const temps = await si.cpuTemperature()
+        const mainTemp = temps.main
+        const maxTemp = temps.max
+
+        if (mainTemp || maxTemp) {
+            if (mainTemp === maxTemp) {
+                return mainTemp
+            }
+            return {
+                main: mainTemp ? mainTemp : null,
+                max: maxTemp ? maxTemp : null,
+            }
+        }
+    } catch (e) {
+        console.error(`There was an issue monitoring the cpu temps:\n ${e.message}`)
+    }
+}
 
 // processing cpu data initial
 let oldCpus = os.cpus()
@@ -100,7 +119,8 @@ const interval = setInterval(async () => {
         },
         cpuUsage: {
             cores: cpuUsagePercentage,
-            total: totalCPU
+            total: totalCPU,
+            temps: (await getCpuTemperature())
         },
         gpuData: await monitorGraphics()
     }
