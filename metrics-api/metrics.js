@@ -57,7 +57,10 @@ async function getCpuTemperature() {
 
         if (mainTemp || maxTemp) {
             if (mainTemp === maxTemp) {
-                return mainTemp
+                return {
+                    mainTemp: mainTemp,
+                    maxTemp: null,
+                }
             }
             return {
                 main: mainTemp ? mainTemp : null,
