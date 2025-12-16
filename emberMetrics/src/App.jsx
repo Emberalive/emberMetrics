@@ -217,8 +217,8 @@ export default function App() {
                   setActiveView={setActiveView}
                   activeView={activeView}
           />
-          {devices && <div className={"device-list__wrapper"} ref={groupsRef} onWheel={handleWheel}>
-              <div className={"device-list"}>
+          {(devices && activeView === "resources") && <div className={"device-navigation__wrapper"} ref={groupsRef} onWheel={handleWheel}>
+              <div className={"device-navigation"}>
                   {deviceButtonList}
               </div>
           </div>}

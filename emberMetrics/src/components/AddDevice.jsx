@@ -20,7 +20,7 @@ export default function AddDevice(props) {
             ip: ip,
         }
         try {
-            const response = await fetch(`http://192.168.0.67:3000/devices`, {
+            const response = await fetch(`http://${props.deviceType === 'host' ? "localhost" : props.hostIp}:3000/devices`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -76,20 +76,18 @@ export default function AddDevice(props) {
     }
     return (
         <form onSubmit={submit} className="device-management__form">
-            <div className="device-management__form-container">
-                <div className={"device-management__form-element"}>
-                    <label>Remote Device IP Address</label>
-                    <input name={"ipAddress"} type="text" placeholder={"203.0.113.0"} ></input>
-                </div>
-                <p className="form__input-note">
-                    Please make sure that you enter the <b>PUBLIC</b> IP address of your remote device
-                </p>
-                <div className={"device-management__form-element"}>
-                    <label>Remote Device Name</label>
-                    <input name={"deviceName"} type="text" placeholder={"My Server"} ></input>
-                </div>
-                    <button className="general-button" style={{fontSize: "20px", marginTop: "10px"}} type="submit">Create</button>
+            <div className={"device-management__form-element"}>
+                <label>Remote Device IP Address</label>
+                <input name={"ipAddress"} type="text" placeholder={"203.0.113.0"} ></input>
             </div>
+            <p className="form__input-note">
+                Please make sure that you enter the <b>PUBLIC</b> IP address of your remote device
+            </p>
+            <div className={"device-management__form-element"}>
+                <label>Remote Device Name</label>
+                <input name={"deviceName"} type="text" placeholder={"My Server"} ></input>
+            </div>
+            <button className="general-button" style={{fontSize: "20px", marginTop: "10px"}} type="submit">Create</button>
         </form>
     )
 }

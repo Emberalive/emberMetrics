@@ -29,17 +29,17 @@ export default function Settings (props) {
                 <div className="settings-entry">
                     <p className="settings-entry__label">Font Size:</p>
                     <div style={{display: "flex"}}>
-                        <button id="font-small" className={props.fontClicked === "small" ? "general-button general-button__clicked": "general-button"} onClick={ () => {
+                        <button style={{fontSize: "10px", maxWidth: "100px", minWidth: "100px"}} id="font-small" className={props.fontClicked === "small" ? "general-button general-button__clicked": "general-button"} onClick={ () => {
                             props.setFontClicked("small")
                             changeFont("text",10)
                             changeFont("header", 20)
                         }}>Small</button>
-                        <button id="font-medium" className={props.fontClicked === "medium" ? "general-button general-button__clicked": "general-button"} onClick={ () => {
+                        <button style={{fontSize: "20px", maxWidth: "100px", minWidth: "100px"}} id="font-medium" className={props.fontClicked === "medium" ? "general-button general-button__clicked": "general-button"} onClick={ () => {
                             props.setFontClicked("medium")
                             changeFont("text",20)
                             changeFont("header", 30)
                         }}>Medium</button>
-                        <button id="font-large" className={props.fontClicked === "large" ? "general-button general-button__clicked": "general-button"} onClick={ () => {
+                        <button style={{fontSize: "30px", maxWidth: "100px", minWidth: "100px"}} id="font-large" className={props.fontClicked === "large" ? "general-button general-button__clicked": "general-button"} onClick={ () => {
                             if(props.windowWidth <= 800 ) {
                                 props.handleNotification('error', 'Screen is too small')
                                 return

@@ -1,37 +1,20 @@
 import AddDevice from "./AddDevice.jsx";
+import DeviceList from "./DeviceList.jsx";
 
 export default function DeviceManagement (props) {
-    let devicesList;
-    if (props.devices) {
-        devicesList = props.devices.map((device) => {
-            return (
-                <div className="device-container" key={device.ip}>
-                    <p className="device-container__name">{device.name}</p>
-                    <p className="device-container__ipAddr">
-                        {device.ip}
-                    </p>
-                    <button className="general-button" style={{fontSize: "20px", alignSelf: "flex-end"}}>Edit</button>
-                    <div className="device-container__seperator"></div>
-                </div>
-            )
-        });
-    }
-
     return (
         <>
             <div className="device-management__wrapper">
-                <div className="device-management__container">
+                <section className="device-management__container">
                     <header className="device-management__header">
-                        <h2>Device Management</h2>
+                        <h1>Device Management</h1>
                     </header>
                     <AddDevice handleNotification={props.handleNotification} setDevices={props.setDevices} hostIp={props.hostIp} deviceType={props.deviceType}/>
                     <div className="device-management__header">
-                        <h3>Remote Devices</h3>
+                        <h1>Remote Devices</h1>
                     </div>
-                    {props.devices.length === 0 && <p style={{fontSize: "10px", fontWeight: "700", textAlign: "center"}}>You have no remote devices
-                        registered.</p>}
-                    {devicesList}
-                </div>
+                    <DeviceList devices={props.devices} />
+                </section>
             </div>
 
         </>
