@@ -49,6 +49,29 @@ const deviceData = [
     { label: 'Architecture', value: os.arch() },
 ];
 
+async function getChildProcesses (){
+    try {
+        const { list } = (await si.processes())
+        const childProcesses = list.map(process => {
+            return {
+                pid: process.pid,
+                name: process.name,
+                cpu: process.cpu,
+                memory: process.mem,
+                user: process.user
+            }
+        })
+        //this sorts the processes based on cpu usage
+        childProcesses.sort((a, b) => b.cpu - a.cpu);
+        if (childProcesses.length > 0){
+            return childProcesses
+        }
+        console.log('There are: ' + childProcesses.length + ' processes \n' + 'First 10:\n' + JSON.stringify(childProcesses.splice(0, 10), null, 2))
+    } catch (e) {
+        console.error(`There was an issue monitoring the child processes:\n ${e.message}`)
+    }
+}
+
 async function getCpuTemperature() {
     try {
         const temps = await si.cpuTemperature()
@@ -125,7 +148,8 @@ const interval = setInterval(async () => {
             total: totalCPU,
             temps: (await getCpuTemperature())
         },
-        gpuData: await monitorGraphics()
+        gpuData: await monitorGraphics(),
+        childProcesses: await getChildProcesses(),
     }
 }, 1000)
 
