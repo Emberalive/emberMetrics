@@ -599,6 +599,15 @@ section {
     border-radius: var(--border-radius);
 }
 
+.edit-device__form-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 15px;
+}
+
 @media (min-width: 850px) {
     .device-management__container {
         width: calc(70% - 2rem);
