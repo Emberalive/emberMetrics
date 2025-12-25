@@ -1,27 +1,55 @@
-import {useState} from "react";
+import { useState } from "react";
 
 export default function DeviceList (props) {
     let devicesList;
-    const [isEdit, setEdit] = useState(false);
+    const [editDevice, setEditDevice] = useState(null);
+
+    async function patchDevice (e) {
+        e.preventDefault();
+
+        try {
+            const response = await fetch(`http://${props.deviceType === 'host' ? 'localhost' : props.hostIp}:3000/devices`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    device: editDevice
+                })
+            })
+            if (response.ok) {
+                const resData = response.json();
+                if (resData.success) {
+                    props.handleNotification('notice', 'Device has been updated')
+                } else {
+                    props.handleNotification('error', 'Could not edit the device')
+                }
+            }
+            } catch (e) {
+            console.error('Error editing a patch', e.message);
+            props.handleNotification('error', 'Could not edit your device, sorry');
+        }
+    }
+
     if (props.devices) {
         devicesList = props.devices.map((device) => {
-            if (props.editDevice === device) {
+            if (editDevice === device) {
                 return (
-                    <form onSubmit={props.submitDevice} className="device-management__form" style={{width:'100%'}}>
+                    <form onSubmit={patchDevice} className="device-management__form" style={{width:'100%'}}>
                         <div className={"device-management__form-element"}>
                             <label>Device Name:</label>
-                            <input name={'deviceName'} type={'text'} placeholder={'Device Name'} value={device.name} onChange={(e) =>         props.setEditDevice(prev => ({ ...prev, name: e.target.value }))}/>
+                            <input name={'deviceName'} type={'text'} placeholder={'Device Name'} value={device.name} onChange={(e) =>         setEditDevice(prev => ({ ...prev, name: e.target.value }))}/>
                     </div>
                     <div className={"device-management__form-element"}>
                         <label>Device IP Address:</label>
-                        <input name={'ipAddress'} type={'text'} placeholder={'My Server'} value={props.editDevice.ip} onChange={(e => props.setEditDevice(prev=> ({...prev,ip: e.target.value })))}/>
+                        <input name={'ipAddress'} type={'text'} placeholder={'My Server'} value={editDevice.ip} onChange={(e => setEditDevice(prev=> ({...prev,ip: e.target.value })))}/>
                     </div>
 
                     <div className={"edit-device__form-buttons"}>
                         <button className="general-button" style={{fontSize: "20px", alignSelf: "flex-end"}}>Save</button>
                         <button className="general-button" style={{fontSize: "20px", alignSelf: "flex-end", backgroundColor: 'red'}} onClick={(e) => {
                             e.preventDefault()
-                            props.setEditDevice()
+                            setEditDevice()
                         }}>Cancel</button>
                     </div>
 
@@ -35,7 +63,7 @@ export default function DeviceList (props) {
                             {device.ip}
                         </p>
                         <button className="general-button" style={{fontSize: "20px", alignSelf: "flex-end"}} onClick={() => {
-                            props.setEditDevice(device);
+                            setEditDevice(device);
                         }}>Edit</button>
                     </div>
                 )

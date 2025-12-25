@@ -1,6 +1,5 @@
 import {createRef, useEffect, useState} from "react";
-import * as rangeCheck from "range_check";
-
+import {nanoid} from "nanoid";
 import './index.css'
 import Header from "./components/Header";
 import DeviceData from "./components/DeviceData.jsx";
@@ -13,7 +12,7 @@ import Notification from "./components/Notification.jsx";
 import DeviceTypeSelection from "./components/DeviceTypeSelection.jsx";
 
 export default function App() {
-
+    console.log(nanoid())
     const [hostIp, setHostIP] = useState(() => {
         const hostPublicIP = localStorage.getItem('hostPublicIP')
         if (hostPublicIP) {
@@ -45,8 +44,6 @@ export default function App() {
     });
 
     const [devices, setDevices] = useState([])
-    const [editDevice, setEditDevice] = useState(null);
-
 
     useEffect(() => {
         async function getInitialDevices () {
@@ -193,80 +190,6 @@ export default function App() {
         setMetrics(null)
     }
 
-    async function submitDevice(e) {
-        e.preventDefault()
-        const ip = e.target.ipAddress.value
-        const name = e.target.deviceName.value
-        //this only allows the ip[ address to be public ipv4 and valid ip addresses to be created  || (rangeCheck.isPrivateIP(ip))
-        if ((!rangeCheck.isIP(ip)) || (rangeCheck.version(ip) !== 4)) {
-            console.log("Please enter a valid public and IPv4 address")
-            handleNotification("error", "Please enter a valid public and IPv4 address")
-            return
-        }
-        if (!name) {
-            handleNotification("error", "Please enter a name for your device")
-            return
-        }
-        const newDevice = {
-            name: name,
-            ip: ip,
-        }
-        try {
-            const response = await fetch(`http://${deviceType === 'host' ? "localhost" : hostIp}:3000/devices`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    device: newDevice
-                })
-            })
-            if (response.ok) {
-                const resData = await response.json()
-                if (resData.success) {
-                    handleNotification("notice", `successfully added the device "${ip}"`)
-                    console.log(`Adding the ${ip} device.`)
-                    setDevices((prev) => {
-                        return [
-                            ...prev,
-                            newDevice
-                        ]
-                    })
-                }
-            }
-        } catch (e) {
-            console.error('Error attempting to add a device to the api', e.message)
-        }
-        if (deviceType === "host") {
-            try {
-                const response = await fetch("http://localhost:3001/")
-                if (response.ok) {
-                    const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
-
-                    const link = document.createElement("a");
-                    link.className = "device-management__blob-link";
-                    link.href = url;
-                    link.download = "remote-device.zip";  // must match your filename
-                    document.body.appendChild(link);
-                    link.click();
-                    link.remove();
-
-                    //in the case where the browser is slow
-                    setTimeout(() => {
-                        window.URL.revokeObjectURL(url);
-                    }, 1000);
-
-                    handleNotification("success", "Downloaded your remote device script")
-                }
-            } catch (e) {
-                handleNotification("error", "couldn't download your remote device script")
-                console.error("Could not download the device script", e.message)
-            }
-        }
-        e.target.reset()
-    }
-
     let deviceButtonList
     console.error(devices)
         if (devices){
@@ -327,8 +250,7 @@ export default function App() {
                                                      windowWidth={windowWidth}
                                                      handleNotification={handleNotification}
               />}
-              {activeView === "devices" &&<DeviceManagement devices={devices} setDevices={setDevices} handleNotification={handleNotification} hostIp={hostIp} deviceType={deviceType} submitDevice={submitDevice}
-                                                            editDevice={editDevice} setEditDevice={setEditDevice}/>}
+              {activeView === "devices" &&<DeviceManagement devices={devices} setDevices={setDevices} handleNotification={handleNotification} hostIp={hostIp} deviceType={deviceType}/>}
           </main>
       </>
   )
