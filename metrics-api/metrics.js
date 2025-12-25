@@ -250,7 +250,20 @@ async function deleteDevice (device) {
     return await writeDevices(devices)
 }
 
-module.exports = {getMetrics, getDevices, addDevice, deleteDevice};
+async function editDevice (device) {
+    const devices = await readDevices()
+    const editedDevices = devices.map( oldDevice => {
+        if (oldDevice.id === device.id) {
+            return {
+                ...oldDevice, name: device.name, ip: device.ip
+        }
+        }
+        return oldDevice
+    })
+    return await writeDevices(editedDevices)
+}
+
+module.exports = {getMetrics, getDevices, addDevice, deleteDevice, editDevice};
 
 
 //for one loop of the module:

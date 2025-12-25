@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 const si = require('systeminformation')
-const {getDevices, addDevice, deleteDevice, getMetrics} = require('./metrics')
+const {getDevices, addDevice, deleteDevice, getMetrics, editDevice} = require('./metrics')
 const cors = require('cors')
 const port = 3000
 
@@ -19,7 +19,6 @@ app.get('/', (req, res) => {
     if (!metrics || (typeof metrics === 'object' && Object.keys(metrics).length === 0)) {
         return res.status(500).json({ error: 'Metrics Data not available' });
     }
-
     res.status(200).json(metrics); // always send JSON
 });
 
@@ -35,15 +34,23 @@ app.get('/devices', async (req, res) => {
     }
 })
 
+app.patch('/devices', async (req, res) => {
+    console.log("[Server - PATCH | devices] starting route access")
+    const response = await editDevice()
+    if (response.success === true) {
+        res.status(200).send(response)
+    } else {
+        res.status(500).send(response)
+    }
+})
+
 app.post('/devices', async (req, res) => {
     console.log("[Server - POST | devices] starting route access")
     const response = await addDevice(req.body.device)
     if (response.success) {
         res.status(200).send(response)
     } else {
-        res.status(500).json({
-            success: false,
-        })
+        res.status(500).send(response)
     }
 })
 
