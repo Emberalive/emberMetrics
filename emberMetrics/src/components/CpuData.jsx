@@ -4,12 +4,15 @@ export default function CpuData (props) {
     function renderCpuUsage(cpuList) {
         return cpuList.map((core) => {
             return (
-                <li style={{
-
-                }}
+                <li
                     key={core.no}>
-                    <p>Core - {core.no}</p>
-                    <p>{core.usage}%</p>
+                    <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                        <p>Core - {core.no}</p>
+                        <p>{core.usage}%</p>
+                    </div>
+
+                    <div style={{height:'2px', width: core.usage + '%', backgroundColor: core.usage >= 40 ? core.usage >=70 ? 'red' : 'orange' : 'var(--secondary)'}}></div>
+
                 </li>
             );
         });
@@ -27,9 +30,7 @@ export default function CpuData (props) {
                     <h2>Total {cpuUsage.total.toFixed(2)}%</h2>
                 </header>
 
-                <ul style={{
-
-                }}>
+                <ul>
                     {cpuUsagePercents}
                 </ul>
             </section>

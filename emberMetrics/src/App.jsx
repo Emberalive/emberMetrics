@@ -6,7 +6,7 @@ import DeviceData from "./components/DeviceData.jsx";
 import CpuData from "./components/CpuData.jsx";
 import MemoryData from "./components/MemoryData.jsx";
 import Settings from "./components/Settings.jsx";
-import GpuData from "./components/GpuData.jsx";
+import ChildProcesses from "./components/ChildProcesses.jsx";
 import DeviceManagement from "./components/DeviceManagement.jsx";
 import Notification from "./components/Notification.jsx";
 import DeviceTypeSelection from "./components/DeviceTypeSelection.jsx";
@@ -237,7 +237,7 @@ export default function App() {
 
                           <div className={"right-column"}>
                               <CpuData metrics={metrics}/>
-                              <GpuData metrics={metrics}/>
+                              <ChildProcesses metrics={metrics}/>
                           </div>
                       </>}
                   </>

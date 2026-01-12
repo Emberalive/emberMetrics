@@ -45,8 +45,8 @@ const deviceData = [
     { label: 'Platform', value: os.platform() },
     { label: 'Name', value: os.type() },
     { label: 'Release', value: os.release() },
-    { label: 'Version', value: os.version() },
     { label: 'Architecture', value: os.arch() },
+    { label: 'Version', value: os.version() },
 ];
 
 async function getNetworkInterfaces () {
