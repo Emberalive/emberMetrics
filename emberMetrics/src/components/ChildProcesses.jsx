@@ -1,6 +1,6 @@
 export default function ChildProcesses (props) {
     let childDataList;
-    const children = props.metrics.childProcesses.slice(1, 11)
+    const children = props.metrics.childProcesses
     if (children) {
 
         childDataList = children.map(child => {

@@ -56,6 +56,7 @@
 /* Base Styles */
 body {
     color: var(--text-primary);
+    min-width: 340px;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -68,7 +69,7 @@ main {
     justify-content: center;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 800px) {
     main {
         flex-direction: column;
     }
@@ -255,7 +256,7 @@ section {
     align-items: center;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 1100px) {
     .device-data_list {
         grid-template-columns: none;
         padding: 0;
@@ -283,15 +284,28 @@ section {
     font-weight: bold;
     border-right: 1px solid var(--border-color);
     padding-right: var(--element-padding);
-    min-width: 120px;
-    max-width: 120px;
+    width: 120px;
     color: var(--secondary);
+    margin: 0;
+    flex-shrink: 0;
 }
 
+
 .data-item-value {
+    margin: 0;
+    flex-shrink: 1;
     font-size: var(--font-size);
     padding-right: var(--element-padding);
     color: var(--text-primary);
+    overflow-wrap: break-word; /* wrap long text */
+    white-space: normal;
+}
+
+
+@media (max-width: 400px) {
+    .data-item-value {
+        max-width: calc(160px - var(--element-padding));
+    }
 }
 
 /* CPU Cores Styles */
@@ -345,23 +359,25 @@ section {
     width: 100%;
 }
 
-.memory-info > div {
-    padding: var(--element-padding);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    margin: var(--element-padding);
+.memory-info__content {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     background-color: var(--neutral);
 }
 
-.memory-info > div > h2 {
-    font-size: var(--font-size-header);
+.memory-bar {
+    margin-top: var(--element-padding);
+    height: 3px;
+    grid-column: 1 / -1;
 }
 
-.memory-info > div > h3, .memory-info > div > h2 {
+.memory-info__content > div >  p {
     font-size: var(--font-size);
+    text-align: center;
+    margin: 0;
+}
+.memory-info__content-title {
+    font-weight: 700;
 }
 
 /* Dark Mode Specific Adjustments */

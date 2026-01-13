@@ -12,7 +12,6 @@ import Notification from "./components/Notification.jsx";
 import DeviceTypeSelection from "./components/DeviceTypeSelection.jsx";
 
 export default function App() {
-    console.log(nanoid())
     const [hostIp, setHostIP] = useState(() => {
         const hostPublicIP = localStorage.getItem('hostPublicIP')
         if (hostPublicIP) {
@@ -191,7 +190,6 @@ export default function App() {
     }
 
     let deviceButtonList
-    console.error(devices)
         if (devices){
             deviceButtonList = devices.map((device) => {
                 return(<button className={selectedDevice === device.ip ?"general-button disabled-button": "general-button"} onClick={() => changeRemoteDevice(device.ip)} style={{
