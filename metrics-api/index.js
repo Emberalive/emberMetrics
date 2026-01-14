@@ -1,6 +1,5 @@
 const express = require('express')
 const app = express()
-const si = require('systeminformation')
 const {getDevices, addDevice, deleteDevice, getMetrics, editDevice} = require('./metrics')
 const cors = require('cors')
 const port = 3000
