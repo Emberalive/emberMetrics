@@ -7,6 +7,10 @@ const cors = require('cors')
 
 let metrics = {}
 let childData = []
+let deviceData
+let oldCpus = os.cpus()
+//getting Device information
+module.exports = metrics
 
 async function monitorGraphics() {
     try {
@@ -40,7 +44,6 @@ async function monitorGraphics() {
     }
 }
 
-let deviceData
 try {
     deviceData = [
         { label: 'Platform', value: os.platform() },
@@ -75,8 +78,8 @@ async function getInterfaceData () {
                 return {
                     name: interfaceObject.name,
                     data: {
-                        transmitted: stats.tx_sec.toFixed(2),
-                        received: stats.rx_sec.toFixed(2),
+                        transmitted: stats.tx_sec ? stats.tx_sec.toFixed(2) : '0.00',
+                        received: stats.rx_sec ? stats.rx_sec.toFixed(2): '0.00',
                     }
                 }
             })
@@ -103,11 +106,12 @@ async function getChildProcesses () {
         if (childProcesses.length > 0) {
             childData = childProcesses.splice(0, 10)
         }
-        console.log('There are: ' + childProcesses.length + ' processes \n' + 'First 10:\n' + JSON.stringify(childProcesses.splice(0, 10), null, 2))
     } catch (e) {
         console.error(`There was an issue monitoring the child processes:\n ${e.message}`)
     }
 }
+
+//make child processes gathered every minute, as there is a lot of data to gather.
 ;(async () => {
     await getChildProcesses()
 
@@ -139,62 +143,77 @@ async function getCpuTemperature() {
     }
 }
 
-// processing cpu data initial
-let oldCpus = os.cpus()
-
-//constantly updates cpu and memory data
-const interval = setInterval(async () => {
-    metrics = (prev => {
+async function getMemory() {
+    try {
+        const memoryAvailable = await (os.freemem() / os.totalmem()) * 100
+        const memoryUsed = 100 - memoryAvailable
         return {
-            ...prev,
-            memoryUsage: ((os.freemem() / os.totalmem()) * 100)
-        }
-    })
-
-    const memoryAvailable = (os.freemem() / os.totalmem()) * 100
-    const memoryUsed = 100 - memoryAvailable
-
-    const newCpus = os.cpus()
-    const cpuUsagePercentage = []
-
-    for (let i = 0; i < newCpus.length; i++) {
-        const oldTimes = oldCpus[i].times
-        const newTimes = newCpus[i].times
-
-        const deltaUser = newTimes.user - oldTimes.user;
-        const deltaNice = newTimes.nice - oldTimes.nice;
-        const deltaSys = newTimes.sys - oldTimes.sys;
-        const deltaIdle = newTimes.idle - oldTimes.idle;
-        const deltaIrq = newTimes.irq - oldTimes.irq;
-
-        const total = deltaUser + deltaNice + deltaSys + deltaIdle + deltaIrq;
-        const usage = ((total - deltaIdle) / total) * 100;
-
-        cpuUsagePercentage.push({
-            usage: usage.toFixed(2),
-            no: i + 1
-        });
-    }
-
-    oldCpus = newCpus
-    let totalCPU = cpuUsagePercentage.reduce(
-        (sum, cpu) => sum + parseInt(cpu.usage), 0) / cpuUsagePercentage.length
-
-    metrics = {
-        hostName: os.hostname(),
-        deviceData: deviceData,
-        memoryUsage: {
+            available: memoryAvailable.toFixed(2),
             usage: memoryUsed.toFixed(2),
-            available: memoryAvailable.toFixed(2)
-        },
-        cpuUsage: {
+        }
+    } catch (e) {
+        console.error(`There was an issue monitoring the memory:\n ${e.message}`)
+    }
+}
+
+async function getCpu () {
+    try {
+        // processing cpu data initial
+
+        const newCpus = os.cpus()
+        const cpuUsagePercentage = []
+
+        for (let i = 0; i < newCpus.length; i++) {
+            const oldTimes = oldCpus[i].times
+            const newTimes = newCpus[i].times
+
+            const deltaUser = newTimes.user - oldTimes.user;
+            const deltaNice = newTimes.nice - oldTimes.nice;
+            const deltaSys = newTimes.sys - oldTimes.sys;
+            const deltaIdle = newTimes.idle - oldTimes.idle;
+            const deltaIrq = newTimes.irq - oldTimes.irq;
+
+            const total = deltaUser + deltaNice + deltaSys + deltaIdle + deltaIrq;
+            const usage = total > 0
+                ? ((total - deltaIdle) / total) * 100
+                : 0;
+
+
+            cpuUsagePercentage.push({
+                usage: usage.toFixed(2),
+                no: i + 1
+            });
+        }
+
+        oldCpus = newCpus
+        let totalCPU = cpuUsagePercentage.reduce(
+            (sum, cpu) => sum + parseInt(cpu.usage), 0) / cpuUsagePercentage.length
+
+        return {
             cores: cpuUsagePercentage,
-            total: totalCPU,
+            total: totalCPU ? totalCPU.toFixed(2) : 0,
             temps: await getCpuTemperature()
-        },
-        gpuData: await monitorGraphics(),
-        childProcesses: childData,
-        interfaces: await getInterfaceData()
+        }
+    } catch (e) {
+        console.error(`There was an issue gathering CPU data:\n ${e.message}`)
+    }
+}
+
+//constantly updates metrics
+const interval = setInterval(async () => {
+    try {
+        metrics = {
+            hostName: os.hostname(),
+            deviceData: deviceData,
+            memoryUsage: await getMemory(),
+            cpuUsage: await getCpu(),
+            gpuData: await monitorGraphics(),
+            childProcesses: childData,
+            interfaces: await getInterfaceData()
+        }
+        console.log(metrics)
+    } catch (e) {
+        console.error(`There was an issue gathering interval:\n ${e.message}`)
     }
 }, 1000)
 
