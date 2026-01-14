@@ -1,5 +1,4 @@
 import {createRef, useEffect, useState} from "react";
-import {nanoid} from "nanoid";
 import './index.css'
 import Header from "./components/Header";
 import DeviceData from "./components/DeviceData.jsx";
@@ -10,6 +9,7 @@ import ChildProcesses from "./components/ChildProcesses.jsx";
 import DeviceManagement from "./components/DeviceManagement.jsx";
 import Notification from "./components/Notification.jsx";
 import DeviceTypeSelection from "./components/DeviceTypeSelection.jsx";
+import NetworkData from "./components/NetworkData.jsx";
 
 export default function App() {
     const [hostIp, setHostIP] = useState(() => {
@@ -30,6 +30,14 @@ export default function App() {
         }
         if (hostIp === "") getPublicIP();
     }, [hostIp]);
+
+    function changeFont (type, size) {
+        switch (type) {
+            case "text":        document.documentElement.style.setProperty(`--font-size`, `${size}px`);
+                break;
+            case "header":     document.documentElement.style.setProperty(`--font-size-header`, `${size}px`);
+        }
+    }
 
     const [notification, setNotification] = useState("");
 
@@ -115,6 +123,13 @@ export default function App() {
     const [viewPort,setViewPort ] = useState([]);
 
     let windowWidth = window.innerWidth
+
+    useEffect(() => {
+        if (windowWidth <= 900 && fontClicked === 'large') {
+            changeFont('text', 20);
+            setFontClicked("medium");
+        }
+    }, [windowWidth, fontClicked]);
 
     function handleNotification (type, message) {
         setNotification({type: type, message: message})
@@ -227,15 +242,16 @@ export default function App() {
                   <>
                       {activeView === "resources" &&<>
                           <div className={"left-column"}>
+                              <ChildProcesses metrics={metrics}/>
                               <DeviceData metrics={metrics}/>
-                              <MemoryData metrics={metrics}
-                                          viewPort={viewPort}
-                              />
                           </div>
 
                           <div className={"right-column"}>
                               <CpuData metrics={metrics}/>
-                              <ChildProcesses metrics={metrics}/>
+                              <MemoryData metrics={metrics}
+                                          viewPort={viewPort}
+                              />
+                              <NetworkData metrics={metrics}/>
                           </div>
                       </>}
                   </>
@@ -247,6 +263,7 @@ export default function App() {
                                                      setFontClicked={setFontClicked}
                                                      windowWidth={windowWidth}
                                                      handleNotification={handleNotification}
+                                                     changeFont={changeFont}
               />}
               {activeView === "devices" &&<DeviceManagement devices={devices} setDevices={setDevices} handleNotification={handleNotification} hostIp={hostIp} deviceType={deviceType}/>}
           </main>

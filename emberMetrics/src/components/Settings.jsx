@@ -1,13 +1,7 @@
 import Themes from "./Themes.jsx";
 
 export default function Settings (props) {
-    function changeFont (type, size) {
-        switch (type) {
-            case "text":        document.documentElement.style.setProperty(`--font-size`, `${size}px`);
-            break;
-            case "header":     document.documentElement.style.setProperty(`--font-size-header`, `${size}px`);
-        }
-    }
+
 
     return (
         <div className="settings-wrapper">
@@ -31,22 +25,22 @@ export default function Settings (props) {
                     <div style={{display: "flex"}}>
                         <button style={{fontSize: "10px", maxWidth: "100px", minWidth: "100px"}} id="font-small" className={props.fontClicked === "small" ? "general-button general-button__clicked": "general-button"} onClick={ () => {
                             props.setFontClicked("small")
-                            changeFont("text",10)
-                            changeFont("header", 20)
+                            props.changeFont("text",10)
+                            props.changeFont("header", 20)
                         }}>Small</button>
                         <button style={{fontSize: "20px", maxWidth: "100px", minWidth: "100px"}} id="font-medium" className={props.fontClicked === "medium" ? "general-button general-button__clicked": "general-button"} onClick={ () => {
                             props.setFontClicked("medium")
-                            changeFont("text",20)
-                            changeFont("header", 30)
+                            props.changeFont("text",20)
+                            props.changeFont("header", 30)
                         }}>Medium</button>
                         <button style={{fontSize: "30px", maxWidth: "100px", minWidth: "100px"}} id="font-large" className={props.fontClicked === "large" ? "general-button general-button__clicked": "general-button"} onClick={ () => {
-                            if(props.windowWidth <= 800 ) {
+                            if(props.windowWidth <= 900 ) {
                                 props.handleNotification('error', 'Screen is too small')
                                 return
                             }
                             props.setFontClicked("large")
-                            changeFont("text", 30)
-                            changeFont("header", 40)
+                            props.changeFont("text", 30)
+                            props.changeFont("header", 40)
                         }}>Large</button>
                     </div>
 

@@ -5,23 +5,51 @@ export default function ChildProcesses (props) {
 
         childDataList = children.map(child => {
             return (
-                <li key={child.pid}>
-                    <div className={'childData-item'} style={{display: "flex", justifyContent: "center", flexDirection: "column"}} >
-                        <p style={{margin: 0}}>{child.pid} | {child.name} | {child.cpu.toFixed(2)} | {child.memory} |   {child.user}</p>
+                    <div className={'child-processes__row'} key={child.pid} >
+                        <p className={'child-processes__row-item'}>
+                            {child.pid}
+                        </p>
+                        <p className={'child-processes__row-item'}>
+                            {child.name}
+                        </p>
+                        <p className={'child-processes__row-item'}>
+                            {child.cpu.toFixed(2)}
+                        </p>
+                        <p className={'child-processes__row-item'}>
+                            {child.memory}
+                        </p>
+                        <p className={'child-processes__row-item'}>
+                            {child.user}
+                        </p>
                     </div>
-                </li>
             )
         })
     }
     return (
         <section>
-            <h1 style={{margin:0}}>Child Processes</h1>
-            <ul>
-                <li>
-                    <p>Pid  |  name  |   cpu  |   memory  |  user</p>
-                </li>
+            <header className={'section-header'} >
+                <h1>Child Processes</h1>
+            </header>
+            <div className="child-processes__table">
+                <div className={'child-processes__row child-processes__row-header'}>
+                    <p className={'child-processes__header'}>
+                        Pid
+                    </p>
+                    <p className={'child-processes__header '}>
+                        Name
+                    </p>
+                    <p className={' child-processes__header'}>
+                        CPU%
+                    </p>
+                    <p className={'child-processes__header '}>
+                        Mem%
+                    </p>
+                    <p className={'child-processes__header child-processes__header-end'}>
+                        User
+                    </p>
+                </div>
                 {childDataList}
-            </ul>
+            </div>
         </section>
     )
 }

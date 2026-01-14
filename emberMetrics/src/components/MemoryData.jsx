@@ -11,7 +11,7 @@ export default function MemoryData(props) {
                     <p className={'memory-info__content-title'}>Memory Available</p>
                     <p>{memoryUsage.available}%</p>
                 </div>
-                <div className={'memory-bar'} style={{width: 'calc('+ memoryUsage.usage + '% + var(--element-padding))', backgroundColor: memoryUsage.usage >= 40 ? memoryUsage.usage >=70 ? 'red' : 'orange' : 'var(--secondary)'}}>
+                <div className={'memory-bar'} style={{width: 'calc('+ memoryUsage.usage + '% + var(--element-padding))', backgroundColor: memoryUsage.usage >= 40 ? memoryUsage.usage >=70 ? 'red' : 'orange' : 'var(--tertiary)'}}>
                 </div>
             </div>
         </section>

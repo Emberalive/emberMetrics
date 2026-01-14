@@ -11,7 +11,7 @@ export default function CpuData (props) {
                         <p>{core.usage}%</p>
                     </div>
 
-                    <div style={{height:'2px', width: core.usage + '%', backgroundColor: core.usage >= 40 ? core.usage >=70 ? 'red' : 'orange' : 'var(--secondary)'}}></div>
+                    <div style={{height:'2px', width: core.usage + '%', backgroundColor: core.usage >= 40 ? core.usage >=70 ? 'red' : 'orange' : 'var(--tertiary)'}}></div>
 
                 </li>
             );
@@ -25,9 +25,9 @@ export default function CpuData (props) {
 
         return (
             <section className={"cpu-cores"}>
-                <header className="cpu-header">
+                <header className="section-header">
                     <h1>CPU's</h1>
-                    <h2>Total {cpuUsage.total.toFixed(2)}%</h2>
+                    <h2>Total {cpuUsage.total}%</h2>
                 </header>
 
                 <ul>

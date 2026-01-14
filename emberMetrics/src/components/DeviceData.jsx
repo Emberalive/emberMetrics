@@ -15,6 +15,9 @@ export default function DeviceData (props) {
 
     return (
         <section className="device-data">
+            <header className={'section-header'}>
+                <h1>Device Data</h1>
+            </header>
         <ul className={'device-data_list'}>
                 {deviceDataList}
             </ul>
