@@ -57,7 +57,9 @@ export default function App() {
         async function getInitialDevices () {
             //
             try {
-                const response = await fetch(`https://${deviceType === "remote-access" ? hostIp : "localhost"}:3000/devices`);
+                // const response = await fetch(`https://${deviceType === "remote-access" ? hostIp : "localhost"}:3000/devices`);
+                const response = await fetch(`https://${deviceType === "remote-access" ? 'metrics-api.emberalive.com' : "localhost"}:3000/devices`);
+
                 if (response.ok) {
                     const resData = await response.json();
                     const resData_devices = resData.devices
