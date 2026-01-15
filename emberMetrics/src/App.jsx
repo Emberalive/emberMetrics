@@ -177,7 +177,8 @@ export default function App() {
                 return;
             }
             const interval = setInterval(async () => {
-                const response = await fetch(`https://${selectedDevice}:3000`)
+                // const response = await fetch(`https://${selectedDevice}:3000`)
+                const response = await fetch(`https://metrics-api.emberalive.com`)
                 if (response.ok) {
                     if (response.status === 200) {
                         const resData = await response.json()
