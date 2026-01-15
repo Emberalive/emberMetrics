@@ -10,6 +10,7 @@ import DeviceManagement from "./components/DeviceManagement.jsx";
 import Notification from "./components/Notification.jsx";
 import DeviceTypeSelection from "./components/DeviceTypeSelection.jsx";
 import NetworkData from "./components/NetworkData.jsx";
+import DiskData from "./components/DiskData.jsx";
 
 export default function App() {
     const [hostIp, setHostIP] = useState(() => {
@@ -244,6 +245,7 @@ export default function App() {
                           <div className={"left-column"}>
                               <ChildProcesses metrics={metrics}/>
                               <DeviceData metrics={metrics}/>
+                              <DiskData metrics={metrics}/>
                           </div>
 
                           <div className={"right-column"}>
