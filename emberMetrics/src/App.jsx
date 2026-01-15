@@ -24,7 +24,7 @@ export default function App() {
 
     useEffect(() => {
         async function getPublicIP() {
-            const res = await fetch("https://api.ipify.org?format=json");
+            const res = await fetch("http://api.ipify.org?format=json");
             const data = await res.json();
             localStorage.setItem("hostPublicIP", data.ip);
             setHostIP(data.ip);
@@ -57,8 +57,7 @@ export default function App() {
         async function getInitialDevices () {
             //
             try {
-                // const response = await fetch(`https://${deviceType === "remote-access" ? hostIp : "localhost"}:3000/devices`);
-                const response = await fetch(`https://${deviceType === "remote-access" ? 'metrics-api.emberalive.com' : "localhost"}/devices`);
+                const response = await fetch(`http://${deviceType === "remote-access" ? hostIp : "localhost"}:3000/devices`);
 
                 if (response.ok) {
                     const resData = await response.json();
@@ -177,8 +176,7 @@ export default function App() {
                 return;
             }
             const interval = setInterval(async () => {
-                // const response = await fetch(`https://${selectedDevice}:3000`)
-                const response = await fetch(`https://metrics-api.emberalive.com`)
+                const response = await fetch(`http://${selectedDevice}:3000`)
                 if (response.ok) {
                     if (response.status === 200) {
                         const resData = await response.json()

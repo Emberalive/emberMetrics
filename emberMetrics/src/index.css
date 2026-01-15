@@ -330,7 +330,6 @@ section {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     min-width: 300px;
-    max-width: 900px;
     padding: 0;
     margin: 0;
     gap: var(--element-padding);
