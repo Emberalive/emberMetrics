@@ -59,6 +59,12 @@ async function getNetworkInterfaces () {
         return data.map(interfaceObject => ({
                 name: interfaceObject.iface,
                 default: interfaceObject.default,
+                mac: interfaceObject.mac,
+                type: interfaceObject.type,
+                addresses:{
+                    ip4: interfaceObject.ip4,
+                    ip6: interfaceObject.ip6,
+                },
         }))
     } catch (e) {
         console.error(`There was an error getting the interfaces\n ${e.message}`)
@@ -69,18 +75,22 @@ async function getInterfaceData () {
     try {
         const interfaces = await getNetworkInterfaces()
 
-        return await Promise.all(
+        return (await Promise.all(
             interfaces.map(async interfaceObject => {
                 const [stats] = await si.networkStats(interfaceObject.name)
                 return {
                     name: interfaceObject.name,
+                    default: interfaceObject.default,
+                    mac: interfaceObject.mac,
+                    type: interfaceObject.type,
+                    addresses: interfaceObject.addresses,
                     data: {
                         transmitted: stats.tx_sec ? stats.tx_sec.toFixed(2) : '0.00',
-                        received: stats.rx_sec ? stats.rx_sec.toFixed(2): '0.00',
+                        received: stats.rx_sec ? stats.rx_sec.toFixed(2) : '0.00',
                     }
                 }
             })
-        )
+        )).reverse()
     } catch (e) {
         console.error('Error fetching network stats:', e);
     }

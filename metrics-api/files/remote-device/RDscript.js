@@ -199,6 +199,29 @@ async function getCpu () {
     }
 }
 
+async function getDiskInfo () {
+    try {
+        const disks = await si.diskLayout()
+        const diskList = disks.map((disk) => {
+            return {
+                name: disk.name,
+                type: disk.type,
+                vendor: disk.vendor,
+                device: disk.device,
+                size: (disk.size / (1024 ** 3)).toFixed(2).toString().length > 6 ? (disk.size / (1024 ** 4)).toFixed(2).toString() + 'TB': (disk.size / (1024 ** 3)).toFixed(2).toString() + 'GB',
+                interfaceType: disk.interfaceType,
+            }
+        })
+
+        const diskUsage = await si.disksIO()
+        console.log('diskUsage', diskUsage)
+
+        return diskList
+    } catch (e) {
+        console.error(`There was an issue monitoring the disk:\n ${e.message}`)
+    }
+}
+
 //constantly updates metrics
 const interval = setInterval(async () => {
     try {
@@ -209,7 +232,8 @@ const interval = setInterval(async () => {
             cpuUsage: await getCpu(),
             gpuData: await monitorGraphics(),
             childProcesses: childData,
-            interfaces: await getInterfaceData()
+            interfaces: await getInterfaceData(),
+            disks: await getDiskInfo()
         }
         console.log(metrics)
     } catch (e) {
