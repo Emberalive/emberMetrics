@@ -1,6 +1,7 @@
 export default function Header (props) {
     const metrics = props.metrics
     return (
+        <>
         <header className="header">
             <div className="header__details">
                 <h1>EmberMetrics</h1>
@@ -50,5 +51,6 @@ export default function Header (props) {
                 </a>
             </div>
         </header>
+        </>
     )
 }

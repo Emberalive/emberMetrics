@@ -198,6 +198,45 @@ main {
     background-color: var(--neutral);
 }
 
+.full-screen__close {
+    z-index: 1;
+    position: fixed;
+    left: calc(100% - (var(--section-padding)* 3) - 10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width: 40px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: var(--primary);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.full-screen__close:hover {
+    transform: scale(1.1);
+}
+
+.full-screen__open {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width: 40px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: var(--primary);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.full-screen__close:hover {
+    transform: scale(1.1);
+}
+
 
 /* Column Layout */
 .left-column, .right-column {

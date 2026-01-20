@@ -11,6 +11,10 @@ import Notification from "./components/Notification.jsx";
 import DeviceTypeSelection from "./components/DeviceTypeSelection.jsx";
 import NetworkData from "./components/NetworkData.jsx";
 import DiskData from "./components/DiskData.jsx";
+import CollapseWhite from "./assets/collapse-white.svg";
+import CollapseBlack from "./assets/collapse-black.svg";
+import ExpandWhite from "./assets/expand-white.svg";
+import ExpandBlack from "./assets/expand-black.svg";
 
 export default function App() {
     const [hostIp, setHostIP] = useState(() => {
@@ -22,6 +26,15 @@ export default function App() {
         }
     });
 
+    const [deviceType, setDeviceType] = useState(() => {
+        const localStoreDeviceType = localStorage.getItem("deviceType");
+        if (localStoreDeviceType === null || localStoreDeviceType === undefined || !localStoreDeviceType) {
+            return ""
+        } else {
+            return localStoreDeviceType;
+        }
+    });
+
     useEffect(() => {
         async function getPublicIP() {
             const res = await fetch("http://api.ipify.org?format=json");
@@ -29,8 +42,8 @@ export default function App() {
             localStorage.setItem("hostPublicIP", data.ip);
             setHostIP(data.ip);
         }
-        if (hostIp === "") getPublicIP();
-    }, [hostIp]);
+        if (hostIp === "" && deviceType === 'remote-access') getPublicIP();
+    }, [hostIp, deviceType]);
 
     function changeFont (type, size) {
         switch (type) {
@@ -41,15 +54,6 @@ export default function App() {
     }
 
     const [notification, setNotification] = useState("");
-
-    const [deviceType, setDeviceType] = useState(() => {
-        const localStoreDeviceType = localStorage.getItem("deviceType");
-        if (localStoreDeviceType === null || localStoreDeviceType === undefined || !localStoreDeviceType) {
-            return ""
-        } else {
-            return localStoreDeviceType;
-        }
-    });
 
     const [devices, setDevices] = useState([])
 
@@ -172,11 +176,8 @@ export default function App() {
     useEffect( () => {
         console.log("[APP_METRICS] Getting metrics")
         try {
-            if(!selectedDevice) {
-                return;
-            }
             const interval = setInterval(async () => {
-                const response = await fetch(`http://${selectedDevice}:3000`)
+                const response = await fetch (`http://${selectedDevice}:3000`)
                 if (response.ok) {
                     if (response.status === 200) {
                         const resData = await response.json()
@@ -226,12 +227,22 @@ export default function App() {
   return (
       <>
           <Notification notification={notification} setNotification={setNotification} />
-          <Header metrics={metrics}
-                  setIsDarkMode={setIsDarkMode}
-                  isDarkMode={isDarkMode}
-                  setActiveView={setActiveView}
-                  activeView={activeView}
-          />
+          {(activeView === 'resources' || activeView === "fullScreen") && <div style={{marginLeft: '20px',}} onClick={() => {
+              if (activeView === "resources") {
+                  setActiveView("fullScreen")
+              } else {
+                  setActiveView("resources")
+              }
+          }} title={activeView === 'fullScreen' ? "Minimise" : "Maximise"}>
+              <img className={'full-screen__close'} alt={'expand icon'}
+                   src={activeView === 'fullScreen' ? isDarkMode ? CollapseWhite : CollapseBlack : isDarkMode ? ExpandWhite : ExpandBlack}></img>
+          </div>}
+          {activeView !== 'fullScreen' && <Header metrics={metrics}
+                   setIsDarkMode={setIsDarkMode}
+                   isDarkMode={isDarkMode}
+                   setActiveView={setActiveView}
+                   activeView={activeView}
+          />}
           {(devices && activeView === "resources") && <div className={"device-navigation__wrapper"} ref={groupsRef} onWheel={handleWheel}>
               <div className={"device-navigation"}>
                   {deviceButtonList}
@@ -242,7 +253,7 @@ export default function App() {
 
               {metrics !== null &&
                   <>
-                      {activeView === "resources" &&<>
+                      {(activeView === "resources" || activeView === "fullScreen") &&<>
                           <div className={"left-column"}>
                               <ChildProcesses metrics={metrics}/>
                               <DeviceData metrics={metrics}/>
