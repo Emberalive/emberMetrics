@@ -237,19 +237,19 @@ export default function App() {
               <img className={'full-screen__close'} alt={'expand icon'}
                    src={activeView === 'fullScreen' ? isDarkMode ? CollapseWhite : CollapseBlack : isDarkMode ? ExpandWhite : ExpandBlack}></img>
           </div>}
-          {activeView !== 'fullScreen' && <Header metrics={metrics}
+          <Header metrics={metrics}
                    setIsDarkMode={setIsDarkMode}
                    isDarkMode={isDarkMode}
                    setActiveView={setActiveView}
                    activeView={activeView}
-          />}
+          />
           {(devices && activeView === "resources") && <div className={"device-navigation__wrapper"} ref={groupsRef} onWheel={handleWheel}>
               <div className={"device-navigation"}>
                   {deviceButtonList}
               </div>
           </div>}
           <main>
-              {deviceType === "" && <DeviceTypeSelection setDeviceType={setDeviceType}/>}
+              {deviceType === "" && <DeviceTypeSelection setDeviceType={setDeviceType} activeView={activeView} />}
 
               {metrics !== null &&
                   <>
@@ -258,13 +258,14 @@ export default function App() {
                               <ChildProcesses metrics={metrics}/>
                               <DeviceData metrics={metrics}/>
                               <DiskData metrics={metrics}/>
+                              <MemoryData metrics={metrics}
+                                          viewPort={viewPort}
+                              />
                           </div>
 
                           <div className={"right-column"}>
                               <CpuData metrics={metrics}/>
-                              <MemoryData metrics={metrics}
-                                          viewPort={viewPort}
-                              />
+
                               <NetworkData metrics={metrics}/>
                           </div>
                       </>}

@@ -6,7 +6,7 @@ export default function DeviceTypeSelection (props) {
         props.setDeviceType(selectedType);
     }
     return (
-        <div className="device-type-selection__wrapper">
+        <div className={props.activeView === 'fullScreen' ? "display-none" : 'device-type-selection__wrapper'}>
             <section className="device-type-selection">
                 <h1>Select the device type</h1>
                 <div className={"description-container"}>

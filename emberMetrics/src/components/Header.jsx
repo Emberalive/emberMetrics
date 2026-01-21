@@ -2,7 +2,7 @@ export default function Header (props) {
     const metrics = props.metrics
     return (
         <>
-        <header className="header">
+        <header className={props.activeView === 'fullScreen' ? "display-none" : 'header'}>
             <div className="header__details">
                 <h1>EmberMetrics</h1>
                 {(metrics && props.activeView === "resources") && <div className="header__device-name">
