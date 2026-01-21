@@ -1,5 +1,6 @@
 export default function DiskData (props) {
-    const disks = props.metrics.disks
+    const disks = props.metrics.disks.disks
+    const diskData = props.metrics.disks.totalDiskUsage
     const diskList = disks.map((disk) => {
         return (
                 <div className={'disk-container__item'} key={disk.name}>
@@ -34,6 +35,27 @@ export default function DiskData (props) {
             </header>
             <div className={'disk-container'}>
                 {diskList}
+            </div>
+            <header className="section-header">
+                <p style={{borderBottom: '1px solid var(--border-color)', width: '100%', marginBottom: '10px'}}>Disk Usage</p>
+            </header>
+            <div className="disk-usage__container">
+                <div className="disk-usage__item">
+                    <label title={'Total read operations'}>rIO:</label>
+                    <p>{diskData.rIO}</p>
+                </div>
+                <div className="disk-usage__item">
+                    <label title={'Total write operations'}>wIO:</label>
+                    <p>{diskData.wIO}</p>
+                </div>
+                <div className="disk-usage__item">
+                    <label title={'Bytes read per second'}>rIO_sec:</label>
+                    <p>{diskData.rIO_sec}b/s</p>
+                </div>
+                <div className="disk-usage__item">
+                    <label title={'Bytes written per second'}>wIO_sec:</label>
+                    <p>{diskData.wIO_sec}b/s</p>
+                </div>
             </div>
         </section>
     )

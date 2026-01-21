@@ -1078,6 +1078,8 @@ section {
     flex-direction: column;
     width: 100%;
     justify-content: flex-start;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 10px;
 }
 
 .disk-container__item > p {
@@ -1122,6 +1124,33 @@ section {
     white-space: wrap;
     word-break: break-word;
 }
+
+.disk-usage__container {
+    display : grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 100%;
+}
+
+.disk-usage__item {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.disk-usage__item > p {
+    font-size: var(--font-size);
+    margin: 0;
+}
+
+.disk-usage__item > label {
+    font-size: var(--font-size);
+    color: var(--secondary);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+
+
 /* Dark Mode Specific Adjustments */
 .dark-mode {
     color-scheme: dark;
