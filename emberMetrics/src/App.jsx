@@ -255,18 +255,18 @@ export default function App() {
                   <>
                       {(activeView === "resources" || activeView === "fullScreen") &&<>
                           <div className={"left-column"}>
-                              <ChildProcesses metrics={metrics}/>
-                              <DeviceData metrics={metrics}/>
-                              <DiskData metrics={metrics}/>
-                              <MemoryData metrics={metrics}
-                                          viewPort={viewPort}
-                              />
+                              {metrics.childProcesses && <ChildProcesses metrics={metrics}/>}
+                              {metrics.deviceData && <DeviceData metrics={metrics}/>}
+                              {metrics.disks && <DiskData metrics={metrics}/>}
+                              {metrics.memoryUsage && <MemoryData metrics={metrics}
+                                           viewPort={viewPort}
+                              />}
                           </div>
 
                           <div className={"right-column"}>
-                              <CpuData metrics={metrics}/>
+                              {metrics.cpuUsage && <CpuData metrics={metrics}/>}
 
-                              <NetworkData metrics={metrics}/>
+                              {metrics.interfaces && <NetworkData metrics={metrics}/>}
                           </div>
                       </>}
                   </>
