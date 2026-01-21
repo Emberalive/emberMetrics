@@ -221,9 +221,21 @@ async function getDiskInfo () {
         })
 
         const diskUsage = await si.disksIO()
-        console.log('diskUsage', diskUsage)
 
-        return diskList
+        const stats = await si.fsStats();
+        console.log(stats);
+
+        return {
+            totalDiskUsage: {
+                rIO: diskUsage.rIO,
+                wIO: diskUsage.wIO,
+                rIO_sec: diskUsage.rIO_sec.toFixed(2),
+                wIO_sec: diskUsage.wIO_sec.toFixed(2),
+                rx_sec: stats.rx_sec,
+                wx_sec: stats.wx_sec,
+            },
+            disks: diskList,
+        }
     } catch (e) {
         console.error(`There was an issue monitoring the disk:\n ${e.message}`)
     }
@@ -242,7 +254,6 @@ const interval = setInterval(async () => {
             interfaces: await getInterfaceData(),
             disks: await getDiskInfo()
         }
-        console.log(metrics)
     } catch (e) {
         console.error(`There was an issue gathering interval:\n ${e.message}`)
     }
