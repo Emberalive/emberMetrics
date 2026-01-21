@@ -229,46 +229,6 @@ async function getDiskInfo () {
     }
 }
 
-// [
-//     {
-//         device: '/dev/nvme1n1',
-//         type: 'NVMe',
-//         name: 'Samsung SSD 970 EVO Plus 2TB',
-//         vendor: 'Samsung',
-//         size: 2000398934016,
-//         bytesPerSector: null,
-//         totalCylinders: null,
-//         totalHeads: null,
-//         totalSectors: null,
-//         totalTracks: null,
-//         tracksPerCylinder: null,
-//         sectorsPerTrack: null,
-//         firmwareRevision: '2B2QEXM7',
-//         serialNum: 'S4J4NX0W575287E',
-//         interfaceType: 'PCIe',
-//         smartStatus: 'unknown',
-//         temperature: null
-//     },
-//     {
-//         device: '/dev/nvme0n1',
-//         type: 'NVMe',
-//         name: 'KINGSTON SNV2S500G',
-//         vendor: 'Kingston Technology',
-//         size: 500107862016,
-//         bytesPerSector: null,
-//         totalCylinders: null,
-//         totalHeads: null,
-//         totalSectors: null,
-//         totalTracks: null,
-//         tracksPerCylinder: null,
-//         sectorsPerTrack: null,
-//         firmwareRevision: 'SCH02101',
-//         serialNum: '50026B728344D6E1',
-//         interfaceType: 'PCIe',
-//         smartStatus: 'unknown',
-//         temperature: null
-//     }
-// ]
 //constantly updates metrics
 const interval = setInterval(async () => {
     try {
