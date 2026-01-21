@@ -123,7 +123,7 @@ Ensure you have **Node.js** installed.
 Clone the repository:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Emberalive/emberMetrics
 cd embermetrics
 ```
 
