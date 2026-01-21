@@ -223,7 +223,6 @@ async function getDiskInfo () {
         const diskUsage = await si.disksIO()
 
         const stats = await si.fsStats();
-        console.log(stats);
 
         return {
             totalDiskUsage: {
@@ -242,9 +241,25 @@ async function getDiskInfo () {
 }
 
 //constantly updates metrics
-const interval = setInterval(async () => {
-    try {
-        metrics = {
+// const interval = setInterval(async () => {
+//     try {
+//         metrics = {
+//             hostName: os.hostname(),
+//             deviceData: deviceData,
+//             memoryUsage: await getMemory(),
+//             cpuUsage: await getCpu(),
+//             gpuData: await monitorGraphics(),
+//             childProcesses: childData,
+//             interfaces: await getInterfaceData(),
+//             disks: await getDiskInfo()
+//         }
+//     } catch (e) {
+//         console.error(`There was an issue gathering interval:\n ${e.message}`)
+//     }
+// }, 1000)
+
+async function getMetrics () {
+    return {
             hostName: os.hostname(),
             deviceData: deviceData,
             memoryUsage: await getMemory(),
@@ -254,13 +269,6 @@ const interval = setInterval(async () => {
             interfaces: await getInterfaceData(),
             disks: await getDiskInfo()
         }
-    } catch (e) {
-        console.error(`There was an issue gathering interval:\n ${e.message}`)
-    }
-}, 1000)
-
-function getMetrics () {
-    return metrics
 }
 
 async function readDevices () {

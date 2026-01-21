@@ -12,11 +12,11 @@ app.use(cors({
 }));
 
 //returns the metrics
-app.get('/', (req, res) => {
-    const metrics = getMetrics();
-
+app.get('/', async (req, res) => {
+    const metrics = await getMetrics();
+    console.log(metrics);
     if (!metrics || (typeof metrics === 'object' && Object.keys(metrics).length === 0)) {
-        return res.status(500).json({ error: 'Metrics Data not available' });
+        return res.status(500).json({error: 'Metrics Data not available'});
     }
     res.status(200).json(metrics); // always send JSON
 });
