@@ -258,14 +258,14 @@ export default function App() {
                               {metrics.childProcesses && <ChildProcesses metrics={metrics}/>}
                               {metrics.deviceData && <DeviceData metrics={metrics}/>}
                               {metrics.disks && <DiskData metrics={metrics}/>}
-                              {metrics.memoryUsage && <MemoryData metrics={metrics}
-                                           viewPort={viewPort}
-                              />}
                           </div>
 
                           <div className={"right-column"}>
                               {metrics.cpuUsage && <CpuData metrics={metrics}/>}
 
+                              {metrics.memoryUsage && <MemoryData metrics={metrics}
+                                                                  viewPort={viewPort}
+                              />}
                               {metrics.interfaces && <NetworkData metrics={metrics}/>}
                           </div>
                       </>}
