@@ -1,6 +1,10 @@
 const express = require('express')
 const app = express()
-const {getDevices, addDevice, deleteDevice, getMetrics, editDevice} = require('./metrics')
+// functions for metrics gathering
+const {getMetrics} = require('./metrics')
+//functions for user management
+const {createUser, deleteUser, authenticateUser} = require('./user')
+const {getDevices, addDevice, deleteDevice, editDevice} = require('./device')
 const cors = require('cors')
 const port = 3000
 
