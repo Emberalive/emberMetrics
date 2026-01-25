@@ -100,7 +100,7 @@ async function getChildProcesses () {
         const {list} = (await si.processes())
         const childProcesses = list.map(process => {
             return {
-                pid: process.pid,
+                pid: process.pid ? process.pid : 'unknown',
                 name: process.name,
                 cpu: process.cpu,
                 memory: process.mem,
