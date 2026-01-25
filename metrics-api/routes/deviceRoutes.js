@@ -1,5 +1,5 @@
 const express = require('express')
-const {getDevices, editDevice, addDevice, deleteDevice} = require("../device");
+const {getDevices, editDevice, addDevice, deleteDevice} = require("../opModules/device");
 const router = express.Router()
 
 router.get('/', async (req, res) => {

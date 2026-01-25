@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 // functions for metrics gathering
-const {getMetrics} = require('./metrics')
+const {getMetrics} = require('./opModules/metrics')
 const cors = require('cors')
 const port = 3000
 

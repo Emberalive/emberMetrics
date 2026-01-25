@@ -1,5 +1,5 @@
 const express = require('express')
-const {createUser, deleteUser, authenticateUser} = require('../user')
+const {createUser, deleteUser, authenticateUser} = require('../opModules/user')
 const router = express.Router()
 
 router.get('/', async(req, res) => {
