@@ -1,5 +1,5 @@
 const fs = require('fs').promises;
-const filePath = './devices.json'
+const filePath = '../persistentData/devices.json'
 
 async function readDevices () {
     const rawDevices = await fs.readFile(filePath, 'utf8')

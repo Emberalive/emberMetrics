@@ -1,50 +1,176 @@
+const fs = require('fs').promises;
+const bcrypt = require('bcrypt')
+const {nanoid} = require("nanoid");
+const saltRounds = 10
+const filePath = '../persistentData/user.json'
+
 async function createUser(user) {
-    //calls [hashPassword] to hash the users password
-    //once the hash has been returned and is successful calls [writeUser]
-    //when write user has been completed and is successful returns true through the API route
-    //if any function calls don't work return error 500 internal server error
+    try {
+        const {password, username} = user;
+        if (!password || !username) {
+            console.error('[Server - createUser] Password and username required!');
+            return {
+                success: false,
+            }
+        }
+        const response = await hashPassword(password, saltRounds);
+        if (response.success) {
+            console.log('[Server - createUser] Successfully created!]')
+            return await addUser({username: username, password: response.hash, id: nanoid()});
+        } else {
+            console.error('[Server - createUser] Error hashing password')
+            return {
+                success: false,
+            }
+        }
+    } catch (e) {
+        console.error('[Server - createUser] Internal error: ', e.message);
+        return {
+            success: false
+        }
+    }
 }
 
 async function authenticateUser(user) {
-    //function calls [readUser] and returns true if the user exists
-    //if user exists checks password hash by calling [checkPassword]
-    //if checkPassword succeeds, return true through API route
-    //if any function calls don't work return error 500 internal server error
+    try {
+        const userData = await getUser(user.username);
+        if (!userData) {
+            return  {
+                success: false,
+            }
+        } else {
+            console.log(`[Server - authenticateUser] Successfully authenticated user: ${user.username} ]`);
+            return await checkPassword(user.password, userData.password);
+        }
+    } catch (e) {
+        console.error(`[Server - authenticateUser] Error validating: ${user.username}`, e.message);
+        return {
+            success: false,
+        }
+    }
 }
 
-async function deleteUser(username, password) {
-    //will call [readUser], checks if the user exists
-    //if user exists call [removeUser]
-    //if returns successful return true through API route
-    //if any function calls don't work return error 500 internal server error
+async function deleteUser(user) {
+    try {
+        const users = await readUsers();
+        const index = users.indexOf(user);
+
+        if (index > -1) {
+            users.splice(index, 1);
+            return await writeUser(users);
+        } else {
+            return {
+                success: false,
+            }
+        }
+    } catch (e) {
+        console.error('[Server - removeUser] Internal error: ', e)
+        return {
+            success: false,
+        }
+    }
 }
 
-async function writeUser(user) {
-    //this will be used to write  a user to the user json file
+async function writeUser(newUsers) {
+    try {
+        await fs.writeFile(filePath, JSON.stringify(newUsers), 'utf8')
+        return {
+            success: true,
+        }
+    } catch (e) {
+        console.error('[Server - writeUser] Internal error: ', e)
+        return {
+            success: false,
+        }
+    }
 }
 
-async function removeUser(username) {
-    //deletes a user from the user json file
+async function readUsers() {
+    try {
+        const rawUsers = await fs.readFile(filePath, 'utf8')
+        return JSON.parse(rawUsers)
+    } catch (e) {
+        console.error('[Server - readUsers] Internal error: ', e)
+        return {
+            success: false,
+        }
+    }
 }
 
-async function readUser(username) {
-    //this function will be used to read a user from the user json file
-}
-
-async function getDevices(username) {
-    //This will be used to get a user based on their username from the json file
+async function getUser(username) {
+    try {
+        const users = await readUsers()
+        const user = users.find((user) => user.username === username)
+        console.log('[Server - getUser] user found: ', user)
+        return {
+            success: true,
+            user: user,
+        }
+    } catch (e) {
+        console.error('[Server - getUsers] Internal error: ', e)
+        return {
+            success: false,
+        }
+    }
 }
 
 async function addUser(user) {
-    //this function will be used to create a user for the application
+    try {
+        console.log('[Server - addUser] New user: ', user)
+        let userData = await readUsers()
+
+        userData.push(user)
+        console.log('[Server - addUser] updated users: ', JSON.stringify(userData));
+        return await writeUser(userData)
+
+    } catch (e) {
+        console.error('[Server - addUser] Internal error: ', e)
+        return {
+            success: false,
+        }
+    }
 }
 
-async function hashPassword (password) {
-    //this function will be used to hash a password for when creating a user
+async function hashPassword (password, saltRounds) {
+    try {
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        if (hashedPassword) {
+            return {
+                hash: hashedPassword,
+                success: true,
+            };
+        } else {
+            console.log('[Server - hashPassword | devices] password not hashed')
+            return  {
+                success: false,
+            }
+        }
+    } catch (e) {
+        console.log('[Server - DELETE | devices] internal error:', e)
+        return {
+            success: false,
+        }
+    }
 }
 
 async function checkPassword(password, hashedPassword) {
-    //this function is used to check if the password entered is the correct password compared to the hash
+    try {
+        if (await bcrypt.compare(password, hashedPassword)) {
+            return {
+                success: false,
+            }
+        } else {
+            return {
+                success: false,
+            }
+        }
+
+    } catch (e) {
+        console.log('[Server - CHECK PASSWORD] internal error:', e)
+        return {
+            success: false,
+        }
+    }
 }
 
 

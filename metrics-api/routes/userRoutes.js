@@ -4,15 +4,15 @@ const router = express.Router()
 
 router.get('/', async(req, res) => {
     console.log('[Server - GET /users] starting route access')
-    const userName = req.user.username
-    if (!userName) {
+    const {userName, password} = req.user
+    if (!userName || !password) {
         console.log('[Server - GET /users] No username sent')
         return res.status(400).send({
-            error: 'User name is required',
+            error: 'User name and password is required',
             success: false
         })
     } else {
-        const response = await authenticateUser(userName)
+        const response = await authenticateUser(req.user)
         if (!response.success) {
             console.log('[Server - GET /users] authenticateUser failed.]')
             return res.status(404).send({
@@ -57,15 +57,15 @@ router.post('/', async (req, res) => {
 
 router.delete('/', async (req, res) => {
     console.log('[Server - DELETE /users] starting route access')
-    const { username } = req.body.user
-    if (!username) {
+    const user = req.body.user
+    if (!user) {
         console.log('[Server - DELETE /users] no username sent')
         return res.status(400).send({
             success: false,
         })
     } else {
         try {
-            const response = await deleteUser(username)
+            const response = await deleteUser(user)
             if (!response.success) {
                 console.log('[Server - DELETE /users] delete user failed.')
                 return res.status(500).send({
