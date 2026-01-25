@@ -8,7 +8,6 @@ let childData = []
 let deviceData
 let oldCpus = os.cpus()
 
-
 async function monitorGraphics() {
     try {
         const data = await si.graphics();
@@ -155,8 +154,8 @@ async function getMemory() {
         const memoryAvailable = await (os.freemem() / os.totalmem()) * 100
         const memoryUsed = 100 - memoryAvailable
         return {
-            available: memoryAvailable.toFixed(2),
-            usage: memoryUsed.toFixed(2),
+            available: memoryAvailable ? memoryAvailable.toFixed(2) : 'unknown',
+            usage: memoryUsed ? memoryUsed.toFixed(2) : 'unknown',
         }
     } catch (e) {
         console.error(`There was an issue monitoring the memory:\n ${e.message}`)
@@ -165,8 +164,6 @@ async function getMemory() {
 
 async function getCpu () {
     try {
-        // processing cpu data initial
-
         const newCpus = os.cpus()
         const cpuUsagePercentage = []
 
@@ -211,12 +208,12 @@ async function getDiskInfo () {
         const disks = await si.diskLayout()
         const diskList = disks.map((disk) => {
             return {
-                name: disk.name,
-                type: disk.type,
-                vendor: disk.vendor,
-                device: disk.device,
+                name: disk.name ? disk.name : 'unknown',
+                type: disk.type ? disk.type : 'unknown',
+                vendor: disk.vendor ? disk.vendor : 'unknown',
+                device: disk.device ? disk.device : 'unknown',
                 size: (disk.size / (1024 ** 3)).toFixed(2).toString().length > 6 ? (disk.size / (1024 ** 4)).toFixed(2).toString() + 'TB': (disk.size / (1024 ** 3)).toFixed(2).toString() + 'GB',
-                interfaceType: disk.interfaceType,
+                interfaceType: disk.interfaceType ? disk.interfaceType : 'unknown',
             }
         })
 
@@ -227,12 +224,12 @@ async function getDiskInfo () {
 
         return {
             totalDiskUsage: {
-                rIO: diskUsage.rIO,
-                wIO: diskUsage.wIO,
-                rIO_sec: diskUsage.rIO_sec.toFixed(2),
-                wIO_sec: diskUsage.wIO_sec.toFixed(2),
-                rx_sec: stats.rx_sec,
-                wx_sec: stats.wx_sec,
+                rIO: diskUsage.rIO ? diskUsage.rIO : 0,
+                wIO: diskUsage.wIO ? diskUsage.wIO : 0,
+                rIO_sec: diskUsage.rIO_sec ? diskUsage.rIO_sec.toFixed(2) : 0,
+                wIO_sec: diskUsage.wIO_sec ? diskUsage.wIO_sec.toFixed(2): 0,
+                rx_sec: stats.rx_sec ? stats.rx_sec : 0,
+                wx_sec: stats.wx_sec ? stats.wx_sec : 0,
             },
             disks: diskList,
         }
