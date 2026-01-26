@@ -23,13 +23,13 @@ router.get('/', async (req, res) => {
 
 router.patch('/', async (req, res) => {
     console.log("[Server - PATCH | devices] starting route access")
-    const deviceId = req.body.id
-    if (!deviceId) {
+    const device = req.body.device
+    if (!device) {
         console.log("[Server - PATCH | devices] please specify deviceId")
         res.status(400).send({success: false})
     } else {
         try {
-            const response = await editDevice(deviceId)
+            const response = await editDevice(device)
             if (response.success === true) {
                 res.status(200).send(response)
             } else {
