@@ -23,7 +23,7 @@ router.get('/', async (req, res) => {
 
 router.patch('/', async (req, res) => {
     console.log("[Server - PATCH | devices] starting route access")
-    const deviceId = req.params.id
+    const deviceId = req.body.id
     if (!deviceId) {
         console.log("[Server - PATCH | devices] please specify deviceId")
         res.status(400).send({success: false})
@@ -57,7 +57,7 @@ router.post('/', async (req, res) => {
                     success: false,
                 })
             } else {
-                console.log('[Server - POST | devices] added device with deviceId:', response.device.id)
+                console.log('[Server - POST | devices] added device with deviceId:', device.id)
                 res.status(200).send(response)
             }
         } catch (e) {
@@ -68,8 +68,10 @@ router.post('/', async (req, res) => {
 })
 
 router.delete('/', async (req, res) => {
-    const deviceId = req.body.device
+    console.log("[Server - DELETE | devices] starting route access")
+    const deviceId = req.body.deviceID
     if (!deviceId) {
+        console.log("[Server - DELETE | devices] please specify deviceId")
         res.status(400).send({
             success: false,
         })

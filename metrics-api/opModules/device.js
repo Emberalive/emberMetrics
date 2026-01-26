@@ -1,5 +1,6 @@
 const fs = require('fs').promises;
-const filePath = '../persistentData/devices.json'
+const path = require('path');
+const filePath = path.join(__dirname, `../persistentData/devices.json`);
 
 async function readDevices () {
     const rawDevices = await fs.readFile(filePath, 'utf8')
@@ -35,7 +36,7 @@ async function getDevices () {
 
 async function addDevice (device) {
     try {
-        console.log(`[Server - POST | devices] addDevice: ${device} ]`)
+        console.log(`[Server - POST | devices] addDevice: ${JSON.stringify(device)} ]`)
         let deviceData = await readDevices()
 
         deviceData.push(device)
@@ -46,11 +47,13 @@ async function addDevice (device) {
     }
 }
 
-async function deleteDevice (device) {
+async function deleteDevice (deviceID) {
+    console.log(`[Server - DELETE | devices] deleteDevice: ${deviceID}`)
     const devices = await readDevices()
-    const index = devices.indexOf(device)
+    const index = devices.findIndex((device) => device.id === deviceID)
 
     if (index === -1) {
+        console.log(`[Server - DELETE | devices] could not find the device to delete`)
         return {
             success: false,
         }

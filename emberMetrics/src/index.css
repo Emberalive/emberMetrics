@@ -599,6 +599,7 @@ section {
 }
 
 .device-container {
+    padding-top: var(--element-padding);
     width: 100%;
     display: flex;
     flex-direction: column;

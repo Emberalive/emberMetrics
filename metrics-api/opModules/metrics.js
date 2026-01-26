@@ -221,8 +221,6 @@ async function getDiskInfo () {
         const diskUsage = await si.disksIO()
 
         const stats = await si.fsStats();
-        console.log(stats);
-
         return {
             totalDiskUsage: {
                 rIO: diskUsage.rIO,

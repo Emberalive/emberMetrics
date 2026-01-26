@@ -12,7 +12,7 @@ const userRoutes = require('./routes/userRoutes')
 app.use(express.json())
 app.use(cors({
     origin: "*",
-    methods: ["GET", "HEAD", "OPTIONS", "POST","DELETE"],
+    methods: ["GET", "HEAD", "OPTIONS", "POST","DELETE, PATCH"],
 }));
 
 app.use('/devices', deviceRoutes);
