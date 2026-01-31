@@ -1,0 +1,119 @@
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Primary flame gradient -->
+    <linearGradient id="emberGradient" x1="50%" y1="100%" x2="50%" y2="0%">
+      <stop offset="0%" stop-color="#CC5803"/>
+      <stop offset="50%" stop-color="#E66A00"/>
+      <stop offset="80%" stop-color="#FF7B00"/>
+      <stop offset="100%" stop-color="#FF8C42"/>
+    </linearGradient>
+    
+    <!-- Glow gradient -->
+    <radialGradient id="emberGlow" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#FF8C42" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#CC5803" stop-opacity="0"/>
+    </radialGradient>
+    
+    <!-- Clean tech gradient -->
+    <linearGradient id="techGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2D3748"/>
+      <stop offset="100%" stop-color="#4A5568"/>
+    </linearGradient>
+    
+    <!-- Data gradient -->
+    <linearGradient id="dataGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4A5568"/>
+      <stop offset="100%" stop-color="#2D3748"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Dark background -->
+  <rect width="400" height="400" fill="#121212"/>
+  
+  <!-- Main emblem -->
+  <g transform="translate(200, 160)">
+    <!-- Outer tech ring -->
+    <circle cx="0" cy="0" r="80" fill="none" stroke="url(#techGradient)" stroke-width="2" opacity="0.6"/>
+    
+    <!-- Glow effect -->
+    <circle cx="0" cy="0" r="50" fill="url(#emberGlow)"/>
+    
+    <!-- Data grid background (from compact icon) -->
+    <g opacity="0.5" transform="scale(0.6)">
+      <path d="M-60,0 L60,0 M0,-60 L0,60" stroke="url(#dataGradient)" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="-40" cy="-20" r="2" fill="#2D3748"/>
+      <circle cx="0" cy="-10" r="2" fill="#2D3748"/>
+      <circle cx="40" cy="-20" r="2" fill="#2D3748"/>
+      <circle cx="-30" cy="30" r="1.8" fill="#2D3748"/>
+      <circle cx="30" cy="30" r="1.8" fill="#2D3748"/>
+    </g>
+    
+    <!-- Compact flame icon (center) -->
+    <g>
+      <path d="M0,30 
+               C-20,25 -28,5 -20,-8 
+               C-32,-16 -24,-32 -12,-36 
+               C-20,-44 -12,-52 0,-48 
+               C12,-52 20,-44 12,-36 
+               C24,-32 32,-16 20,-8 
+               C28,5 20,25 0,30Z" 
+            fill="url(#emberGradient)"/>
+      
+      <ellipse cx="0" cy="-8" rx="10" ry="20" fill="#FF7B00" opacity="0.9"/>
+      
+      <!-- Integrated data points -->
+      <g>
+        <circle cx="-12" cy="4" r="2" fill="#FF8C42"/>
+        <circle cx="12" cy="4" r="2" fill="#FF8C42"/>
+        <circle cx="0" cy="-20" r="2" fill="#FF8C42"/>
+        <rect x="-2" y="-12" width="4" height="8" fill="#FF7B00" rx="1"/>
+      </g>
+    </g>
+    
+    <!-- Floating metrics -->
+    <g font-family="monospace" font-size="8" fill="#FFFFFF" text-anchor="middle" opacity="0.9">
+      <text x="-45" y="60">CPU</text>
+      <text x="45" y="60">RAM</text>
+      <text x="-45" y="-70">NET</text>
+      <text x="45" y="-70">DSK</text>
+    </g>
+  </g>
+  
+  <!-- Logo text -->
+  <g transform="translate(200, 320)">
+    <text text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="36" font-weight="800" fill="#FFFFFF" letter-spacing="-1">
+      <tspan x="0" y="0">EMBER</tspan>
+    </text>
+    <text text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="24" font-weight="500" fill="#E66A00" letter-spacing="1">
+      <tspan x="0" y="30">METRICS</tspan>
+    </text>
+    <text text-anchor="middle" font-family="'Inter', system-ui, sans-serif" font-size="12" font-weight="400" fill="#FFFFFF">
+      <tspan x="0" y="48">lightweight resource monitor</tspan>
+    </text>
+  </g>
+  
+  <!-- Subtle corner accents -->
+  <g opacity="0.3">
+    <!-- Top-left flame accent -->
+    <path d="M60,60 
+             C50,55 45,45 50,35 
+             C40,30 45,20 55,25 
+             C50,15 60,10 65,20 
+             C70,15 80,20 75,30 
+             C85,35 80,45 70,50 
+             C75,55 70,60 60,60Z" 
+          fill="url(#emberGradient)" 
+          opacity="0.4"/>
+    
+    <!-- Bottom-right flame accent -->
+    <path d="M340,340 
+             C330,335 325,325 330,315 
+             C320,310 325,300 335,305 
+             C330,295 340,290 345,300 
+             C350,295 360,300 355,310 
+             C365,315 360,325 350,330 
+             C355,335 350,340 340,340Z" 
+          fill="url(#emberGradient)" 
+          opacity="0.3"/>
+  </g>
+</svg>
