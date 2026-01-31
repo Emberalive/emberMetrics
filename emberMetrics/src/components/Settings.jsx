@@ -50,7 +50,7 @@ export default function Settings (props) {
                         textAlign: "center",
                         fontColor: "var(--neutral)",
                     }}>Themes</h1>
-                    <Themes />
+                    <Themes setLogoImage={props.setLogoImage} />
                 </div>
             </section>
         </div>

@@ -110,7 +110,7 @@ export default function DeviceList (props) {
                             {device.ip}
                         </p>
                         <div style={{display: 'flex', flexDirection: 'row', gap: '10px', alignSelf: 'flex-end'}}>
-                            <button className="general-button" style={{fontSize: "20px", backgroundColor: 'DarkRed'}} onClick={(e) => {
+                            <button className="general-button" style={{fontSize: "20px", backgroundColor: 'DarkRed'}} onClick={() => {
                                 console.log('[Client - deleteDevice] setting deleteDevice data to show check screen')
                                 setDeleteDeviceData(device);
                             }}>Delete</button>
