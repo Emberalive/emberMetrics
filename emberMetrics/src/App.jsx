@@ -15,6 +15,7 @@ import CollapseWhite from "./assets/collapse-white.svg";
 import CollapseBlack from "./assets/collapse-black.svg";
 import ExpandWhite from "./assets/expand-white.svg";
 import ExpandBlack from "./assets/expand-black.svg";
+import Sparkr from "./assets/SVG 2.1 | Original Sparkr.svg";
 
 export default function App() {
     const [hostIp, setHostIP] = useState(() => {
@@ -34,6 +35,8 @@ export default function App() {
             return localStoreDeviceType;
         }
     });
+
+    const [logoImage, setLogoImage] = useState(() => Sparkr)
 
     useEffect(() => {
         async function getPublicIP() {
@@ -162,6 +165,7 @@ export default function App() {
 
             document.documentElement.style.setProperty("--dm-tertiary", savedTheme.colour.tertiary)
             document.documentElement.style.setProperty("--dm-secondary", savedTheme.colour.secondary)
+            setLogoImage(savedTheme.logo)
         }
     }, [])
 
@@ -242,6 +246,7 @@ export default function App() {
                    isDarkMode={isDarkMode}
                    setActiveView={setActiveView}
                    activeView={activeView}
+                  logoImage={logoImage}
           />
           {(devices && activeView === "resources") && <div className={"device-navigation__wrapper"} ref={groupsRef} onWheel={handleWheel}>
               <div className={"device-navigation"}>
@@ -279,6 +284,7 @@ export default function App() {
                                                      windowWidth={windowWidth}
                                                      handleNotification={handleNotification}
                                                      changeFont={changeFont}
+                                                     setLogoImage={setLogoImage}
               />}
               {activeView === "devices" &&<DeviceManagement devices={devices} setDevices={setDevices} handleNotification={handleNotification} hostIp={hostIp} deviceType={deviceType}/>}
           </main>

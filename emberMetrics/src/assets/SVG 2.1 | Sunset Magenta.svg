@@ -1,0 +1,47 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="emberGradient" x1="50%" y1="100%" x2="50%" y2="0%">
+            <stop offset="0%" stop-color="#CC0377"/>
+            <stop offset="50%" stop-color="#E63E9E"/>
+            <stop offset="80%" stop-color="#F565B8"/>
+            <stop offset="100%" stop-color="#FEB2D9"/>
+        </linearGradient>
+
+        <linearGradient id="dataGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#82274D"/>
+            <stop offset="100%" stop-color="#5C1A37"/>
+        </linearGradient>
+    </defs>
+
+    <!-- Data grid background -->
+    <g opacity="0.7">
+        <path d="M60,120 L140,120 M100,80 L100,160" stroke="url(#dataGradient)" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="80" cy="100" r="3" fill="#5C1A37"/>
+        <circle cx="100" cy="110" r="3" fill="#5C1A37"/>
+        <circle cx="120" cy="100" r="3" fill="#5C1A37"/>
+        <circle cx="90" cy="130" r="2.5" fill="#5C1A37"/>
+        <circle cx="110" cy="130" r="2.5" fill="#5C1A37"/>
+    </g>
+
+    <!-- Compact flame icon -->
+    <g transform="translate(100, 100)">
+        <path d="M0,30
+             C-20,25 -28,5 -20,-8
+             C-32,-16 -24,-32 -12,-36
+             C-20,-44 -12,-52 0,-48
+             C12,-52 20,-44 12,-36
+             C24,-32 32,-16 20,-8
+             C28,5 20,25 0,30Z"
+              fill="url(#emberGradient)"/>
+
+        <ellipse cx="0" cy="-8" rx="10" ry="20" fill="#E63E9E" opacity="0.9"/>
+
+        <!-- Integrated data points -->
+        <g>
+            <circle cx="-12" cy="4" r="2" fill="#FEB2D9"/>
+            <circle cx="12" cy="4" r="2" fill="#FEB2D9"/>
+            <circle cx="0" cy="-20" r="2" fill="#FEB2D9"/>
+            <rect x="-2" y="-12" width="4" height="8" fill="#F565B8" rx="1"/>
+        </g>
+    </g>
+</svg>

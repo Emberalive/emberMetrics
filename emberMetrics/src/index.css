@@ -94,6 +94,12 @@ p {
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
 }
 
+.header > img {
+    height: 150px;
+    width: 150px;
+    margin-right: 0;
+}
+
 .display-none {
     height: 0;
     transition: height 0.3s ease;
@@ -109,6 +115,11 @@ p {
     gap: 50px;
     justify-content: center;
     align-items: center;
+}
+
+.header__details > h1 {
+    color: var(--secondary);
+    margin: 0;
 }
 
 .header-navigation {
@@ -138,9 +149,24 @@ p {
     color: var(--primary);
 }
 
+.header-details__wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 100px
+}
+
+
+
 @media (max-width: 800px) {
-    .header__details {
+    .header-details__wrapper {
+        display: flex;
         flex-direction: column;
+        gap: 20px;
+    }
+    .header__details {
+        flex-direction: row;
         gap: 10px;
     }
     .header__device-name * {
@@ -170,18 +196,33 @@ p {
     }
 }
 
+@media (max-width: 500px) {
+    .header > img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 70px;
+        width: 70px;
+    }
+}
+
 .header__device-name {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-around;
     gap: 1rem;
+    margin: 0;
 }
 
 .header__device-name > p {
     font-size: 20px;
     font-weight: bold;
     color: var(--secondary);
+}
+
+.header__device-name > * {
+    margin: 0;
 }
 
 .header > div > h1 {
