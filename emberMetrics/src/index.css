@@ -69,6 +69,10 @@ main {
     justify-content: center;
 }
 
+.main-single-column {
+    grid-template-columns: repeat(1, 1fr);
+}
+
 p {
     line-height: 1.2;
 }
@@ -231,7 +235,7 @@ p {
     border-radius: var(--border-radius);
     border: none;
     outline: none;
-    background-color: var(--tertiary);
+    background-color: var(--neutral);
     cursor: pointer;
 }
 
@@ -242,7 +246,7 @@ p {
 }
 
 .general-button__clicked {
-    background-color: var(--neutral);
+    background-color: var(--tertiary);
 }
 
 .general-button:hover {
