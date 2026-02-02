@@ -1,4 +1,4 @@
-import {createRef, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import '../tester.css'
 import Header from "./testerComponents/Header.jsx";
 import DeviceData from "./testerComponents/DeviceData.jsx";
@@ -7,13 +7,17 @@ import MemoryData from "./testerComponents/MemoryData.jsx";
 import ChildProcesses from "./testerComponents/ChildProcesses.jsx";
 import NetworkData from "./testerComponents/NetworkData.jsx";
 import DiskData from "./testerComponents/DiskData.jsx";
+import TesterControls from "./TesterControls.jsx";
+import Notification from "./testerComponents/Notification.jsx";
+import Settings from "./testerComponents/Settings.jsx";
 import CollapseWhite from "../assets/collapse-white.svg";
 import CollapseBlack from "../assets/collapse-black.svg";
 import ExpandWhite from "../assets/expand-white.svg";
 import ExpandBlack from "../assets/expand-black.svg";
 import Sparkr from "../assets/SVG 2.1 | Original Sparkr.svg";
+import TextArea from "./TextArea.jsx";
 
-export default function Tester() {
+export default function Tester(props) {
 
     const metricArray = [
         {
@@ -1108,9 +1112,8 @@ export default function Tester() {
         }
     ]
 
-    const [logoImage, setLogoImage] = useState(() => Sparkr)
-
-    const [activeView, setActiveView] = useState("resources")
+    const activeView = props.activeView;
+    const setActiveView = props.setActiveView
 
     function changeFont (type, size) {
         switch (type) {
@@ -1122,8 +1125,9 @@ export default function Tester() {
 
     const [fontClicked, setFontClicked] = useState("medium");
 
-    const [metrics, setMetrics] = useState({"hostName":"sam-box","deviceData":[{"label":"Platform","value":"linux"},{"label":"Name","value":"Linux"},{"label":"Release","value":"6.8.0-90-generic"},{"label":"Architecture","value":"x64"},{"label":"Version","value":"#91-Ubuntu SMP PREEMPT_DYNAMIC Tue Nov 18 14:14:30 UTC 2025"}],"memoryUsage":{"available":"70.69","usage":"29.31"},"cpuUsage":{"cores":[{"usage":"1.01","no":1},{"usage":"3.06","no":2},{"usage":"7.07","no":3},{"usage":"2.00","no":4},{"usage":"4.00","no":5},{"usage":"4.04","no":6},{"usage":"4.08","no":7},{"usage":"4.04","no":8},{"usage":"4.95","no":9},{"usage":"3.00","no":10},{"usage":"1.00","no":11},{"usage":"4.08","no":12},{"usage":"6.06","no":13},{"usage":"1.00","no":14},{"usage":"3.06","no":15},{"usage":"3.00","no":16}],"total":"3.38","temps":{"mainTemp":59.4,"maxTemp":null}},"gpuData":[{"model":"Navi 10 [Radeon RX 5600 OEM/5600 XT / 5700/5700 XT]","memory":{"used":"N/A","total":"N/A","free":"N/A","utilization":"N/A"},"utilization":"N/A","temp":"N/A","power":"N/A","clocks":{"core":"N/A","memory":"N/A"}}],"childProcesses":[{"pid":10377,"name":"webstorm","cpu":2.4614708099505824,"memory":11.2,"user":"sammy"},{"pid":33354,"name":"node","cpu":2.1850657509004106,"memory":0.3,"user":"sammy"},{"pid":11363,"name":"","cpu":0.8616718318117095,"memory":3.7,"user":"sammy"},{"pid":3337,"name":"Xwayland","cpu":0.6323812714632717,"memory":0.5,"user":"sammy"},{"pid":2805,"name":"gnome-shell","cpu":0.4564871429767987,"memory":1.5,"user":"sammy"},{"pid":12269,"name":"full-line-inference","cpu":0.24918334868916997,"memory":1.1,"user":"sammy"},{"pid":11739,"name":"firefox","cpu":0.1748471396264344,"memory":0.9,"user":"sammy"},{"pid":1510,"name":"NetworkManager","cpu":0.09946394170366028,"memory":0,"user":"root"},{"pid":1316,"name":"@dbus-daemon","cpu":0.09213501968339056,"memory":0,"user":"messagebus"},{"pid":12102,"name":"firefox","cpu":0.05339643186196499,"memory":0.7,"user":"sammy"}],"interfaces":[{"name":"wlp4s0","default":true,"mac":"4c:49:6c:4a:9d:68","type":"wireless","addresses":{"ip4":"192.168.0.67","ip6":"fd73:759f:fb95:c124:d903:898c:decc:d62d"},"data":{"transmitted":"1470.82","received":"1979.23"}},{"name":"lo","default":false,"mac":"00:00:00:00:00:00","type":"virtual","addresses":{"ip4":"127.0.0.1","ip6":"::1"},"data":{"transmitted":"3638.97","received":"3638.97"}}],"disks":{"totalDiskUsage":{"rIO":170333,"wIO":163665,"rIO_sec":"0.00","wIO_sec":"0.00","rx_sec":0,"wx_sec":0},"disks":[{"name":"Samsung SSD 970 EVO Plus 2TB","type":"NVMe","vendor":"Samsung","device":"/dev/nvme0n1","size":"1.82TB","interfaceType":"PCIe"},{"name":"KINGSTON SNV2S500G","type":"NVMe","vendor":"Kingston Technology","device":"/dev/nvme1n1","size":"465.76GB","interfaceType":"PCIe"}]}}
-)
+    const [metrics, setMetrics] = useState(null);
+    const [notification, setNotification] = useState("");
+
 
     useEffect(() => {
         setInterval(() => {
@@ -1131,14 +1135,16 @@ export default function Tester() {
             setMetrics(metricArray[index]);
         }, 1000);
     }, [])
-    const [isDarkMode, setIsDarkMode] = useState(() => {
-        const darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
-        if (darkMode) {
-            return true
-        } else {
-            return false
-        }
-    });
+
+    const isDarkMode = props.isDarkMode
+    const setIsDarkMode = props.setIsDarkMode
+
+    function handleNotification (type, message) {
+        setNotification({type: type, message: message})
+        setTimeout(() => {
+            setNotification("")
+        }, 2000)
+    }
 
     const [viewPort,setViewPort ] = useState([]);
 
@@ -1155,6 +1161,7 @@ export default function Tester() {
     useEffect(() => {
         const handleResize = () => {
             setViewPort(window.innerWidth)
+            console.info(window.innerWidth)
         }
         window.addEventListener('resize', handleResize)
         return () => window.removeEventListener('resize', handleResize)
@@ -1167,45 +1174,10 @@ export default function Tester() {
             document.documentElement.classList.remove("dark-mode");
         }    }, [isDarkMode])
 
-    // useEffect( () => {
-    //     console.log("[APP_METRICS] Getting metrics")
-    //     try {
-    //         const interval = setInterval(async () => {
-    //             const response = await fetch (`http://${selectedDevice}:3000`)
-    //             if (response.ok) {
-    //                 if (response.status === 200) {
-    //                     const resData = await response.json()
-    //
-    //                     if (resData === null) {
-    //                         console.error("[APP_METRICS] There was an error fetching metrics")
-    //                     } else {
-    //                         setMetrics(resData)
-    //                         console.log(JSON.stringify(resData))
-    //                     }
-    //                 }else {
-    //                     console.log("[APP_METRICS] There was an error fetching metrics")
-    //                 }
-    //             }
-    //         }, 1000)
-    //         return () => clearInterval(interval)
-    //     } catch (err) {
-    //         console.error("[APP_METRICS] Error getting metrics: ", err.message)
-    //         handleNotification("error", "There was an error fetching metrics")
-    //     }
-    // }, [selectedDevice])
-
-    // let deviceButtonList
-    // if (devices){
-    //     deviceButtonList = devices.map((device) => {
-    //         return(<button className={selectedDevice === device.ip ?"general-button disabled-button": "general-button"} onClick={() => changeRemoteDevice(device.ip)} style={{
-    //             minWidth: "fit-content",
-    //             maxWidth: "fit-content",
-    //         }}>{device.name}</button>)
-    //     })
-    // }
-
     return (
         <>
+            <Notification notification={notification} setNotification={setNotification} />
+
             {(activeView === 'resources' || activeView === "fullScreen") && <div style={{marginLeft: '20px',}} onClick={() => {
                 if (activeView === "resources") {
                     setActiveView("fullScreen")
@@ -1221,9 +1193,10 @@ export default function Tester() {
                     isDarkMode={isDarkMode}
                     setActiveView={setActiveView}
                     activeView={activeView}
-                    logoImage={logoImage}
+                    logoImage={props.logoImage}
+                    viewPort={viewPort}
             />
-            <main>
+            <main >
                 {metrics !== null &&
                     <>
                         {(activeView === "resources" || activeView === "fullScreen") &&<>
@@ -1243,6 +1216,93 @@ export default function Tester() {
                             </div>
                         </>}
                     </>
+                }
+                {activeView === "settings" &&<Settings setActiveView={setActiveView}
+                                                       setIsDarkMode={setIsDarkMode}
+                                                       isDarkMode={isDarkMode}
+                                                       fontClicked={fontClicked}
+                                                       setFontClicked={setFontClicked}
+                                                       windowWidth={windowWidth}
+                                                       handleNotification={handleNotification}
+                                                       changeFont={changeFont}
+                                                       setLogoImage={props.setLogoImage}
+                />}
+                {activeView === 'devices' &&
+                    <section style={{width: "calc(70% - 2rem)", border: 'none'}}>
+                        <h1 style={{margin: '0'}}>Device Management Page — Overview & Functionality</h1>
+                        <TextArea data={{
+                            text: ["The Device Management page is used to create, view, edit, and delete remote devices that your application can connect to. Each device is defined by a public IP address and a friendly name, allowing you to manage multiple remote endpoints in one place.\n" +
+                            "\n" +
+                            "Adding a New Remote Device\n" +
+                            "\n" +
+                            "At the top of the page, you can register a new remote device using the following fields:\n" +
+                            "\n" +
+                            "Remote Device IP Address\n" +
+                            "Enter the public IP address of the remote device you want to manage. This is the external IP that your app will use to connect to the device over the internet.\n" +
+                            "A helper message reminds you to ensure this is a public IP, not a local/private one.\n" +
+                            "\n" +
+                            "Remote Device Name\n" +
+                            "Enter a friendly name for the device (for example, My Server, Office PC, Home NAS). This name is used to easily identify the device in the list.\n" +
+                            "\n" +
+                            "Create Button\n" +
+                            "Clicking Create will save the new device and add it to the Remote Devices list below.\n" +
+                            "\n" +
+                            "This allows you to quickly register and manage multiple remote systems."],
+                            code: []
+                        }} />
+                        <h1 style={{margin: '0'}}>Viewing Existing Devices</h1>
+                        <TextArea data={{
+                            text: ["Under the Remote Devices section, you can see a list of all devices currently registered in your system.\n" +
+                            "\n" +
+                            "For each device, the page displays:\n" +
+                            "\n" +
+                            "The device name (for example, localhost)\n" +
+                            "\n" +
+                            "The associated IP address (for example, 127.0.0.1)\n" +
+                            "\n" +
+                            "This gives you a clear overview of all configured remote endpoints at a glance."],
+                            code: []
+                        }}/>
+                        <h1 style={{margin: '0'}}>Editing a Device</h1>
+                        <TextArea data={{
+                            text: ["Each device entry includes an Edit option.\n" +
+                            "\n" +
+                            "When you click Edit, you can:\n" +
+                            "\n" +
+                            "Change the device name (to better reflect what the device is used for)\n" +
+                            "\n" +
+                            "Update the IP address (for example, if the device’s public IP has changed)\n" +
+                            "\n" +
+                            "This allows you to keep your device list accurate without needing to delete and recreate devices."],
+                            code: []
+                        }}/>
+                        <h1 style={{margin: '0'}}>Deleting a Device</h1>
+                        <TextArea data={{
+                            text: ["Each device also includes a Delete button.\n" +
+                            "\n" +
+                            "Clicking Delete will permanently remove that device from your list.\n" +
+                            "\n" +
+                            "You will be asked to confirm your choice to delete the device to remove accidental deletions.\n" +
+                            "\n" +
+                            "This is useful if a server is decommissioned, no longer accessible, or was added by mistake."],
+                            code: []
+                        }}/>
+                        <h1 style={{margin: '0'}}>Typical Use Cases</h1>
+                        <TextArea data={{
+                            text: ["On this page, you can:\n" +
+                            "\n" +
+                            "- Register new remote servers or machines\n" +
+                            "\n" +
+                            "- Maintain and update device IP addresses as they change\n" +
+                            "\n" +
+                            "- Rename devices for better organization\n" +
+                            "\n" +
+                            "- Remove devices that are no longer needed\n" +
+                            "\n" +
+                            "- View all configured remote devices in one centralized list"],
+                            code: []
+                        }}/>
+                    </section>
                 }
             </main>
         </>

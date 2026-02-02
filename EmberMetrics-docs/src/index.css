@@ -104,6 +104,10 @@ main {
     transition: all 0.3s ease-in-out;
 }
 
+.header > h1 {
+    color: var(--secondary);
+}
+
 @media (max-width: 1000px) {
     .header-logo > img {
         height: 100px;
@@ -135,6 +139,26 @@ main {
     .header-logo > img {
         top: 60px;
     }
+}
+
+#logo-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 700px;
+    width: 100%;
+    margin: 1px 50px;
+    border-top: 1px solid var(--tertiary);
+    border-bottom: 1px solid var(--tertiary);
+}
+
+.page-break {
+    height: 6px;
+    width: 100%;
+    background-color: var(--tertiary);
+    margin: 20px 0;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* Section Styles */
@@ -216,8 +240,9 @@ section {
     background-color: var(--neutral);
     margin: 10px 50px;
     padding-bottom: 0.1px;
+    max-width: 700px;
     width: 100% !important; /* Force full width temporarily to test */
-    max-width: none !important; /* Force no max-width */
+    /*max-width: none !important; !* Force no max-width *!*/
 }
 
 .text-area__container > p {
@@ -225,14 +250,23 @@ section {
     padding: 30px;
 }
 
-/*@media (min-width: 701px) {*/
-/*    .text-area__container {*/
-/*        max-width: 700px;*/
-/*    }*/
-/*}*/
-
 .code-insert__container {
     margin: 0 30px 30px 30px;
+}
+
+/*Tester Control*/
+.tester-controls__wrapper {
+    margin: 20px;
+    padding: 10px;
+    display: flex;
+    height: 200px;
+    width: calc(100% - 40px);
+    background-color: var(--neutral);
+    border-radius: 7px;
+}
+
+.tester-controls__wrapper > h1 {
+    margin: 0;
 }
 
 /* Dark Mode Specific Adjustments */

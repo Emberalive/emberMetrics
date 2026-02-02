@@ -2,11 +2,11 @@ export default function Header (props) {
     const metrics = props.metrics
     return (
         <>
-        <header style={{display: 'flex', flexDirection: 'row', width: '100%'}} className={props.activeView === 'fullScreen' ? "display-none" : 'header'}>
+        <header style={{display: 'flex', flexDirection: 'row'}} className={props.activeView === 'fullScreen' ? "display-none" : 'header'}>
             <img src={props.logoImage} alt="ember metrics logo" />
+            {props.viewPort > 1100 && <h1>Ember Metrics</h1>}
             <header className="header-details__wrapper">
                 <div className="header__details">
-                    {props.activeView !== 'resources' && <h1>Ember Metrics</h1>}
                     {(metrics && props.activeView === "resources") && <div className="header__device-name">
                         <h3>Device:</h3>
                         <p style={{

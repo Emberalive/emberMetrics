@@ -3,7 +3,7 @@ export default function Menu (props) {
     return (
             <header className="header">
                 <div className="header-logo">
-                    <img src={Logo} alt="Logo" />
+                    <img src={props.logoImage} alt="Logo" />
                     <h1>Ember Metrics - Docs</h1>
                 </div>
                 <div className={'navigation'}>
