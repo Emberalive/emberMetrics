@@ -247,6 +247,7 @@ export default function App() {
                    setActiveView={setActiveView}
                    activeView={activeView}
                   logoImage={logoImage}
+                  viewPort={viewPort}
           />
           {(devices && activeView === "resources") && <div className={"device-navigation__wrapper"} ref={groupsRef} onWheel={handleWheel}>
               <div className={"device-navigation"}>

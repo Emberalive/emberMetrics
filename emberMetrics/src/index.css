@@ -157,7 +157,9 @@ p {
     gap: 100px
 }
 
-
+.header > h1 {
+    color: var(--secondary);
+}
 
 @media (max-width: 800px) {
     .header-details__wrapper {
