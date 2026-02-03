@@ -254,7 +254,7 @@ export default function App() {
                   {deviceButtonList}
               </div>
           </div>}
-          <main className={activeView === 'resources' ? '' : 'main-single-column'}>
+          <main className={(activeView === 'resources' || activeView === 'fullScreen') ? deviceType === '' ? 'main-single-column' : '' : 'main-single-column'}>
               {deviceType === "" && <DeviceTypeSelection setDeviceType={setDeviceType} activeView={activeView} />}
 
               {metrics !== null &&

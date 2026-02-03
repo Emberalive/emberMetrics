@@ -1,3 +1,5 @@
+import TextArea from "../TextArea.jsx";
+
 export default function NetworkData(props) {
     const networkData = props.metrics.interfaces
     let networkDataList = []
@@ -53,6 +55,17 @@ export default function NetworkData(props) {
             <header className={"section-header"}>
                 <h1>Network Interfaces</h1>
             </header>
+            {props.activeView !== 'fullScreen' && <TextArea data={{
+                text: [{
+                    text: 'This module shows the network interfaces with basic information about them including:\n\n' +
+                        '- Name of interface\n' +
+                        '- The default interface\n' +
+                        '- The type of interface\n' +
+                        '- Ip6 and Ip4 addresses\n\n' +
+                        'The module also shows the data transmitted and received per second in bytes per interface'
+                }],
+                code: []
+            }}/>}
             <div className={"network-container"}>
                 {networkDataList}
             </div>

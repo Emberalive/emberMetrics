@@ -13,7 +13,9 @@ export default function Menu (props) {
                     <p className={'navigation-item'} onClick={() => {
                         props.setActiveView('tester');
                     }}>Tester</p>
-                    <p className={'navigation-item'}>Getting started</p>
+                    <p className={'navigation-item'} onClick={() => {
+                        props.setActiveView('getting-started');
+                    }}>Getting started</p>
                 </div>
             </header>
 

@@ -1,3 +1,5 @@
+import TextArea from "../TextArea.jsx";
+
 export default function ChildProcesses (props) {
     let childDataList;
     const children = props.metrics.childProcesses
@@ -30,6 +32,13 @@ export default function ChildProcesses (props) {
             <header className={'section-header'} >
                 <h1>Child Processes</h1>
             </header>
+            {props.activeView !== 'fullScreen' && <TextArea data={{
+                text: [{
+                    text: 'This displays the child processes, as default it changes every 1 minute, but eventually you will be able to change it to whatever interval you would like' +
+                        '\n\nThe processes are arranged by cpu usage and only display the first 10, you will eventually be able to choose how many you want to display'
+                }],
+                code: []
+            }}/>}
             <div className="child-processes__table">
                 <div className={'child-processes__row child-processes__row-header'}>
                     <p className={'child-processes__header'}>

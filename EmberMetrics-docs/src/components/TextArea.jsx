@@ -19,14 +19,19 @@ export default function TextArea(props) {
 
         const textDisplay = textList.map((txt, i) => (
             <Fragment key={i}>
-                <p>{txt}</p>
-                {codeList[i] && (
+                <p>{txt.text}</p>
+                {(codeList[i] && codeList[i].code) && (
                     <CodeInsert
                         code={codeList[i].code}
                         language={codeList[i].language}
                         isDarkMode={isDarkMode}
                     />
                 )}
+                {txt.img  &&
+                    <div className={'text-area__image-container'}>
+                        <img src={txt.img} alt={txt.text} />
+                    </div>
+                }
             </Fragment>
         ));
 

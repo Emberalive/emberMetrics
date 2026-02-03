@@ -8,7 +8,10 @@ export default function Settings (props) {
         <div className="settings-wrapper">
             <section style={{width: "calc(70% - 2rem)", marginBottom: "20px", border: 'none'}} >
                 <TextArea data={{
-                    text: ["This is the Settings for EmberMetrics, here will allow you to control the app as well as the website your currently on. The themes will change as well as the viewing mode (Dark or Light mode), Have a bit of fun and play around"],
+                    text: [{
+                        text: "This is the Settings for EmberMetrics, here will allow you to control the app as well as the website your currently on. The themes will change as well as the viewing mode (Dark or Light mode), Have a bit of fun and play around",
+                        img: null
+                    }],
                     code: []
                 }}
                 />

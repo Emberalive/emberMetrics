@@ -7,14 +7,12 @@ import MemoryData from "./testerComponents/MemoryData.jsx";
 import ChildProcesses from "./testerComponents/ChildProcesses.jsx";
 import NetworkData from "./testerComponents/NetworkData.jsx";
 import DiskData from "./testerComponents/DiskData.jsx";
-import TesterControls from "./TesterControls.jsx";
 import Notification from "./testerComponents/Notification.jsx";
 import Settings from "./testerComponents/Settings.jsx";
 import CollapseWhite from "../assets/collapse-white.svg";
 import CollapseBlack from "../assets/collapse-black.svg";
 import ExpandWhite from "../assets/expand-white.svg";
 import ExpandBlack from "../assets/expand-black.svg";
-import Sparkr from "../assets/SVG 2.1 | Original Sparkr.svg";
 import TextArea from "./TextArea.jsx";
 
 export default function Tester(props) {
@@ -1201,18 +1199,19 @@ export default function Tester(props) {
                     <>
                         {(activeView === "resources" || activeView === "fullScreen") &&<>
                             <div className={"left-column"}>
-                                <ChildProcesses metrics={metrics}/>
-                                <DeviceData metrics={metrics}/>
-                                <DiskData metrics={metrics}/>
+                                <ChildProcesses metrics={metrics} activeView={activeView} />
+                                <DeviceData metrics={metrics} activeView={activeView}/>
+                                <DiskData metrics={metrics} activeView={activeView}/>
 
                             </div>
 
                             <div className={"right-column"}>
-                                <CpuData metrics={metrics}/>
+                                <CpuData metrics={metrics} activeView={activeView}/>
                                 <MemoryData metrics={metrics}
                                             viewPort={viewPort}
+                                            activeView={activeView}
                                 />
-                                <NetworkData metrics={metrics}/>
+                                <NetworkData metrics={metrics} activeView={activeView}/>
                             </div>
                         </>}
                     </>
@@ -1228,78 +1227,93 @@ export default function Tester(props) {
                                                        setLogoImage={props.setLogoImage}
                 />}
                 {activeView === 'devices' &&
-                    <section style={{width: "calc(70% - 2rem)", border: 'none'}}>
+                    <section style={{border: 'none', width: '100%'}}>
                         <h1 style={{margin: '0'}}>Device Management Page — Overview & Functionality</h1>
                         <TextArea data={{
-                            text: ["The Device Management page is used to create, view, edit, and delete remote devices that your application can connect to. Each device is defined by a public IP address and a friendly name, allowing you to manage multiple remote endpoints in one place.\n" +
-                            "\n" +
-                            "Adding a New Remote Device\n" +
-                            "\n" +
-                            "At the top of the page, you can register a new remote device using the following fields:\n" +
-                            "\n" +
-                            "Remote Device IP Address\n" +
-                            "Enter the public IP address of the remote device you want to manage. This is the external IP that your app will use to connect to the device over the internet.\n" +
-                            "A helper message reminds you to ensure this is a public IP, not a local/private one.\n" +
-                            "\n" +
-                            "Remote Device Name\n" +
-                            "Enter a friendly name for the device (for example, My Server, Office PC, Home NAS). This name is used to easily identify the device in the list.\n" +
-                            "\n" +
-                            "Create Button\n" +
-                            "Clicking Create will save the new device and add it to the Remote Devices list below.\n" +
-                            "\n" +
-                            "This allows you to quickly register and manage multiple remote systems."],
+                            text: [{
+                                text: "The Device Management page is used to create, view, edit, and delete remote devices that your application can connect to. Each device is defined by a public IP address and a friendly name, allowing you to manage multiple remote endpoints in one place.\n" +
+                                        "\n" +
+                                    "Adding a New Remote Device\n" +
+                                    "\n" +
+                                    "At the top of the page, you can register a new remote device using the following fields:\n" +
+                                    "\n" +
+                                    "Remote Device IP Address\n" +
+                                    "Enter the public IP address of the remote device you want to manage. This is the external IP that your app will use to connect to the device over the internet.\n" +
+                                    "A helper message reminds you to ensure this is a public IP, not a local/private one.\n" +
+                                    "\n" +
+                                    "Remote Device Name\n" +
+                                    "Enter a friendly name for the device (for example, My Server, Office PC, Home NAS). This name is used to easily identify the device in the list.\n" +
+                                    "\n" +
+                                    "Create Button\n" +
+                                    "Clicking Create will save the new device and add it to the Remote Devices list below.\n" +
+                                    "\n" +
+                                    "This allows you to quickly register and manage multiple remote systems.",
+                                img: null
+                            }],
                             code: []
                         }} />
                         <h1 style={{margin: '0'}}>Viewing Existing Devices</h1>
                         <TextArea data={{
-                            text: ["Under the Remote Devices section, you can see a list of all devices currently registered in your system.\n" +
-                            "\n" +
-                            "For each device, the page displays:\n" +
-                            "\n" +
-                            "The device name (for example, localhost)\n" +
-                            "\n" +
-                            "The associated IP address (for example, 127.0.0.1)\n" +
-                            "\n" +
-                            "This gives you a clear overview of all configured remote endpoints at a glance."],
+                            text: [{
+                                text: "Under the Remote Devices section, you can see a list of all devices currently registered in your system.\n" +
+                                        "\n" +
+                                    "For each device, the page displays:\n" +
+                                    "\n" +
+                                    "The device name (for example, localhost)\n" +
+                                    "\n" +
+                                    "The associated IP address (for example, 127.0.0.1)\n" +
+                                    "\n" +
+                                    "This gives you a clear overview of all configured remote endpoints at a glance.",
+                                img: null
+                            }],
                             code: []
                         }}/>
                         <h1 style={{margin: '0'}}>Editing a Device</h1>
                         <TextArea data={{
-                            text: ["Each device entry includes an Edit option.\n" +
-                            "\n" +
-                            "When you click Edit, you can:\n" +
-                            "\n" +
-                            "Change the device name (to better reflect what the device is used for)\n" +
-                            "\n" +
-                            "Update the IP address (for example, if the device’s public IP has changed)\n" +
-                            "\n" +
-                            "This allows you to keep your device list accurate without needing to delete and recreate devices."],
+                            text: [{
+                                text: "Each device entry includes an Edit option.\n" +
+                                        "\n" +
+                                    "When you click Edit, you can:\n" +
+                                    "\n" +
+                                    "Change the device name (to better reflect what the device is used for)\n" +
+                                    "\n" +
+                                    "Update the IP address (for example, if the device’s public IP has changed)\n" +
+                                    "\n" +
+                                    "This allows you to keep your device list accurate without needing to delete and recreate devices.",
+                                img: null
+                            }],
                             code: []
                         }}/>
                         <h1 style={{margin: '0'}}>Deleting a Device</h1>
                         <TextArea data={{
-                            text: ["Each device also includes a Delete button.\n" +
-                            "\n" +
-                            "Clicking Delete will permanently remove that device from your list.\n" +
-                            "\n" +
-                            "You will be asked to confirm your choice to delete the device to remove accidental deletions.\n" +
-                            "\n" +
-                            "This is useful if a server is decommissioned, no longer accessible, or was added by mistake."],
+                            text: [{
+                                text: "Each device also includes a Delete button.\n" +
+                                        "\n" +
+                                    "Clicking Delete will permanently remove that device from your list.\n" +
+                                    "\n" +
+                                    "You will be asked to confirm your choice to delete the device to remove accidental deletions.\n" +
+                                    "\n" +
+                                    "This is useful if a server is decommissioned, no longer accessible, or was added by mistake.",
+                                img: null
+                            }],
                             code: []
                         }}/>
                         <h1 style={{margin: '0'}}>Typical Use Cases</h1>
                         <TextArea data={{
-                            text: ["On this page, you can:\n" +
-                            "\n" +
-                            "- Register new remote servers or machines\n" +
-                            "\n" +
-                            "- Maintain and update device IP addresses as they change\n" +
-                            "\n" +
-                            "- Rename devices for better organization\n" +
-                            "\n" +
-                            "- Remove devices that are no longer needed\n" +
-                            "\n" +
-                            "- View all configured remote devices in one centralized list"],
+                            text: [{
+                                text: "On this page, you can:\n" +
+                                        "\n" +
+                                    "- Register new remote servers or machines\n" +
+                                    "\n" +
+                                    "- Maintain and update device IP addresses as they change\n" +
+                                    "\n" +
+                                    "- Rename devices for better organization\n" +
+                                    "\n" +
+                                    "- Remove devices that are no longer needed\n" +
+                                    "\n" +
+                                    "- View all configured remote devices in one centralized list",
+                                img: null
+                            }],
                             code: []
                         }}/>
                     </section>

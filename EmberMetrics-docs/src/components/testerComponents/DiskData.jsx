@@ -1,3 +1,5 @@
+import TextArea from "../TextArea.jsx";
+
 export default function DiskData (props) {
     const disks = props.metrics.disks.disks
     const diskData = props.metrics.disks.totalDiskUsage
@@ -34,6 +36,16 @@ export default function DiskData (props) {
             <header className="section-header">
                 <h1>Disk Data</h1>
             </header>
+            {props.activeView !== 'fullScreen' && <TextArea data={{
+                text: [{
+                    text: 'This Module shows the storage devices on the system, it shows basic information including their name, storage capacity and type of device.\n\n' +
+                        'It also shows the total disk usage:\n\n' +
+                        '- Total reads \'rIO\'\n' +
+                        '- Total writes \'wIO\'\n' +
+                        '- Reads and writes per second \'rIO_sec\', \'wIO_sec\''
+                }],
+                code: []
+            }}/>}
             <div className={'disk-container'}>
                 {diskList}
             </div>

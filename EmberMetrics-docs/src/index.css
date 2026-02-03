@@ -242,12 +242,25 @@ section {
     padding-bottom: 0.1px;
     max-width: 700px;
     width: 100% !important; /* Force full width temporarily to test */
-    /*max-width: none !important; !* Force no max-width *!*/
 }
 
 .text-area__container > p {
     margin: 0;
     padding: 30px;
+    font-size: 20px;
+}
+
+.text-area__image-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.text-area__image-container > img {
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    width: calc(100% - 60px);
 }
 
 .code-insert__container {

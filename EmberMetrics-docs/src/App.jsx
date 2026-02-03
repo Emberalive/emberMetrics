@@ -6,6 +6,7 @@ import LogoLight from "./assets/metrics-logo_light.svg";
 import LogoDark from "./assets/metrics-logo_dark.svg";
 import Tester from "./components/Tester.jsx";
 import Sparkr from "./assets/SVG 2.1 | Original Sparkr.svg";
+import GettingStarted from "./components/GettingStarted.jsx";
 
 export default function App() {
     //data for all of the text areas
@@ -23,13 +24,7 @@ export default function App() {
         '<SyntaxHighlighter language="javascript" style={oneDark}>\n' +
         '  {code}\n' +
         '</SyntaxHighlighter>\n'
-    const testData2 = {
-        text: [testData],
-        code: [{
-            code: testCode,
-            language: 'javascript',
-        }],
-    };
+
 
     const [logoImage, setLogoImage] = useState(() => Sparkr)
 
@@ -91,9 +86,17 @@ export default function App() {
                     <section style={{height: "100%", borderRadius: 0, border: 'none'}}>
                         <h1>EmberMetrics Visual Interface Showcase: The User Experience</h1>
                         <TextArea data={{
-                            text: ["EmberMetrics transforms raw system data into an intelligent visual narrative that tells the story of your computer's performance in real time. This isn't just another monitoring tool - it's a visual translation layer that converts complex technical metrics into intuitive, actionable insights that anyone can understand.\n" +
-                            "\n" +
-                            "The interface serves as the central nervous system of the application, where data from multiple sources converges into a cohesive, comprehensible display. Each visual element is carefully designed not merely to present information, but to reveal patterns, highlight anomalies, and enable rapid decision-making. The dashboard acts as your digital co-pilot for system management, providing both high-level overviews for quick status checks and granular details for deep troubleshooting."],
+                            text: [{
+                                text: "EmberMetrics transforms raw system data into an intelligent visual narrative that tells the story of your" +
+                                        " computer's performance in real time. This isn't just another monitoring tool - it's a visual translation layer that " +
+                                    "converts complex technical metrics into intuitive, actionable insights that anyone can understand.\n" +
+                                    "\n" +
+                                    "The interface serves as the central nervous system of the application, where data from multiple " +
+                                    "sources converges into a cohesive, comprehensible display. Each visual element is carefully designed not merely to present " +
+                                    "information, but to reveal patterns, highlight anomalies, and enable rapid decision-making. The dashboard acts as your digital co-pilot " +
+                                    "for system management, providing both high-level overviews for quick status checks and granular details for deep troubleshooting.",
+                                img: null
+                            }],
                             code: []
                         }}
                         />
@@ -104,6 +107,7 @@ export default function App() {
 
 
                 </>}
+            {activeView === 'getting-started' && <GettingStarted isDarkMode={isDarkMode}/>}
         </>
     )
 
