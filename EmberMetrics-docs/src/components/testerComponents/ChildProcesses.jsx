@@ -34,8 +34,8 @@ export default function ChildProcesses (props) {
             </header>
             {props.activeView !== 'fullScreen' && <TextArea data={{
                 text: [{
-                    text: 'This displays the child processes, as default it changes every 1 minute, but eventually you will be able to change it to whatever interval you would like' +
-                        '\n\nThe processes are arranged by cpu usage and only display the first 10, you will eventually be able to choose how many you want to display'
+                    text: 'This displays the child processes, as default it changes every 1 minute, but eventually you will be able to change it to whatever interval you would like.' +
+                        '\n\nThe processes are arranged by cpu usage and only display the first 10, you will eventually be able to choose how many you want to display.'
                 }],
                 code: []
             }}/>}

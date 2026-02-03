@@ -9,7 +9,7 @@ export default function MemoryData(props) {
             </header>
             {props.activeView !== 'fullScreen' && <TextArea data={{
                 text: [{
-                    text: 'This module shows the memory usage of the device\n\n' +
+                    text: 'This module shows the memory usage of the device:\n\n' +
                         '- Memory used\n' +
                         '- Memory Available\n\n' +
                         'NOTE: This module will show the total memory in the system, but has not been implemented.'

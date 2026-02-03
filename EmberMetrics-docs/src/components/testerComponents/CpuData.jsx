@@ -32,9 +32,9 @@ export default function CpuData (props) {
             </header>
             {props.activeView !== 'fullScreen' && <TextArea data={{
                 text: [{
-                    text: 'This Module shows the cpu usage, It has the total usage of all cores divided by the number of cores, so the value will never go above 100%' +
+                    text: 'This Module shows the cpu usage, It has the total usage of all cores divided by the number of cores, so the value will never go above 100%.' +
                         '.\n\n' +
-                        'the bar on each core shows the total usage of the core based on the width of the core container'
+                        'the bar on each core shows the total usage of the core based on the width of the core container.'
                 }],
                 code: []
             }}/>}

@@ -19,7 +19,8 @@ export default function TextArea(props) {
 
         const textDisplay = textList.map((txt, i) => (
             <Fragment key={i}>
-                <p>{txt.text}</p>
+                {txt.title && <h2 className={'app-home__sub-header'}>{txt.title}</h2>}
+                {txt.text && <p>{txt.text}</p>}
                 {(codeList[i] && codeList[i].code) && (
                     <CodeInsert
                         code={codeList[i].code}

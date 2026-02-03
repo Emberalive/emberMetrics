@@ -68,17 +68,110 @@ export default function App() {
             {testerView !== 'fullScreen' &&
                 <>
                     <Menu setActiveView={setActiveView} activeView={activeView} logoImage={logoImage}/>
-                    <section style={{ height: "100%", borderRadius: 0, border: 'none'}}>
+                    {activeView === 'home' && <section style={{ height: "100%", borderRadius: 0, border: 'none'}}>
                         {activeView === 'home' &&
                             <>
                                 <div id={'logo-wrapper'}>
                                     <img  src={isDarkMode ? LogoDark : LogoLight} alt={isDarkMode ? "dark Logo" : "light logo"}/>
                                 </div>
-                                <TextArea text={testData} code={testCode} isDarkMode={isDarkMode} language={"javascript"}/>
+                                <TextArea data={{
+                                    text: [{
+                                        text: 'Monitor, manage, and understand your infrastructure - on your own terms.\n\n' +
+                                        'EmberMetrics is a self-hosted monitoring and system administration platform that delivers real-time system metrics, remote device visibility, and centralized management without relying on external SaaS providers. Built for developers, sysadmins, and homelab environments, EmberMetrics combines lightweight collectors with a modern web dashboard to give you complete control over your monitoring stack.',
+                                        img: null,
+                                    }],
+                                    code: [{
+                                        code: null,
+                                        language: null,
+                                    }]
+                                }}/>
+                                <h1>Key Benefits</h1>
+                                <TextArea data={{
+                                    text: [{
+                                        text: '- Run entirely on your own infrastructure with no external dependencies.\n' +
+                                            '\n' +
+                                            '- Keep your system data private and under your control.',
+                                        img: null,
+                                        title: 'Full Control, No SaaS Lock-In'
+                                    },
+                                        {
+                                            text: '- See CPU, memory, processes, network, and storage usage in real time.\n' +
+                                                '\n' +
+                                                '- Quickly identify resource bottlenecks and misbehaving processes.',
+                                            img: null,
+                                            title: 'Real-Time Operational Visibility',
+                                        },
+                                        {
+                                            text: '- Ideal for homelabs, small clusters, internal servers, and dev environments.\n' +
+                                                '\n' +
+                                                '- Simple deployment with lightweight Node.js collectors.',
+                                            img: null,
+                                            title: 'Designed for Homelabs and Internal Infrastructure'
+                                        },
+                                        {
+                                            text: '- Manage and monitor multiple remote devices from a single dashboard.\n' +
+                                                '\n' +
+                                                '- Keep a clear inventory of monitored systems.',
+                                            img: null,
+                                            title: 'Centralized Device Management'
+                                        },
+                                        {
+                                            text: '- Structured JSON output makes integration and customization easy.\n' +
+                                                '\n' +
+                                                '- Designed to evolve with historical metrics, and automation.',
+                                            img: null,
+                                            title: 'Extensible by Design'
+                                        },
+                                        {
+                                            text: 'Each monitored device runs a lightweight EmberMetrics collector that exposes' +
+                                                ' real-time system metrics over HTTP. These collectors are designed to be low overhead, ' +
+                                                'read-only, and easy to deploy on internal systems.',
+                                            img: null,
+                                            title: 'Lightweight Collectors (Remote Devices)'
+                                        }
+                                    ],
+                                    code: [{}]
+                                }}/>
+                                <h1>Architecture Overview</h1>
+                                    <TextArea data={{
+                                        text: [
+                                            {
+                                            text: 'Each monitored device runs a lightweight EmberMetrics collector that exposes' +
+                                                ' real-time system metrics over HTTP. These collectors are designed to be low overhead, ' +
+                                                'read-only, and easy to deploy on internal systems.',
+                                            img: null,
+                                            title: 'Lightweight Collectors (Remote Devices)'
+                                        },
+                                            {
+                                                text: 'The hosted EmberMetrics API acts as the control plane, providing local system ' +
+                                                    'metrics while managing a persistent list of remote devices. This central host is ' +
+                                                    'responsible for coordinating device access and serving data to the dashboard.',
+                                                img: null,
+                                                title: 'Central Host & Control Plane'
+                                            },
+                                            {
+                                                text: 'The EmberMetrics web dashboard connects to the hosted API to present system ' +
+                                                    'metrics, device information, and management controls in a modern, responsive ' +
+                                                    'interface. This separation allows the UI to remain flexible while the data layer ' +
+                                                    'stays lightweight and reliable.',
+                                                img: null,
+                                                title: 'Web Dashboard'
+                                            }
+                                        ],
+                                        code: [{
+                                            code: null,
+                                            language: null,
+                                        }]
+                                    }}/>
                             </>
                     }
-                    </section>
+                    </section>}
                 </>
+            }
+            {activeView === 'getting-started' &&
+                <section style={{ height: "100%", borderRadius: 0, border: 'none'}}>
+                    <GettingStarted isDarkMode={isDarkMode}/>
+                </section>
             }
             {activeView === 'tester' && <>
             {testerView !== 'fullScreen' &&
@@ -104,11 +197,7 @@ export default function App() {
                     <div className={'page-break'}></div>
                 </>}
                 <Tester logoImage={logoImage} setLogoImage={setLogoImage} activeView={testerView} setActiveView={setTesterView} isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
-
-
-                </>}
-            {activeView === 'getting-started' && <GettingStarted isDarkMode={isDarkMode}/>}
+            </>}
         </>
     )
-
 }

@@ -260,7 +260,7 @@ p {
 
 .full-screen__close {
     z-index: 1;
-    position: absolute;
+    position: fixed;
     left: calc(100% - (var(--section-padding)* 3) - 10px);
     display: flex;
     align-items: center;
@@ -273,6 +273,7 @@ p {
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
     cursor: pointer;
     transition: transform 0.2s ease-in-out;
+    top: var(--section-padding);
 }
 
 .full-screen__close:hover {

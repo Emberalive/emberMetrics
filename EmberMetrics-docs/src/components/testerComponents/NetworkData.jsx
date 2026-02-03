@@ -62,7 +62,7 @@ export default function NetworkData(props) {
                         '- The default interface\n' +
                         '- The type of interface\n' +
                         '- Ip6 and Ip4 addresses\n\n' +
-                        'The module also shows the data transmitted and received per second in bytes per interface'
+                        'The module also shows the data transmitted and received per second in bytes per interface.'
                 }],
                 code: []
             }}/>}

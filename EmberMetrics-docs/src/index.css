@@ -78,6 +78,18 @@ main {
     justify-content: center;
 }
 
+.app-home__sub-header {
+    max-width: 700px;
+    width: 100%;
+    text-align: left;
+    margin: 0 0 0 20px;
+}
+
+.app-home__header {
+    color: var(--tertiary);
+    border-bottom: 1px solid var(--secondary);
+}
+
 /* Header Styles */
 .header {
     border-radius: var(--border-radius);
@@ -239,7 +251,7 @@ section {
     border-radius: 5px;
     background-color: var(--neutral);
     margin: 10px 50px;
-    padding-bottom: 0.1px;
+    padding: var(--element-padding);
     max-width: 700px;
     width: 100% !important; /* Force full width temporarily to test */
 }
