@@ -13,6 +13,10 @@ import CollapseWhite from "../assets/collapse-white.svg";
 import CollapseBlack from "../assets/collapse-black.svg";
 import ExpandWhite from "../assets/expand-white.svg";
 import ExpandBlack from "../assets/expand-black.svg";
+import DeviceManagement from "../assets/device-management.png";
+import EditingDevice from "../assets/editing-device.png";
+import DeleteDevice from "../assets/delete-device.png";
+import DeviceListItem from "../assets/device-list-item.png";
 import TextArea from "./TextArea.jsx";
 
 export default function Tester(props) {
@@ -1248,7 +1252,7 @@ export default function Tester(props) {
                                     "Clicking Create will save the new device and add it to the Remote Devices list below.\n" +
                                     "\n" +
                                     "This allows you to quickly register and manage multiple remote systems.",
-                                img: null
+                                img: DeviceManagement
                             }],
                             code: []
                         }} />
@@ -1264,7 +1268,7 @@ export default function Tester(props) {
                                     "The associated IP address (for example, 127.0.0.1)\n" +
                                     "\n" +
                                     "This gives you a clear overview of all configured remote endpoints at a glance.",
-                                img: null
+                                img: DeviceListItem
                             }],
                             code: []
                         }}/>
@@ -1280,7 +1284,7 @@ export default function Tester(props) {
                                     "Update the IP address (for example, if the device’s public IP has changed)\n" +
                                     "\n" +
                                     "This allows you to keep your device list accurate without needing to delete and recreate devices.",
-                                img: null
+                                img: EditingDevice
                             }],
                             code: []
                         }}/>
@@ -1294,7 +1298,7 @@ export default function Tester(props) {
                                     "You will be asked to confirm your choice to delete the device to remove accidental deletions.\n" +
                                     "\n" +
                                     "This is useful if a server is decommissioned, no longer accessible, or was added by mistake.",
-                                img: null
+                                img: DeleteDevice
                             }],
                             code: []
                         }}/>

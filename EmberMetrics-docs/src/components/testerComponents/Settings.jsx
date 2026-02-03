@@ -6,7 +6,10 @@ export default function Settings (props) {
 
     return (
         <div className="settings-wrapper">
-            <section style={{width: "calc(70% - 2rem)", marginBottom: "20px", border: 'none'}} >
+            <section className="settings">
+                <header className="settings-header">
+                    <h1>Settings</h1>
+                </header>
                 <TextArea data={{
                     text: [{
                         text: "This is the Settings for EmberMetrics, here will allow you to control the app as well as the website your currently on. The themes will change as well as the viewing mode (Dark or Light mode), Have a bit of fun and play around",
@@ -15,11 +18,6 @@ export default function Settings (props) {
                     code: []
                 }}
                 />
-            </section>
-            <section className="settings">
-                <header className="settings-header">
-                    <h1>Settings</h1>
-                </header>
                 <div className="settings-entry">
                     <p className="settings-entry__label">Display Mode: </p>
                     <div className={"settings-entry__button-container"} style={{ display: "flex"}}>

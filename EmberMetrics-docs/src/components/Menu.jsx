@@ -1,4 +1,3 @@
-import Logo from '../assets/logo.svg';
 export default function Menu (props) {
     return (
             <header className="header">
@@ -18,6 +17,5 @@ export default function Menu (props) {
                     }}>Getting started</p>
                 </div>
             </header>
-
     )
 }
