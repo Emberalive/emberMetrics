@@ -1198,7 +1198,7 @@ export default function Tester(props) {
                     logoImage={props.logoImage}
                     viewPort={viewPort}
             />
-            <main >
+            <div className={(activeView === 'resources' || activeView === 'fullScreen') ? 'tester-main' : 'main-single-column'}>
                 {metrics !== null &&
                     <>
                         {(activeView === "resources" || activeView === "fullScreen") &&<>
@@ -1322,7 +1322,7 @@ export default function Tester(props) {
                         }}/>
                     </section>
                 }
-            </main>
+            </div>
         </>
     )
 }

@@ -60,7 +60,7 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.main {
+.tester-main {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: var(--section-padding);
@@ -69,15 +69,8 @@ body {
     justify-content: center;
 }
 
-main > *:last-child, main > *:nth-child(3) {
-    grid-column: 1 / -1
-}
-
-@media (max-width: 900px) {
-    main {
-        flex-direction: column;
-        padding: var(--section-padding) 0 0 0 ;
-    }
+.main-single-column {
+    grid-template-columns: repeat(1, 1fr);
 }
 
 p {
@@ -289,7 +282,8 @@ p {
 
 
 @media (max-width: 900px) {
-    main {
+    .tester-main {
+        padding: var(--section-padding) ;
         grid-template-columns: repeat(1, 1fr);
     }
 }
@@ -924,6 +918,7 @@ section {
     align-items: center;
     width: 100%;
     padding-bottom: 200px;
+    min-width: 400px;
 }
 .settings__container {
     padding: var(--element-padding);

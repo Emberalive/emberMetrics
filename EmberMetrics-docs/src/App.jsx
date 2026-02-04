@@ -64,7 +64,7 @@ export default function App() {
         }    }, [isDarkMode])
 
     return (
-        <>
+        <main>
             {testerView !== 'fullScreen' &&
                 <>
                     <Menu setActiveView={setActiveView} activeView={activeView} logoImage={logoImage}/>
@@ -198,6 +198,6 @@ export default function App() {
                 </>}
                 <Tester logoImage={logoImage} setLogoImage={setLogoImage} activeView={testerView} setActiveView={setTesterView} isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
             </>}
-        </>
+        </main>
     )
 }
