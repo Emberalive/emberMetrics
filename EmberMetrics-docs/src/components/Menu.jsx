@@ -3,7 +3,7 @@ export default function Menu (props) {
             <header className="header">
                 <div className="header-logo">
                     <img src={props.logoImage} alt="Logo" />
-                    <h1>Ember Metrics - Docs</h1>
+                    <h1 style={{width: '100%'}}>Ember Metrics - Docs</h1>
                 </div>
                 <div className={'navigation'}>
                     <p className={'navigation-item'} onClick={() => {

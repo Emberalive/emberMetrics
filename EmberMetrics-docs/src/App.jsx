@@ -68,7 +68,7 @@ export default function App() {
             {testerView !== 'fullScreen' &&
                 <>
                     <Menu setActiveView={setActiveView} activeView={activeView} logoImage={logoImage}/>
-                    {activeView === 'home' && <section style={{ height: "100%", borderRadius: 0, border: 'none'}}>
+                    {activeView === 'home' && <section>
                         {activeView === 'home' &&
                             <>
                                 <div id={'logo-wrapper'}>
@@ -169,14 +169,14 @@ export default function App() {
                 </>
             }
             {activeView === 'getting-started' &&
-                <section style={{ height: "100%", borderRadius: 0, border: 'none'}}>
+                <section>
                     <GettingStarted isDarkMode={isDarkMode}/>
                 </section>
             }
             {activeView === 'tester' && <>
             {testerView !== 'fullScreen' &&
                 <>
-                    <section style={{height: "100%", borderRadius: 0, border: 'none'}}>
+                    <section>
                         <h1>EmberMetrics Visual Interface Showcase: The User Experience</h1>
                         <TextArea data={{
                             text: [{

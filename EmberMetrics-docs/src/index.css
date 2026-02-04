@@ -97,7 +97,7 @@ body {
     border-bottom: 2px solid var(--secondary);
     transition: all 0.2s ease-in-out;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
-    min-width: 400px;
+    min-width: calc(385px - var(--element-padding));
 }
 
 .header-logo {
@@ -168,7 +168,7 @@ body {
     margin: 20px 0;
     border-radius: var(--border-radius);
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
-    min-width: 400px;
+    min-width: calc(400px - var(--element-padding));
 }
 
 /* Section Styles */
@@ -185,7 +185,7 @@ section {
     transition: all 0.3s ease;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
     width: 100%;
-    min-width: 400px;
+    min-width: calc(400px - var(--element-padding));
 }
 
 .section-header {
