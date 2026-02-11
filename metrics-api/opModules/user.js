@@ -49,8 +49,7 @@ async function authenticateUser(user) {
                 success: false,
             }
         } else {
-            console.log(`[Server - authenticateUser] Successfully authenticated user: ${user.username} ]`);
-            return await checkPassword(user.password, userData.password);
+            return await checkPassword(user.password, userData.user.password);
         }
     } catch (e) {
         console.error(`[Server - authenticateUser] Error validating: ${user.username}`, e.message);
@@ -177,12 +176,20 @@ async function hashPassword (password, saltRounds) {
 }
 
 async function checkPassword(password, hashedPassword) {
+    if (!hashedPassword || !password) {
+        console.log('[Server - CHECK PASSWORD] incorrect parameter')
+        return {
+            success: false,
+        }
+    }
     try {
         if (await bcrypt.compare(password, hashedPassword)) {
+            console.log('[Server - CHECK PASSWORD] Password is correct')
             return {
-                success: false,
+                success: true,
             }
         } else {
+            console.log('[Server - CHECK PASSWORD] Password is not correct')
             return {
                 success: false,
             }

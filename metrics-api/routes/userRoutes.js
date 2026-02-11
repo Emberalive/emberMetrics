@@ -2,25 +2,25 @@ const express = require('express')
 const {createUser, deleteUser, authenticateUser} = require('../opModules/user')
 const router = express.Router()
 
-router.get('/', async(req, res) => {
-    console.log('[Server - GET /users] starting route access')
-    const {username, password} = req.query
+router.post('/login', async(req, res) => {
+    console.log('[Server - POST /users - login] starting route access')
+    const {username, password} = req.body.user
     if (!username || !password) {
-        console.log('[Server - GET /users] No username sent')
+        console.log('[Server - POST /users - login] No username sent')
         return res.status(400).send({
             error: 'User name and password is required',
             success: false
         })
     } else {
-        const response = await authenticateUser(req.user)
+        const response = await authenticateUser(req.body.user)
         if (!response.success) {
-            console.log('[Server - GET /users] authenticateUser failed.]')
+            console.log('[Server - POST /users - login] authenticateUser failed.]')
             return res.status(404).send({
                 error: 'User not found',
                 success: false
             })
         } else {
-            console.log('[Server - GET /users] authenticateUser succeeded.')
+            console.log('[Server - POST /users - login] authenticateUser succeeded.')
             res.status(200).send(response)
         }
     }

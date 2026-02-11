@@ -225,8 +225,8 @@ async function getDiskInfo () {
             totalDiskUsage: {
                 rIO: diskUsage.rIO,
                 wIO: diskUsage.wIO,
-                rIO_sec: diskUsage.rIO_sec.toFixed(2),
-                wIO_sec: diskUsage.wIO_sec.toFixed(2),
+                rIO_sec: diskUsage.rIO_sec ? diskUsage.rIO_sec.toFixed(2) : 0.00,
+                wIO_sec: diskUsage.wIO_sec ? diskUsage.wIO_sec.toFixed(2) : 0.00,
                 rx_sec: stats.rx_sec,
                 wx_sec: stats.wx_sec,
             },
