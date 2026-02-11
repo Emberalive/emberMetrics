@@ -3,7 +3,7 @@ export default function Header (props) {
     return (
         <>
         <header style={{display: 'flex', flexDirection: 'row'}} className={props.activeView === 'fullScreen' ? "display-none" : 'header'}>
-            {(props.authentication === false && props.isLoggedIn === false) &&
+            {((props.authentication === false && props.isLoggedIn === false) || props.isLoggedIn === true) &&
                 <>
                 <img src={props.logoImage} alt="ember metrics logo" />
             {props.viewPort > 1100 && <h1>Ember Metrics</h1>}

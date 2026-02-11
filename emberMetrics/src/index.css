@@ -1187,6 +1187,66 @@ section {
     align-items: center;
 }
 
+.login {
+    width: 75%;
+}
+
+@media (max-width: 750px) {
+    .login {
+        width: 100%;
+    }
+}
+
+.login > .login-form > .input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-form > .input-container > input {
+    width: 80%;
+    outline: none;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 5px;
+    font-size: 20px;
+    background-color: var(--neutral);
+    max-width: 500px;
+}
+
+.login-form > .input-container > label {
+    width: 80%;
+    max-width: 500px;
+}
+
+.link-container {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    gap: 8px;
+    width: 100%;
+    align-items: center;
+}
+
+.form-links > .link-container > .link-container__link {
+    font-weight: 700;
+    color: var(--secondary);
+    border-bottom: solid 2px var(--secondary);
+    cursor: pointer;
+}
+
 /* Dark Mode Specific Adjustments */
 .dark-mode {
     color-scheme: dark;

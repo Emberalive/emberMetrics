@@ -304,7 +304,7 @@ export default function App() {
                                                                  handleNotification={handleNotification} hostIp={hostIp}
                                                                  deviceType={deviceType}/>}
               </>}
-              {(isLoggedIn === false && authentication === true) && <Login/>}
+              {(isLoggedIn === false && authentication === true) && <Login handleNotification={handleNotification} hostIp={hostIp} setIsLoggedIn={setIsLoggedIn} deviceType={deviceType}/>}
           </main>
       </>
   )

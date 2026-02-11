@@ -1,4 +1,5 @@
 export default function DiskData (props) {
+    if (!props.metrics.disks) return
     const disks = props.metrics.disks.disks
     const diskData = props.metrics.disks.totalDiskUsage
     const diskList = disks.map((disk) => {

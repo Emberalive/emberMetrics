@@ -1,6 +1,72 @@
 import {useEffect, useState} from "react";
 
-export default function Login () {
+export default function Login (props) {
+    async function submit (e) {
+        e.preventDefault();
+        const username = e.target.username.value;
+        const password = e.target.password.value;
+        const confirmPassword = e.target.confirmPassword ? e.target.confirmPassword.value : null;
+        console.info(username, password, confirmPassword);
+        try {
+            if (confirmPassword) {
+                if (username && password) {
+                    const response = await fetch(`http://${props.deviceType === 'remote-device' ? props.hostIp : 'localhost'}:3000/users`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({user: {
+                                username: username,
+                                password: password,
+                                confirmPassword: confirmPassword,
+                                role: 'user'
+                            }})
+                    })
+                    if (response.ok) {
+                        props.setIsLoggedIn(prevState => !prevState)
+                        props.handleNotification('notice', 'Successfully logged in as' + username)
+                    } else {
+                        if (response.status === 400) {
+                            props.handleNotification('error', 'Please send all fields required')
+                        } else {
+                            console.error('server response was 500')
+                            props.handleNotification('error', 'There was an issue with the server, sorry')
+                        }
+                    }
+                } else {
+                    props.handleNotification('error', 'Please send all fields required')
+                }
+            } else {
+                if (username && password) {
+                    const response = await fetch(`http://${props.deviceType === 'remote-device' ? props.hostIp : 'localhost'}:3000/users?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    if (response.ok) {
+                        const resData = await response.json()
+                        if (resData) {
+                            props.setIsLoggedIn(prevState => !prevState)
+                            props.handleNotification('notice', 'Successfully logged in as: ' + username)
+                        }
+
+                    } else if (response.status === 400) {
+                        props.handleNotification('error', 'please send all fields required')
+                    } else {
+                        console.error('server response was 500')
+                        props.handleNotification('error', 'There was an issue with the server, sorry')
+                    }
+                } else {
+                    props.handleNotification('error', 'Please send all fields required')
+                }
+            }
+        } catch (e) {
+            props.handleNotification('error', 'There was an issue with the server, sorry')
+            console.error(e.message)
+        }
+    }
+
     const [isRegister, setIsRegister] = useState(false);
 
     useEffect(() => {
@@ -9,43 +75,29 @@ export default function Login () {
 
     return (
         <div className="login-wrapper">
-            <section style={{width:'75%'}}>
+            <section className={'login'}>
                 <header className="section-header">
                     <h1 style={{width: '100%',textAlign: 'center' }}>{isRegister ? 'Register' : 'Login'}</h1>
                 </header>
-                <form style={{display: 'flex',flexDirection: 'column', width:'100%', gap: '20px'}}>
-                    <div style={{display: 'flex', flexDirection: 'column', gap: '15px', width: '100%', alignItems: 'center', justifyContent: 'center'}}>
-                        <label style={{width: '80%'}} >User Name:</label>
-                        <input style={{width: '80%', outline: 'none',border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius)', padding: '5px', fontSize: '20px', backgroundColor: 'var(--neutral)' }} type={'text'} placeholder={'user123'}/>
+                <form className="login-form" onSubmit={submit}>
+                    <div className="input-container">
+                        <label>User Name:</label>
+                        <input type={'text'} name={'username'} placeholder={'user123'}/>
                     </div>
-                    <div style={{display: 'flex', flexDirection: 'column', gap: '15px', width: '100%', alignItems: 'center', justifyContent: 'center'}}>
-                        <lable style={{width: '80%'}} >Password:</lable>
-                        <input style={{width: '80%', outline: 'none',border: '1px solid var(--border-color)', borderRadius: 'var(--border-radius)', padding: '5px', fontSize: '20px', backgroundColor: 'var(--neutral)' }} type={'text'} placeholder={'password123'}/>
+                    <div className="input-container">
+                        <label>Password:</label>
+                        <input type={'password'} name={'password'} placeholder={'password123'}/>
                     </div>
-                    {isRegister && <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '15px',
-                        width: '100%',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    }}>
-                        <lable style={{width: '80%'}}>Confirm Password:</lable>
-                        <input style={{
-                            width: '80%',
-                            outline: 'none',
-                            border: '1px solid var(--border-color)',
-                            borderRadius: 'var(--border-radius)',
-                            padding: '5px',
-                            fontSize: '20px',
-                            backgroundColor: 'var(--neutral)'
-                        }} type={'text'} placeholder={'password123'}/>
+                    {isRegister && <div className="input-container">
+                        <label>Confirm Password:</label>
+                        <input type={'password'} name={'confirmPassword'} placeholder={'password123'}/>
                     </div>}
+                    <button className={'general-button'} type={'submit'} >{isRegister ? 'Register' : 'Login'}</button>
                 </form>
                 <div className="form-links">
-                    <div style={{display: 'flex', justifyContent: 'center', flexDirection: 'row', gap: '8px', width: '100%', alignItems: 'center'}}>
+                    <div className={'link-container'}>
                         <p>{isRegister ? 'Have an account?' : 'Don\'t have an account?' }</p>
-                        <p style={{fontWeight: '700', color: 'var(--secondary)', borderBottom: 'solid 2px var(--secondary)', cursor: 'pointer'}}  onClick={() => {
+                        <p className={'link-container__link'}onClick={() => {
                             console.info('clicked');
                             setIsRegister(prevState => !prevState);
                         }}>{isRegister ? 'Login' : 'Register'}</p>
