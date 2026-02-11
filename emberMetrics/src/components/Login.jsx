@@ -38,11 +38,16 @@ export default function Login (props) {
                 }
             } else {
                 if (username && password) {
-                    const response = await fetch(`http://${props.deviceType === 'remote-device' ? props.hostIp : 'localhost'}:3000/users?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`, {
-                        method: 'GET',
+                    const response = await fetch(`http://${props.deviceType === 'remote-device' ? props.hostIp : 'localhost'}:3000/users/login`, {
+                        method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                        }
+                        },
+                        body: JSON.stringify({user: {
+                                username: username,
+                                password: password,
+
+                            }})
                     })
                     if (response.ok) {
                         const resData = await response.json()
