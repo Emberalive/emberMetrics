@@ -4,8 +4,8 @@ const router = express.Router()
 
 router.get('/', async(req, res) => {
     console.log('[Server - GET /users] starting route access')
-    const {userName, password} = req.user
-    if (!userName || !password) {
+    const {username, password} = req.query
+    if (!username || !password) {
         console.log('[Server - GET /users] No username sent')
         return res.status(400).send({
             error: 'User name and password is required',
@@ -28,15 +28,22 @@ router.get('/', async(req, res) => {
 
 router.post('/', async (req, res) => {
     console.log('[Server - POST /users] starting route access')
-    const { username, password } = req.body
+    const { username, password , confirmPassword, role} = req.body.user
+    console.log(`[Server - POST /users] ${JSON.stringify(req.body.user)}    `)
     if (!username || !password) {
+        if (password !== confirmPassword) {
+            console.log('[Server - POST /users] authenticateUser failed - password and confirmPassword do not match')
+            return res.status(400).send({
+                success: false
+            })
+        }
         return res.status(400).send({
             error: 'Username and password required',
             success: false
         })
     } else {
         try {
-            const response = await createUser(username, password)
+            const response = await createUser(username, password, role)
             if (!response.success) {
                 console.log('[Server - POST /users] create user failed.')
                 return res.status(400).send({

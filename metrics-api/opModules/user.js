@@ -1,26 +1,36 @@
 const fs = require('fs').promises;
+const path = require('path');
 const bcrypt = require('bcrypt')
 const {nanoid} = require("nanoid");
 const saltRounds = 10
-const filePath = '../persistentData/user.json'
+const filePath = path.join(__dirname, '../persistentData/user.json');
 
-async function createUser(user) {
+async function createUser(username, password, role) {
     try {
-        const {password, username} = user;
+        const currentUsers = await readUsers()
+        console.log('[Server - createUser] Current Users', currentUsers)
+        const exist = await currentUsers.find(e => e.username === username)
         if (!password || !username) {
             console.error('[Server - createUser] Password and username required!');
             return {
                 success: false,
             }
         }
-        const response = await hashPassword(password, saltRounds);
-        if (response.success) {
-            console.log('[Server - createUser] Successfully created!]')
-            return await addUser({username: username, password: response.hash, id: nanoid()});
-        } else {
-            console.error('[Server - createUser] Error hashing password')
+        if (exist) {
             return {
                 success: false,
+                reason: 'User already exists!'
+            }
+        } else {
+            const response = await hashPassword(password, saltRounds);
+            if (response.success) {
+                console.log('[Server - createUser] Successfully created!]')
+                return await addUser({username: username, password: response.hash, role, id: nanoid()});
+            } else {
+                console.error('[Server - createUser] Error hashing password')
+                return {
+                    success: false,
+                }
             }
         }
     } catch (e) {
@@ -88,7 +98,13 @@ async function writeUser(newUsers) {
 async function readUsers() {
     try {
         const rawUsers = await fs.readFile(filePath, 'utf8')
-        return JSON.parse(rawUsers)
+
+        if (!rawUsers.trim()) {
+            console.error('[Server - readUsers] Expected array, got:', JSON.stringify(rawUsers));
+            return []
+        }
+
+        return JSON.parse(rawUsers);
     } catch (e) {
         console.error('[Server - readUsers] Internal error: ', e)
         return {
@@ -118,10 +134,17 @@ async function addUser(user) {
     try {
         console.log('[Server - addUser] New user: ', user)
         let userData = await readUsers()
-
+        console.log('[Server - addUser] previous users: ', JSON.stringify(userData))
         userData.push(user)
-        console.log('[Server - addUser] updated users: ', JSON.stringify(userData));
-        return await writeUser(userData)
+
+        if (userData.find(e => e.username === user.username)) {
+            console.log('[Server - addUser] new user has been added successfully!')
+            console.log('[Server - addUser] updated users: ', JSON.stringify(userData));
+            return await writeUser(userData)
+        }
+        return {
+            success: false,
+        }
 
     } catch (e) {
         console.error('[Server - addUser] Internal error: ', e)
