@@ -192,30 +192,30 @@ export default function App() {
     useEffect( () => {
         if (authentication === true) {
             if (!isLoggedIn) return
-            console.log("[APP_METRICS] Getting metrics")
-            try {
-                const interval = setInterval(async () => {
-                    const response = await fetch (`http://${selectedDevice}:3000`)
-                    if (response.ok) {
-                        if (response.status === 200) {
-                            const resData = await response.json()
+        }
+        console.log("[APP_METRICS] Getting metrics")
+        try {
+            const interval = setInterval(async () => {
+                const response = await fetch (`http://${selectedDevice}:3000`)
+                if (response.ok) {
+                    if (response.status === 200) {
+                        const resData = await response.json()
 
-                            if (resData === null) {
-                                console.error("[APP_METRICS] There was an error fetching metrics")
-                            } else {
-                                setMetrics(resData)
-                                console.log(JSON.stringify(resData))
-                            }
-                        }else {
-                            console.log("[APP_METRICS] There was an error fetching metrics")
+                        if (resData === null) {
+                            console.error("[APP_METRICS] There was an error fetching metrics")
+                        } else {
+                            setMetrics(resData)
+                            console.log(JSON.stringify(resData))
                         }
+                    }else {
+                        console.log("[APP_METRICS] There was an error fetching metrics")
                     }
-                }, 1000)
-                return () => clearInterval(interval)
-            } catch (err) {
-                console.error("[APP_METRICS] Error getting metrics: ", err.message)
-                handleNotification("error", "There was an error fetching metrics")
-            }
+                }
+            }, 1000)
+            return () => clearInterval(interval)
+        } catch (err) {
+            console.error("[APP_METRICS] Error getting metrics: ", err.message)
+            handleNotification("error", "There was an error fetching metrics")
         }
     }, [selectedDevice, isLoggedIn, authentication])
 
