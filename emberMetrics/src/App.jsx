@@ -23,9 +23,11 @@ export default function App() {
     // This is a quick fix to allow the user to make the app have or not have authentication
     //change the value of authentication to false if you don't want a user system
     const authentication = true
-//<<-----------------------------Only edit this!!!!!----------------------------------------->>
+//<<-------------------------^^^^^Only edit this^^^^^---------------------------------------->>
 
     //Nothing below here should be touched, you will most likely break the application!!!
+//<<-----------------------------DO NOT TOUCH!!!!!----------------------------------------->>
+
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const [hostIp, setHostIP] = useState(() => {
@@ -305,7 +307,8 @@ export default function App() {
                                                                  handleNotification={handleNotification} hostIp={hostIp}
                                                                  deviceType={deviceType}/>}
               </>}
-              {(isLoggedIn === false && authentication === true) && <Login handleNotification={handleNotification} hostIp={hostIp} setIsLoggedIn={setIsLoggedIn} deviceType={deviceType}/>}
+              {(isLoggedIn === false && authentication === true) && <Login handleNotification={handleNotification}
+                                                                           hostIp={hostIp} setIsLoggedIn={setIsLoggedIn}/>}
           </main>
       </>
   )

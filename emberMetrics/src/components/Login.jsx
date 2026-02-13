@@ -1,78 +1,58 @@
 import {useEffect, useState} from "react";
 
 export default function Login (props) {
-    async function submit (e) {
-        e.preventDefault();
-        const username = e.target.username.value;
-        const password = e.target.password.value;
-        const confirmPassword = e.target.confirmPassword ? e.target.confirmPassword.value : null;
-        console.info(username, password, confirmPassword);
-        try {
-            if (confirmPassword) {
-                if (username && password) {
-                    const response = await fetch(`http://${props.deviceType === 'remote-device' ? props.hostIp : 'localhost'}:3000/users`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({user: {
-                                username: username,
-                                password: password,
-                                confirmPassword: confirmPassword,
-                                role: 'user'
-                            }})
-                    })
-                    if (response.ok) {
-                        props.setIsLoggedIn(prevState => !prevState)
-                        props.handleNotification('notice', 'Successfully logged in as' + username)
-                    } else {
-                        if (response.status === 400) {
-                            props.handleNotification('error', 'Please send all fields required')
-                        } else {
-                            console.error('server response was 500')
-                            props.handleNotification('error', 'There was an issue with the server, sorry')
-                        }
-                    }
-                } else {
-                    props.handleNotification('error', 'Please send all fields required')
-                }
-            } else {
-                if (username && password) {
-                    const response = await fetch(`http://${props.deviceType === 'remote-device' ? props.hostIp : 'localhost'}:3000/users/login`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({user: {
-                                username: username,
-                                password: password,
-
-                            }})
-                    })
-                    if (response.ok) {
-                        const resData = await response.json()
-                        if (resData) {
-                            props.setIsLoggedIn(prevState => !prevState)
-                            props.handleNotification('notice', 'Successfully logged in as: ' + username)
-                        }
-
-                    } else if (response.status === 400) {
-                        props.handleNotification('error', 'please send all fields required')
-                    } else {
-                        console.error('server response was 500')
-                        props.handleNotification('error', 'There was an issue with the server, sorry')
-                    }
-                } else {
-                    props.handleNotification('error', 'Please send all fields required')
-                }
-            }
-        } catch (e) {
-            props.handleNotification('error', 'There was an issue with the server, sorry')
-            console.error(e.message)
-        }
-    }
 
     const [isRegister, setIsRegister] = useState(false);
+
+    async function submit(e) {
+        e.preventDefault();
+
+        const { username, password, confirmPassword } = e.target;
+        const user = {
+            username: username.value,
+            password: password.value,
+            bio: '',
+            email: ''
+        };
+        if (isRegister) {
+            user.confirmPassword = confirmPassword.value;
+            user.role = 'user';
+        }
+        // Validation
+        if (!user.username || !user.password || (isRegister && !user.confirmPassword)) return props.handleNotification('error', 'Please send all fields required');
+
+        try {
+            const response = await fetch(
+                `http://${props.deviceType === 'remote-device' ? props.hostIp : 'localhost'}:3000${isRegister ? '/users' : '/users/login'}`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ user }),
+                }
+            );
+
+            if (!response.ok) {
+                if (response.status === 400) {
+                    props.handleNotification('error', 'Please send all fields required');
+                    return
+                }
+                props.handleNotification('error', `Could not ${isRegister ? 'registered' : 'logg in'} as: ${user.username} : Server error`);
+                return
+            }
+            // Only login expects JSON back
+            if (!isRegister) {
+                const data = await response.json();
+                if (data.success) {
+                    props.setIsLoggedIn(prev => !prev);
+                    props.handleNotification('notice', `Successfully ${isRegister ? 'registered' : 'logged in'} as: ${user.username}`);
+                }
+            }
+        } catch {
+            props.handleNotification('error', 'There was an issue with the server, sorry');
+        }
+    }
 
     useEffect(() => {
         console.info('Register', isRegister);
