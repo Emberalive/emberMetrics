@@ -1,0 +1,197 @@
+[
+  {
+    "hostName": "sam-box",
+    "deviceData": [
+      { "label": "Platform", "value": "linux" },
+      { "label": "Name", "value": "Linux" },
+      { "label": "Release", "value": "6.8.0-90-generic" },
+      { "label": "Architecture", "value": "x64" },
+      { "label": "Version", "value": "#91-Ubuntu SMP PREEMPT_DYNAMIC Tue Nov 18 14:14:30 UTC 2025" }
+    ],
+    "memoryUsage": { "available": "72.3", "usage": "27.7" },
+    "cpuUsage": {
+      "cores": [
+        { "no": 1, "usage": "3.5" }, { "no": 2, "usage": "6.2" }, { "no": 3, "usage": "7.1" }, { "no": 4, "usage": "4.2" },
+        { "no": 5, "usage": "4.0" }, { "no": 6, "usage": "5.9" }, { "no": 7, "usage": "10.2" }, { "no": 8, "usage": "2.8" },
+        { "no": 9, "usage": "4.9" }, { "no": 10, "usage": "3.0" }, { "no": 11, "usage": "6.5" }, { "no": 12, "usage": "5.0" },
+        { "no": 13, "usage": "7.0" }, { "no": 14, "usage": "4.2" }, { "no": 15, "usage": "2.0" }, { "no": 16, "usage": "4.5" }
+      ],
+      "total": "5.0",
+      "temps": { "mainTemp": 57.3, "maxTemp": null }
+    },
+    "gpuData": [
+      {
+        "model": "Navi 10 [Radeon RX 5600 OEM/5600 XT / 5700/5700 XT]",
+        "memory": { "used": "N/A", "total": "N/A", "free": "N/A", "utilization": "N/A" },
+        "utilization": "N/A",
+        "temp": "N/A",
+        "power": "N/A",
+        "clocks": { "core": "N/A", "memory": "N/A" }
+      }
+    ],
+    "childProcesses": [
+      { "pid": 4597, "name": "webstorm", "cpu": 1.4, "memory": 8.0, "user": "sammy" },
+      { "pid": 4790, "name": "firefox", "cpu": 0.8, "memory": 2.3, "user": "sammy" },
+      { "pid": 2836, "name": "gnome-shell", "cpu": 0.6, "memory": 1.5, "user": "sammy" },
+      { "pid": 5065, "name": "firefox", "cpu": 0.3, "memory": 0.2, "user": "sammy" },
+      { "pid": 6895, "name": "firefox", "cpu": 0.2, "memory": 0.7, "user": "sammy" },
+      { "pid": 4223, "name": "jetbrains-toolbox", "cpu": 0.1, "memory": 1.6, "user": "sammy" },
+      { "pid": 7822, "name": "WebKitWebProcess", "cpu": 0.1, "memory": 2.0, "user": "sammy" },
+      { "pid": 1, "name": "init", "cpu": 0.09, "memory": 0, "user": "root" },
+      { "pid": 5895, "name": "firefox", "cpu": 0.08, "memory": 2.1, "user": "sammy" },
+      { "pid": 2498, "name": "systemd", "cpu": 0.08, "memory": 0, "user": "sammy" }
+    ],
+    "interfaces": [
+      {
+        "name": "wlp4s0",
+        "default": true,
+        "mac": "4c:49:6c:4a:9d:68",
+        "type": "wireless",
+        "addresses": { "ip4": "192.168.0.67", "ip6": "fd73:759f:fb95:c124:58e8:875c:5398:ba4f" },
+        "data": { "transmitted": "6000.5", "received": "8500.2" }
+      },
+      {
+        "name": "lo",
+        "default": false,
+        "mac": "00:00:00:00:00:00",
+        "type": "virtual",
+        "addresses": { "ip4": "127.0.0.1", "ip6": "::1" },
+        "data": { "transmitted": "1400.3", "received": "1400.3" }
+      }
+    ],
+    "disks": [
+      { "name": "Samsung SSD 970 EVO Plus 2TB", "type": "NVMe", "vendor": "Samsung", "device": "/dev/nvme1n1", "size": "1.82TB", "interfaceType": "PCIe" },
+      { "name": "KINGSTON SNV2S500G", "type": "NVMe", "vendor": "Kingston Technology", "device": "/dev/nvme0n1", "size": "465.76GB", "interfaceType": "PCIe" }
+    ]
+  },
+  {
+    "hostName": "sam-box",
+    "deviceData": [
+      { "label": "Platform", "value": "linux" },
+      { "label": "Name", "value": "Linux" },
+      { "label": "Release", "value": "6.8.0-90-generic" },
+      { "label": "Architecture", "value": "x64" },
+      { "label": "Version", "value": "#91-Ubuntu SMP PREEMPT_DYNAMIC Tue Nov 18 14:14:30 UTC 2025" }
+    ],
+    "memoryUsage": { "available": "70.1", "usage": "29.9" },
+    "cpuUsage": {
+      "cores": [
+        { "no": 1, "usage": "4.2" }, { "no": 2, "usage": "5.8" }, { "no": 3, "usage": "7.5" }, { "no": 4, "usage": "3.9" },
+        { "no": 5, "usage": "4.5" }, { "no": 6, "usage": "4.2" }, { "no": 7, "usage": "9.1" }, { "no": 8, "usage": "3.0" },
+        { "no": 9, "usage": "5.0" }, { "no": 10, "usage": "2.9" }, { "no": 11, "usage": "6.2" }, { "no": 12, "usage": "5.3" },
+        { "no": 13, "usage": "7.2" }, { "no": 14, "usage": "4.1" }, { "no": 15, "usage": "1.8" }, { "no": 16, "usage": "4.0" }
+      ],
+      "total": "4.9",
+      "temps": { "mainTemp": 58.0, "maxTemp": null }
+    },
+    "gpuData": [
+      {
+        "model": "Navi 10 [Radeon RX 5600 OEM/5600 XT / 5700/5700 XT]",
+        "memory": { "used": "N/A", "total": "N/A", "free": "N/A", "utilization": "N/A" },
+        "utilization": "N/A",
+        "temp": "N/A",
+        "power": "N/A",
+        "clocks": { "core": "N/A", "memory": "N/A" }
+      }
+    ],
+    "childProcesses": [
+      { "pid": 4597, "name": "webstorm", "cpu": 1.5, "memory": 8.3, "user": "sammy" },
+      { "pid": 4790, "name": "firefox", "cpu": 0.9, "memory": 2.2, "user": "sammy" },
+      { "pid": 2836, "name": "gnome-shell", "cpu": 0.55, "memory": 1.4, "user": "sammy" },
+      { "pid": 5065, "name": "firefox", "cpu": 0.25, "memory": 0.15, "user": "sammy" },
+      { "pid": 6895, "name": "firefox", "cpu": 0.18, "memory": 0.65, "user": "sammy" },
+      { "pid": 4223, "name": "jetbrains-toolbox", "cpu": 0.11, "memory": 1.7, "user": "sammy" },
+      { "pid": 7822, "name": "WebKitWebProcess", "cpu": 0.12, "memory": 2.1, "user": "sammy" },
+      { "pid": 1, "name": "init", "cpu": 0.08, "memory": 0, "user": "root" },
+      { "pid": 5895, "name": "firefox", "cpu": 0.07, "memory": 2.15, "user": "sammy" },
+      { "pid": 2498, "name": "systemd", "cpu": 0.09, "memory": 0, "user": "sammy" }
+    ],
+    "interfaces": [
+      {
+        "name": "wlp4s0",
+        "default": true,
+        "mac": "4c:49:6c:4a:9d:68",
+        "type": "wireless",
+        "addresses": { "ip4": "192.168.0.67", "ip6": "fd73:759f:fb95:c124:58e8:875c:5398:ba4f" },
+        "data": { "transmitted": "6200.7", "received": "8400.6" }
+      },
+      {
+        "name": "lo",
+        "default": false,
+        "mac": "00:00:00:00:00:00",
+        "type": "virtual",
+        "addresses": { "ip4": "127.0.0.1", "ip6": "::1" },
+        "data": { "transmitted": "1350.1", "received": "1350.1" }
+      }
+    ],
+    "disks": [
+      { "name": "Samsung SSD 970 EVO Plus 2TB", "type": "NVMe", "vendor": "Samsung", "device": "/dev/nvme1n1", "size": "1.82TB", "interfaceType": "PCIe" },
+      { "name": "KINGSTON SNV2S500G", "type": "NVMe", "vendor": "Kingston Technology", "device": "/dev/nvme0n1", "size": "465.76GB", "interfaceType": "PCIe" }
+    ]
+  },
+  {
+    "hostName": "sam-box",
+    "deviceData": [
+      { "label": "Platform", "value": "linux" },
+      { "label": "Name", "value": "Linux" },
+      { "label": "Release", "value": "6.8.0-90-generic" },
+      { "label": "Architecture", "value": "x64" },
+      { "label": "Version", "value": "#91-Ubuntu SMP PREEMPT_DYNAMIC Tue Nov 18 14:14:30 UTC 2025" }
+    ],
+    "memoryUsage": { "available": "75.0", "usage": "25.0" },
+    "cpuUsage": {
+      "cores": [
+        { "no": 1, "usage": "3.8" }, { "no": 2, "usage": "6.5" }, { "no": 3, "usage": "7.0" }, { "no": 4, "usage": "4.5" },
+        { "no": 5, "usage": "4.2" }, { "no": 6, "usage": "5.0" }, { "no": 7, "usage": "11.0" }, { "no": 8, "usage": "2.5" },
+        { "no": 9, "usage": "5.2" }, { "no": 10, "usage": "3.5" }, { "no": 11, "usage": "6.8" }, { "no": 12, "usage": "4.9" },
+        { "no": 13, "usage": "7.3" }, { "no": 14, "usage": "3.8" }, { "no": 15, "usage": "2.2" }, { "no": 16, "usage": "4.1" }
+      ],
+      "total": "5.1",
+      "temps": { "mainTemp": 56.5, "maxTemp": null }
+    },
+    "gpuData": [
+      {
+        "model": "Navi 10 [Radeon RX 5600 OEM/5600 XT / 5700/5700 XT]",
+        "memory": { "used": "N/A", "total": "N/A", "free": "N/A", "utilization": "N/A" },
+        "utilization": "N/A",
+        "temp": "N/A",
+        "power": "N/A",
+        "clocks": { "core": "N/A", "memory": "N/A" }
+      }
+    ],
+    "childProcesses": [
+      { "pid": 4597, "name": "webstorm", "cpu": 1.35, "memory": 8.1, "user": "sammy" },
+      { "pid": 4790, "name": "firefox", "cpu": 0.75, "memory": 2.25, "user": "sammy" },
+      { "pid": 2836, "name": "gnome-shell", "cpu": 0.55, "memory": 1.6, "user": "sammy" },
+      { "pid": 5065, "name": "firefox", "cpu": 0.28, "memory": 0.18, "user": "sammy" },
+      { "pid": 6895, "name": "firefox", "cpu": 0.22, "memory": 0.7, "user": "sammy" },
+      { "pid": 4223, "name": "jetbrains-toolbox", "cpu": 0.12, "memory": 1.7, "user": "sammy" },
+      { "pid": 7822, "name": "WebKitWebProcess", "cpu": 0.1, "memory": 2.0, "user": "sammy" },
+      { "pid": 1, "name": "init", "cpu": 0.09, "memory": 0, "user": "root" },
+      { "pid": 5895, "name": "firefox", "cpu": 0.09, "memory": 2.1, "user": "sammy" },
+      { "pid": 2498, "name": "systemd", "cpu": 0.08, "memory": 0, "user": "sammy" }
+    ],
+    "interfaces": [
+      {
+        "name": "wlp4s0",
+        "default": true,
+        "mac": "4c:49:6c:4a:9d:68",
+        "type": "wireless",
+        "addresses": { "ip4": "192.168.0.67", "ip6": "fd73:759f:fb95:c124:58e8:875c:5398:ba4f" },
+        "data": { "transmitted": "6100.2", "received": "8450.1" }
+      },
+      {
+        "name": "lo",
+        "default": false,
+        "mac": "00:00:00:00:00:00",
+        "type": "virtual",
+        "addresses": { "ip4": "127.0.0.1", "ip6": "::1" },
+        "data": { "transmitted": "1375.3", "received": "1375.3" }
+      }
+    ],
+    "disks": [
+      { "name": "Samsung SSD 970 EVO Plus 2TB", "type": "NVMe", "vendor": "Samsung", "device": "/dev/nvme1n1", "size": "1.82TB", "interfaceType": "PCIe" },
+      { "name": "KINGSTON SNV2S500G", "type": "NVMe", "vendor": "Kingston Technology", "device": "/dev/nvme0n1", "size": "465.76GB", "interfaceType": "PCIe" }
+    ]
+  }
+]

@@ -15,8 +15,19 @@ import CollapseWhite from "./assets/collapse-white.svg";
 import CollapseBlack from "./assets/collapse-black.svg";
 import ExpandWhite from "./assets/expand-white.svg";
 import ExpandBlack from "./assets/expand-black.svg";
+import Sparkr from "./assets/SVG 2.1 | Original Sparkr.svg";
+import Login from "./components/Login.jsx";
 
 export default function App() {
+    // <-----------------------------Only edit this!!!!!----------------------------------------->
+    // This is a quick fix to allow the user to make the app have or not have authentication
+    //change the value of authentication to false if you don't want a user system
+    const authentication = true
+    //<------------------------------------------------------------------------------------------>
+
+    //Nothing below here should be touched, you will most likely break the application!!!
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
     const [hostIp, setHostIP] = useState(() => {
         const hostPublicIP = localStorage.getItem('hostPublicIP')
         if (hostPublicIP) {
@@ -34,6 +45,8 @@ export default function App() {
             return localStoreDeviceType;
         }
     });
+
+    const [logoImage, setLogoImage] = useState(() => Sparkr)
 
     useEffect(() => {
         async function getPublicIP() {
@@ -162,6 +175,7 @@ export default function App() {
 
             document.documentElement.style.setProperty("--dm-tertiary", savedTheme.colour.tertiary)
             document.documentElement.style.setProperty("--dm-secondary", savedTheme.colour.secondary)
+            setLogoImage(savedTheme.logo)
         }
     }, [])
 
@@ -227,7 +241,7 @@ export default function App() {
   return (
       <>
           <Notification notification={notification} setNotification={setNotification} />
-          {(activeView === 'resources' || activeView === "fullScreen") && <div style={{marginLeft: '20px',}} onClick={() => {
+          {(activeView === 'resources' || activeView === "fullScreen") && (authentication === false && isLoggedIn === false) && <div style={{marginLeft: '20px',}} onClick={() => {
               if (activeView === "resources") {
                   setActiveView("fullScreen")
               } else {
@@ -242,45 +256,55 @@ export default function App() {
                    isDarkMode={isDarkMode}
                    setActiveView={setActiveView}
                    activeView={activeView}
+                  logoImage={logoImage}
+                  viewPort={viewPort}
+                  authentication={authentication}
+                  isLoggedIn={isLoggedIn}
           />
-          {(devices && activeView === "resources") && <div className={"device-navigation__wrapper"} ref={groupsRef} onWheel={handleWheel}>
+          {((devices && activeView === "resources")&&(authentication === false && isLoggedIn === false)) && <div className={"device-navigation__wrapper"} ref={groupsRef} onWheel={handleWheel}>
               <div className={"device-navigation"}>
                   {deviceButtonList}
               </div>
           </div>}
-          <main>
-              {deviceType === "" && <DeviceTypeSelection setDeviceType={setDeviceType} activeView={activeView} />}
+          <main className={(activeView === 'resources' || activeView === 'fullScreen') ? (deviceType === '' || (authentication === true && isLoggedIn === false)) ? 'main-single-column' : '' : 'main-single-column'}>
+              {(authentication === false || isLoggedIn === true ) && <>
+                  {deviceType === "" && <DeviceTypeSelection setDeviceType={setDeviceType} activeView={activeView}/>}
 
-              {metrics !== null &&
-                  <>
-                      {(activeView === "resources" || activeView === "fullScreen") &&<>
-                          <div className={"left-column"}>
-                              <ChildProcesses metrics={metrics}/>
-                              <DeviceData metrics={metrics}/>
-                              <DiskData metrics={metrics}/>
-                              <MemoryData metrics={metrics}
-                                          viewPort={viewPort}
-                              />
-                          </div>
+                  {metrics !== null &&
+                      <>
+                          {(activeView === "resources" || activeView === "fullScreen") && <>
+                              <div className={"left-column"}>
+                                  <ChildProcesses metrics={metrics}/>
+                                  <DeviceData metrics={metrics}/>
+                                  <DiskData metrics={metrics}/>
 
-                          <div className={"right-column"}>
-                              <CpuData metrics={metrics}/>
+                              </div>
 
-                              <NetworkData metrics={metrics}/>
-                          </div>
-                      </>}
-                  </>
-              }
-              {activeView === "settings" &&<Settings setActiveView={setActiveView}
-                                                     setIsDarkMode={setIsDarkMode}
-                                                     isDarkMode={isDarkMode}
-                                                     fontClicked={fontClicked}
-                                                     setFontClicked={setFontClicked}
-                                                     windowWidth={windowWidth}
-                                                     handleNotification={handleNotification}
-                                                     changeFont={changeFont}
-              />}
-              {activeView === "devices" &&<DeviceManagement devices={devices} setDevices={setDevices} handleNotification={handleNotification} hostIp={hostIp} deviceType={deviceType}/>}
+                              <div className={"right-column"}>
+                                  <CpuData metrics={metrics}/>
+                                  <MemoryData metrics={metrics}
+                                              viewPort={viewPort}
+                                  />
+                                  <NetworkData metrics={metrics}/>
+                              </div>
+                          </>}
+                      </>
+                  }
+                  {activeView === "settings" && <Settings setActiveView={setActiveView}
+                                                          setIsDarkMode={setIsDarkMode}
+                                                          isDarkMode={isDarkMode}
+                                                          fontClicked={fontClicked}
+                                                          setFontClicked={setFontClicked}
+                                                          windowWidth={windowWidth}
+                                                          handleNotification={handleNotification}
+                                                          changeFont={changeFont}
+                                                          setLogoImage={setLogoImage}
+                  />}
+                  {activeView === "devices" && <DeviceManagement devices={devices} setDevices={setDevices}
+                                                                 handleNotification={handleNotification} hostIp={hostIp}
+                                                                 deviceType={deviceType}/>}
+              </>}
+              {(isLoggedIn === false && authentication === true) && <Login handleNotification={handleNotification} hostIp={hostIp} setIsLoggedIn={setIsLoggedIn} deviceType={deviceType}/>}
           </main>
       </>
   )

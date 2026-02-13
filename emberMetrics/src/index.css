@@ -61,19 +61,16 @@ body {
 }
 
 main {
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: var(--section-padding);
     padding: var(--section-padding);
     transition: background-color 0.3s ease;
     justify-content: center;
 }
 
-@media (max-width: 900px) {
-    main {
-        flex-direction: column;
-        padding: var(--section-padding) 0 0 0 ;
-    }
+.main-single-column {
+    grid-template-columns: repeat(1, 1fr);
 }
 
 p {
@@ -94,6 +91,12 @@ p {
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
 }
 
+.header > img {
+    height: 150px;
+    width: 150px;
+    margin-right: 0;
+}
+
 .display-none {
     height: 0;
     transition: height 0.3s ease;
@@ -109,6 +112,11 @@ p {
     gap: 50px;
     justify-content: center;
     align-items: center;
+}
+
+.header__details > h1 {
+    color: var(--secondary);
+    margin: 0;
 }
 
 .header-navigation {
@@ -138,9 +146,26 @@ p {
     color: var(--primary);
 }
 
+.header-details__wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 100px
+}
+
+.header > h1 {
+    color: var(--secondary);
+}
+
 @media (max-width: 800px) {
-    .header__details {
+    .header-details__wrapper {
+        display: flex;
         flex-direction: column;
+        gap: 20px;
+    }
+    .header__details {
+        flex-direction: row;
         gap: 10px;
     }
     .header__device-name * {
@@ -170,18 +195,33 @@ p {
     }
 }
 
+@media (max-width: 500px) {
+    .header > img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 70px;
+        width: 70px;
+    }
+}
+
 .header__device-name {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-around;
     gap: 1rem;
+    margin: 0;
 }
 
 .header__device-name > p {
     font-size: 20px;
     font-weight: bold;
     color: var(--secondary);
+}
+
+.header__device-name > * {
+    margin: 0;
 }
 
 .header > div > h1 {
@@ -195,7 +235,7 @@ p {
     border-radius: var(--border-radius);
     border: none;
     outline: none;
-    background-color: var(--tertiary);
+    background-color: var(--neutral);
     cursor: pointer;
 }
 
@@ -206,7 +246,7 @@ p {
 }
 
 .general-button__clicked {
-    background-color: var(--neutral);
+    background-color: var(--tertiary);
 }
 
 .general-button:hover {
@@ -241,22 +281,9 @@ p {
     gap: 1rem;
 }
 
-.left-column {
-    width: 50%;
-}
-
-
-.right-column {
-    width: 50%;
-}
-
 @media (max-width: 900px) {
-    .left-column {
-        width: 100%;
-    }
-
-    .right-column {
-        width: 100%;
+    main {
+        grid-template-columns: repeat(1, 1fr);
     }
 }
 
@@ -599,6 +626,7 @@ section {
 }
 
 .device-container {
+    padding-top: var(--element-padding);
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -1149,7 +1177,75 @@ section {
     cursor: pointer;
 }
 
+/*login themes*/
+.login-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 
+.login {
+    width: 75%;
+}
+
+@media (max-width: 750px) {
+    .login {
+        width: 100%;
+    }
+}
+
+.login > .login-form > .input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-form > .input-container > input {
+    width: 80%;
+    outline: none;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 5px;
+    font-size: 20px;
+    background-color: var(--neutral);
+    max-width: 500px;
+}
+
+.login-form > .input-container > label {
+    width: 80%;
+    max-width: 500px;
+}
+
+.link-container {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    gap: 8px;
+    width: 100%;
+    align-items: center;
+}
+
+.form-links > .link-container > .link-container__link {
+    font-weight: 700;
+    color: var(--secondary);
+    border-bottom: solid 2px var(--secondary);
+    cursor: pointer;
+}
 
 /* Dark Mode Specific Adjustments */
 .dark-mode {
