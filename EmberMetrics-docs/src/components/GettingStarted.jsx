@@ -2,6 +2,7 @@ import TextArea from "./TextArea.jsx";
 import FrontEndOutPut from '../assets/run-front-end-output.png'
 import BackEndOutPut from '../assets/host-api-run-output.png'
 import InitialAppStart from '../assets/initial-app-start.png'
+import Authentication from '../assets/authentication-variable.png'
 
 export default function GettingStarted(props) {
     return (
@@ -136,6 +137,25 @@ export default function GettingStarted(props) {
                             '    }\n' +
                             '}', language: 'bash'},
                 ]
+            }}/>
+            <TextArea isDarkMode={props.isDarkMode} data={{
+                text: [
+                    {
+                        title: 'Final Step',
+                        text: 'If you want user authentication, Great no changes for you, the initial login is as follows: \n\n' +
+                            'PASSWORD: \'password\' \n\n' +
+                            'USERNAME: \'admin\' \n\n' +
+                            'However if you don\'t care for user authentication, you need to go into the apps files and change one thing' +
+                            'Go into this file:',
+                    },
+                    {
+                        text: 'Once in the file all you need to do is change the word \'true\' to false',
+                        img: Authentication
+                    }],
+                code: [{
+                    language: 'bash',
+                    code: 'metrics/emberMetrics/src/App.jsx',
+                }]
             }}/>
         </>
     )
