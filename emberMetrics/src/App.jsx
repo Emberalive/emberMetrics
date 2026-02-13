@@ -19,11 +19,11 @@ import Sparkr from "./assets/SVG 2.1 | Original Sparkr.svg";
 import Login from "./components/Login.jsx";
 
 export default function App() {
-    // <-----------------------------Only edit this!!!!!----------------------------------------->
+//<<-----------------------------Only edit this!!!!!----------------------------------------->>
     // This is a quick fix to allow the user to make the app have or not have authentication
     //change the value of authentication to false if you don't want a user system
     const authentication = true
-    //<------------------------------------------------------------------------------------------>
+//<<-----------------------------Only edit this!!!!!----------------------------------------->>
 
     //Nothing below here should be touched, you will most likely break the application!!!
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -188,6 +188,7 @@ export default function App() {
         }    }, [isDarkMode])
 
     useEffect( () => {
+        if (!isLoggedIn) return
         console.log("[APP_METRICS] Getting metrics")
         try {
             const interval = setInterval(async () => {
@@ -212,7 +213,7 @@ export default function App() {
             console.error("[APP_METRICS] Error getting metrics: ", err.message)
             handleNotification("error", "There was an error fetching metrics")
         }
-    }, [selectedDevice])
+    }, [selectedDevice, isLoggedIn])
 
     function changeRemoteDevice(ip) {
         setSelectedDevice(ip)
