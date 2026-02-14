@@ -17,17 +17,18 @@ import ExpandWhite from "./assets/expand-white.svg";
 import ExpandBlack from "./assets/expand-black.svg";
 import Sparkr from "./assets/SVG 2.1 | Original Sparkr.svg";
 import Login from "./components/Login.jsx";
+import Profile from "./components/Profile.jsx";
 
 export default function App() {
 //<<-----------------------------Only edit this!!!!!----------------------------------------->>
     // This is a quick fix to allow the user to make the app have or not have authentication
     //change the value of authentication to false if you don't want a user system
     const authentication = true
-//<<-----------------------------Only edit this!!!!!----------------------------------------->>
+//<<-----------------------^^^^^^Only edit this!!!!!^^^^^^----------------------------------->>
 
     //Nothing below here should be touched, you will most likely break the application!!!
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+    const [user, setUser] = useState(null);
     const [hostIp, setHostIP] = useState(() => {
         const hostPublicIP = localStorage.getItem('hostPublicIP')
         if (hostPublicIP) {
@@ -305,7 +306,11 @@ export default function App() {
                                                                  handleNotification={handleNotification} hostIp={hostIp}
                                                                  deviceType={deviceType}/>}
               </>}
-              {(isLoggedIn === false && authentication === true) && <Login handleNotification={handleNotification} hostIp={hostIp} setIsLoggedIn={setIsLoggedIn} deviceType={deviceType}/>}
+              {activeView === 'profile' && <Profile user={user}/>}
+              {(isLoggedIn === false && authentication === true) && <Login handleNotification={handleNotification}
+                                                                           hostIp={hostIp} setIsLoggedIn={setIsLoggedIn}
+                                                                           deviceType={deviceType}
+                                                                           setUser={setUser}/>}
           </main>
       </>
   )

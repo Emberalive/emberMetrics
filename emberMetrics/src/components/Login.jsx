@@ -19,11 +19,19 @@ export default function Login (props) {
                                 username: username,
                                 password: password,
                                 confirmPassword: confirmPassword,
-                                role: 'user'
+                                role: 'user',
+                                bio: '',
+                                email: ''
                             }})
                     })
                     if (response.ok) {
                         props.setIsLoggedIn(prevState => !prevState)
+                        props.setUser({
+                            username: username,
+                            role: 'user',
+                            bio: '',
+                            email: ''
+                        })
                         props.handleNotification('notice', 'Successfully logged in as' + username)
                     } else {
                         if (response.status === 400) {
@@ -46,13 +54,13 @@ export default function Login (props) {
                         body: JSON.stringify({user: {
                                 username: username,
                                 password: password,
-
                             }})
                     })
                     if (response.ok) {
                         const resData = await response.json()
                         if (resData) {
                             props.setIsLoggedIn(prevState => !prevState)
+                            props.setUser(resData.user)
                             props.handleNotification('notice', 'Successfully logged in as: ' + username)
                         }
 

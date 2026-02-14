@@ -49,7 +49,10 @@ async function authenticateUser(user) {
                 success: false,
             }
         } else {
-            return await checkPassword(user.password, userData.user.password);
+            return {
+                success : await checkPassword(user.password, userData.user.password),
+                user: userData.user
+            }
         }
     } catch (e) {
         console.error(`[Server - authenticateUser] Error validating: ${user.username}`, e.message);
@@ -139,7 +142,10 @@ async function addUser(user) {
         if (userData.find(e => e.username === user.username)) {
             console.log('[Server - addUser] new user has been added successfully!')
             console.log('[Server - addUser] updated users: ', JSON.stringify(userData));
-            return await writeUser(userData)
+            return {
+                success: await writeUser(userData),
+                user: userData
+            }
         }
         return {
             success: false,

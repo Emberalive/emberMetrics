@@ -91,7 +91,7 @@ export default function AddDevice(props) {
                 <label>Remote Device Name</label>
                 <input name={"deviceName"} type="text" placeholder={"My Server"} ></input>
             </div>
-            <button className="general-button" style={{fontSize: "20px", marginTop: "10px"}} type="submit">Create</button>
+            <button className="general-button success-button" style={{fontSize: "20px", marginTop: "10px"}} type="submit">Create</button>
         </form>
     )
 }

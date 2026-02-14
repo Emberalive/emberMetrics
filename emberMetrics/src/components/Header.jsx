@@ -43,6 +43,18 @@ export default function Header (props) {
                         </a>
                         <a className={
                             localStorage.getItem('deviceType') === ""
+                                ? "header-navigation__links disabled-button"
+                                : props.activeView === "profile"
+                                    ? "header-navigation__links disabled-button"
+                                    : "header-navigation__links"
+                        } onClick={() => {
+                            props.setActiveView("profile")
+                            console.log("view set to profile")
+                        }}>
+                            Profile
+                        </a>
+                        <a className={
+                            localStorage.getItem('deviceType') === ""
                                 ? "header-navigation__links__end disabled-button"
                                 : props.activeView === "devices"
                                     ? "header-navigation__links__end disabled-button"

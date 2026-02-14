@@ -91,15 +91,12 @@ export default function DeviceList (props) {
                         </div>
 
                         <div className={"edit-device__form-buttons"}>
-                            <button className="general-button" style={{fontSize: "20px", alignSelf: "flex-end", backgroundColor: 'red'}} onClick={(e) => {
+                            <button className="general-button danger-button" style={{fontSize: "20px", alignSelf: "flex-end"}} onClick={(e) => {
                                 e.preventDefault()
                                 setEditID(null)
                             }}>Cancel</button>
-                            <button className="general-button" style={{fontSize: "20px", alignSelf: "flex-end"}}>Save</button>
-
-
+                            <button className="general-button success-button" style={{fontSize: "20px", alignSelf: "flex-end"}}>Save</button>
                         </div>
-
                     </form>
             )
             } else {
@@ -114,7 +111,7 @@ export default function DeviceList (props) {
                                 console.log('[Client - deleteDevice] setting deleteDevice data to show check screen')
                                 setDeleteDeviceData(device);
                             }}>Delete</button>
-                            <button className="general-button" style={{fontSize: "20px"}} onClick={() => {
+                            <button className="general-button success-button" style={{fontSize: "20px"}} onClick={() => {
                                 setEditID(device);
                             }}>Edit</button>
                         </div>
@@ -141,12 +138,12 @@ export default function DeviceList (props) {
                         <p style={{fontWeight: 700, color: 'var(--secondary)', fontSize: 'var(--font-size)'}}>{deleteDeviceData.name}</p>
                     </div>
                     <div style={{width: '100%', gap: '10px', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-                        <button className={'general-button'} style={{backgroundColor: 'darkRed'}} onClick={(e) => {
+                        <button className={'general-button  danger-button'} onClick={(e) => {
                             e.preventDefault()
                             deleteDevice(deleteDeviceData)
                             setDeleteDeviceData(null)
                         }}>Yes</button>
-                        <button className={'general-button'} onClick={() => {
+                        <button className={'general-button success-button'} onClick={() => {
                             setDeleteDeviceData(null)
                         }}>No</button>
                     </div>
