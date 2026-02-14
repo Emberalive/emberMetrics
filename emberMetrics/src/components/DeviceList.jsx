@@ -133,7 +133,8 @@ export default function DeviceList (props) {
                 alignItems: 'center',
                 justifyContent: 'center',
                 position: 'fixed',
-                backdropFilter: 'blur(2px)'
+                backdropFilter: 'blur(2px)',
+                top: 0
             }}>
                 <section style={{height: '150px', width: '500px'}}>
                     <div style={{display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'center', alignItems: 'center'}}>

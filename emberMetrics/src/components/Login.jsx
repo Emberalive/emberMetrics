@@ -45,10 +45,11 @@ export default function Login (props) {
             if (!isRegister) {
                 const data = await response.json();
                 if (data.success) {
-                    props.setIsLoggedIn(prev => !prev);
                     props.handleNotification('notice', `Successfully ${isRegister ? 'registered' : 'logged in'} as: ${user.username}`);
                 }
             }
+            props.setIsLoggedIn(prev => !prev);
+
         } catch {
             props.handleNotification('error', 'There was an issue with the server, sorry');
         }
