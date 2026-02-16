@@ -41,7 +41,7 @@ export default function Header (props) {
                         }}>
                             Settings
                         </a>
-                        <a className={
+                        { props.authentication && <a className={
                             localStorage.getItem('deviceType') === ""
                                 ? "header-navigation__links disabled-button"
                                 : props.activeView === "profile"
@@ -52,7 +52,7 @@ export default function Header (props) {
                             console.log("view set to profile")
                         }}>
                             Profile
-                        </a>
+                        </a>}
                         <a className={
                             localStorage.getItem('deviceType') === ""
                                 ? "header-navigation__links__end disabled-button"

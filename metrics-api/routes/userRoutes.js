@@ -75,7 +75,7 @@ router.patch('/', async (req, res) => {
         })
     } else {
         const response = await updateUser(username, newUser)
-        if (response.reason) {
+        if (response.success) {
             const reason = response.reason
             switch (reason) {
                 case 'user_notFound':
@@ -88,13 +88,18 @@ router.patch('/', async (req, res) => {
                     return res.status(409).send({
                         success: false
                     })
+                case 'user_updated_failed':
+                    console.log('[Server - PATCH /users] update user failed - internal error.')
+                    return res.status(500).send({
+                        success: false
+                    })
             }
         }
         if (response.success) {
-            console.log('[Server - POST /users] update user succeeded.')
+            console.log('[Server - PATCH /users] update user succeeded.')
             return res.status(200).send(response)
         }
-        console.log('[Server - POST /users] update user failed.')
+        console.log('[Server - PATCH /users] update user failed.')
         return res.status(500).send({
             success: false
         })

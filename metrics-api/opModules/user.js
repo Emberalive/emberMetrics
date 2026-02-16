@@ -68,12 +68,11 @@ async function updateUser(username, newUser) {
                     devices: user.devices,
                     password: user.password
                 }
-
             }
             return user
         })
         const written = await writeUser(updatedUsers)
-        if (written.success && user) {
+        if (written.success) {
             console.log('[Server - updateUser] Successfully updated!')
             return {
                 success: true,
@@ -83,6 +82,10 @@ async function updateUser(username, newUser) {
         }
     } catch (e) {
         console.log('[Server - updateUser] Error updating user\n', e.message);
+        return {
+            success: false,
+            reason: 'user_updated_failed'
+        }
     }
 }
 

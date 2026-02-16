@@ -27,7 +27,7 @@ export default function App() {
 //<<-----------------------^^^^^^Only edit this!!!!!^^^^^^----------------------------------->>
 
     //Nothing below here should be touched, you will most likely break the application!!!
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(!authentication);
     const [user, setUser] = useState(null);
     const [hostIp, setHostIP] = useState(() => {
         const hostPublicIP = localStorage.getItem('hostPublicIP')
@@ -57,7 +57,7 @@ export default function App() {
             setHostIP(data.ip);
         }
         if (hostIp === "" && deviceType === 'remote-access') getPublicIP();
-    }, [hostIp, deviceType]);
+    }, [hostIp, deviceType, isLoggedIn]);
 
     function changeFont (type, size) {
         switch (type) {
@@ -72,8 +72,34 @@ export default function App() {
     const [devices, setDevices] = useState([])
 
     useEffect(() => {
+        if (!authentication) return;
+        //if authentication doesn't exist don't run this function
+        if (isLoggedIn) {
+            const userDevices = user.devices;
+            if (deviceType === "remote-access") {
+                const hostDevice = userDevices.find((device) => device.name === 'localhost' || device.ip === '127.0.0.1')
+                if (hostDevice) {
+                    const remoteDevice_devices = userDevices.map((device) => {
+                        if (device.name === "localhost" && device.ip === "127.0.0.1") {
+                            return {...device,
+                                name: 'host-device',
+                                ip: hostIp,
+                            };
+                        }
+                    })
+                    setDevices(remoteDevice_devices);
+                }
+                // handleNotification('error', 'could not find localhost device')
+            } else {
+                setDevices(userDevices);
+            }
+        }
+    }, [user, isLoggedIn, deviceType, hostIp, authentication])
+
+    useEffect(() => {
         async function getInitialDevices () {
-            //
+            if (authentication) return
+            //if authentication is true don't run this effect
             try {
                 const response = await fetch(`http://${deviceType === "remote-access" ? hostIp : "localhost"}:3000/devices`);
 
@@ -114,21 +140,24 @@ export default function App() {
             }
         }
         getInitialDevices()
-    }, [hostIp, deviceType]);
+    }, [hostIp, deviceType, authentication]);
 
     useEffect(() => {
         //stores the deviceType in state
             localStorage.setItem("deviceType", deviceType);
     }, [deviceType])
 
-    const [selectedDevice, setSelectedDevice] = useState(() => {
-        if (devices) return ""
-        return devices.length !== 0 ? devices[0].ip : null
-    });
+    const [selectedDevice, setSelectedDevice] = useState();
+
+    useEffect(() => {
+        if (isLoggedIn && devices.length > 0) {
+            setSelectedDevice(devices[0].ip);
+        }
+    }, [devices, isLoggedIn]);
 
     const [fontClicked, setFontClicked] = useState("medium");
 
-    const [activeView, setActiveView] = useState("resources")
+    const [activeView, setActiveView] = useState(authentication ? deviceType ? "login" : "deviceTypeSelection" : "resources");
 
     const [metrics, setMetrics] = useState(null)
     const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -263,14 +292,14 @@ export default function App() {
                   authentication={authentication}
                   isLoggedIn={isLoggedIn}
           />
-          {((devices && activeView === "resources")&&(authentication === false && isLoggedIn === false)) && <div className={"device-navigation__wrapper"} ref={groupsRef} onWheel={handleWheel}>
+          {((activeView === "resources" && devices) && isLoggedIn === true) && <div className={"device-navigation__wrapper"} ref={groupsRef} onWheel={handleWheel}>
               <div className={"device-navigation"}>
                   {deviceButtonList}
               </div>
           </div>}
           <main className={(activeView === 'resources' || activeView === 'fullScreen') ? (deviceType === '' || (authentication === true && isLoggedIn === false)) ? 'main-single-column' : '' : 'main-single-column'}>
+              {(activeView === "deviceTypeSelection") && (deviceType === '') && <DeviceTypeSelection setDeviceType={setDeviceType} activeView={activeView} setActiveView={setActiveView}/>}
               {(authentication === false || isLoggedIn === true ) && <>
-                  {deviceType === "" && <DeviceTypeSelection setDeviceType={setDeviceType} activeView={activeView}/>}
 
                   {metrics !== null &&
                       <>
@@ -306,13 +335,20 @@ export default function App() {
                                                                  handleNotification={handleNotification} hostIp={hostIp}
                                                                  deviceType={deviceType}/>}
               </>}
-              {activeView === 'profile' && <Profile user={user}/>}
-              {(isLoggedIn === false && authentication === true) && <Login handleNotification={handleNotification}
+              {activeView === 'profile' && <Profile user={user} handleNotification={handleNotification} setUser={setUser}/>}
+              {activeView === 'login' && <Login handleNotification={handleNotification}
                                                                            hostIp={hostIp}
                                                                            setIsLoggedIn={setIsLoggedIn}
                                                                            deviceType={deviceType}
                                                                            setUser={setUser}
-                                                                           devices={devices}/>}
+                                                                           devices={devices}
+                                                                           setActiveView={setActiveView}/>}
+              {!metrics &&
+                  <>
+                      <h1>Device can not be accessed</h1>
+                      <p>Make sure that your remote device script is running on the selected device, or make sure that your public ip address is correct</p>
+                  </>
+              }
           </main>
       </>
   )

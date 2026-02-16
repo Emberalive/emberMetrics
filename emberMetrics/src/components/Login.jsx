@@ -21,8 +21,12 @@ export default function Login (props) {
                                 confirmPassword: confirmPassword,
                                 role: 'user',
                                 bio: '',
-                                email: ''
-                            }})
+                                email: '',
+                                devices: props.devices.map((device) => ({
+                                    deviceId: device.id,
+                                    name: device.name,
+                                }))
+                        }})
                     })
                     if (response.ok) {
                         props.setIsLoggedIn(prevState => !prevState)
@@ -46,7 +50,7 @@ export default function Login (props) {
                 }
             } else {
                 if (username && password) {
-                    const response = await fetch(`http://${props.deviceType === 'remote-device' ? props.hostIp : 'localhost'}:3000/users/login`, {
+                    const response = await fetch(`http://${props.deviceType === 'remote-access' ? props.hostIp : 'localhost'}:3000/users/login`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -62,6 +66,7 @@ export default function Login (props) {
                             props.setIsLoggedIn(prevState => !prevState)
                             props.setUser(resData.user)
                             props.handleNotification('notice', 'Successfully logged in as: ' + username)
+                            props.setActiveView('resources')
                         }
 
                     } else if (response.status === 400) {

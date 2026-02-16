@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react'
+import {useState} from 'react'
 
 export default function Profile (props) {
     const [isEditing, setEditing] = useState(false);
@@ -10,13 +10,13 @@ export default function Profile (props) {
         id: props.user.id,
     });
     let allowedDevicesList
-    if (editUser.devices) {
-        const allowedDevices = editUser.devices
+    if (props.user.devices) {
+        const allowedDevices = props.user.devices
 
         allowedDevicesList = allowedDevices.map(device => {
             return (
-                <div className={'profile-item__container'}>
-                    <label >{device.name}</label>
+                <div className={'profile-item__container'} key={device.id}>
+                    <label>{device.name}</label>
                     <p>{device.ip}</p>
                 </div>
             )
@@ -29,6 +29,7 @@ export default function Profile (props) {
             bio: props.user.bio ? props.user.bio : '',
             role: props.user.role,
             id: props.user.id,
+            devices: props.user.devices,
         })
     }
 
@@ -46,9 +47,13 @@ export default function Profile (props) {
             })
             if (response.ok) {
                 const resData = await response.json()
+                console.info('response was ok!')
+                console.info(JSON.stringify(resData, null, 2))
                 if (resData.success) {
                     props.handleNotification('notice', 'Successfully updated user data')
                     props.setUser(resData.updatedUser)
+                    setEditing(prevState => !prevState)
+                    resetEditUser()
                     return
                 }
                 props.handleNotification('error', 'The request was incorrect')
@@ -71,8 +76,8 @@ export default function Profile (props) {
                         props.handleNotification('error', 'Something went wrong, sorry')
                 }
             }
-            console.info('submitted profile change')
-        } catch {
+        } catch (e) {
+            console.error('There was an error',e.message)
             props.handleNotification('error', 'Server Error, sorry')
         }
     }
@@ -120,7 +125,7 @@ export default function Profile (props) {
                             :
                             <div className="profile-item__container">
                                 <h1>Bio</h1>
-                                <textarea disabled>{props.user.bio}</textarea>
+                                <textarea disabled value={props.user.bio}></textarea>
                             </div>
                         }
                     <div className="profile-button__container">
@@ -133,8 +138,6 @@ export default function Profile (props) {
 
                                 <button className={'general-button success-button'} onClick={() => {
                                     submitEdit()
-                                    setEditing(prevState => !prevState)
-                                    resetEditUser()
                                 }}>Save</button>
 
                             </>
@@ -151,7 +154,6 @@ export default function Profile (props) {
                     </header>
                         {allowedDevicesList &&
                             <div className="profile-devices__container">
-
                                     {allowedDevicesList}
                             </div>
                         }
