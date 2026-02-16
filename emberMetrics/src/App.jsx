@@ -86,6 +86,7 @@ export default function App() {
                                 ip: hostIp,
                             };
                         }
+                        return device;
                     })
                     setDevices(remoteDevice_devices);
                 }
