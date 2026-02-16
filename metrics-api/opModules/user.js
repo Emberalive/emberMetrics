@@ -41,6 +41,51 @@ async function createUser(username, password, role) {
     }
 }
 
+async function updateUser(username, newUser) {
+    try {
+        let userData = newUser
+        const currentUsers = await readUsers()
+        const exists = currentUsers.find(e => e.username === username)
+        if (!exists) {
+            console.log('[Server - updateUser] User doesnt exist | cant update details')
+            return {
+                success: false,
+                reason: 'user_notFound'
+            }
+        }
+        console.log('[Server - updateUser] User found successfully!');
+        //checking for username collision
+        const usernameTaken = currentUsers.some(u => u.username === userData.username && u.username !== username)
+        if (usernameTaken) {
+            console.log('[Server - updateUser] Username already exists!')
+            return { success: false, reason: 'username_taken' }
+        }
+        const updatedUsers = currentUsers.map( (user) => {
+            if (user.username === username) {
+                userData.devices = user.devices
+                return {
+                    ...userData,
+                    devices: user.devices,
+                    password: user.password
+                }
+
+            }
+            return user
+        })
+        const written = await writeUser(updatedUsers)
+        if (written.success && user) {
+            console.log('[Server - updateUser] Successfully updated!')
+            return {
+                success: true,
+                updatedUser: userData,
+                reason: 'user_updated_successfully'
+            }
+        }
+    } catch (e) {
+        console.log('[Server - updateUser] Error updating user\n', e.message);
+    }
+}
+
 async function authenticateUser(user) {
     try {
         const userData = await getUser(user.username);
@@ -210,4 +255,4 @@ async function checkPassword(password, hashedPassword) {
 }
 
 
-module.exports = {createUser, deleteUser, authenticateUser}
+module.exports = {createUser, deleteUser, authenticateUser, updateUser}

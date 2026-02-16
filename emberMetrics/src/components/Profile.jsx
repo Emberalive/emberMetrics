@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import {useEffect, useState} from 'react'
 
 export default function Profile (props) {
     const [isEditing, setEditing] = useState(false);
@@ -6,7 +6,8 @@ export default function Profile (props) {
         username: props.user.username,
         email: props.user.email ? props.user.email : '',
         bio: props.user.bio ? props.user.bio : '',
-        devices: [{name:"localhost",ip:"127.0.0.1",id:"DgxI77r32HDNeBfh0sK8B"},{name:"My Server",ip:"203.0.113.1",id:"vJiyG2kg0-qSAvnYsN8tk"}]
+        devices: props.devices,
+        id: props.user.id,
     });
     let allowedDevicesList
     if (editUser.devices) {
@@ -21,19 +22,55 @@ export default function Profile (props) {
             )
         })
     }
-
     function resetEditUser () {
         setEditUser({
             username: props.user.username,
             email: props.user.email ? props.user.email : '',
             bio: props.user.bio ? props.user.bio : '',
-            devices: [{name:"localhost",ip:"127.0.0.1",id:"DgxI77r32HDNeBfh0sK8B"},{name:"My Server",ip:"203.0.113.1",id:"vJiyG2kg0-qSAvnYsN8tk"}]
+            role: props.user.role,
+            id: props.user.id,
         })
     }
 
-    function submitEdit () {
+    async function submitEdit () {
         try {
-        //     empty
+            const response = await fetch(`http://${props.deviceType === 'remote-device' ? props.hostIp : 'localhost'}:3000/users`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: props.user.username,
+                    newUser: editUser,
+                })
+            })
+            if (response.ok) {
+                const resData = await response.json()
+                if (resData.success) {
+                    props.handleNotification('notice', 'Successfully updated user data')
+                    props.setUser(resData.updatedUser)
+                    return
+                }
+                props.handleNotification('error', 'The request was incorrect')
+            } else {
+                switch(response.status) {
+                    case 404:
+                        resetEditUser()
+                        props.handleNotification('error', 'Your user does not exist')
+                        break
+                    case 409:
+                        resetEditUser()
+                        props.handleNotification('error', 'username is already taken')
+                        break
+                    case 500:
+                        resetEditUser()
+                        props.handleNotification('error', 'Sorry there was a Server error')
+                        break
+                    default:
+                        resetEditUser()
+                        props.handleNotification('error', 'Something went wrong, sorry')
+                }
+            }
             console.info('submitted profile change')
         } catch {
             props.handleNotification('error', 'Server Error, sorry')

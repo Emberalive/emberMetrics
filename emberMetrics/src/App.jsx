@@ -308,9 +308,11 @@ export default function App() {
               </>}
               {activeView === 'profile' && <Profile user={user}/>}
               {(isLoggedIn === false && authentication === true) && <Login handleNotification={handleNotification}
-                                                                           hostIp={hostIp} setIsLoggedIn={setIsLoggedIn}
+                                                                           hostIp={hostIp}
+                                                                           setIsLoggedIn={setIsLoggedIn}
                                                                            deviceType={deviceType}
-                                                                           setUser={setUser}/>}
+                                                                           setUser={setUser}
+                                                                           devices={devices}/>}
           </main>
       </>
   )
