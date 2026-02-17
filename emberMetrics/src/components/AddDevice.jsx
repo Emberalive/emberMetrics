@@ -43,6 +43,11 @@ export default function AddDevice(props) {
                             newDevice
                         ]
                     })
+                    props.setUser((prev) => {
+                        const userDevices = prev.devices
+                        userDevices.push(newDevice)
+                        return {...prev, devices: userDevices}
+                    })
                 }
             }
         } catch (e) {

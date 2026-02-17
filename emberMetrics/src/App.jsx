@@ -298,7 +298,7 @@ export default function App() {
                   {deviceButtonList}
               </div>
           </div>}
-          <main className={(activeView === 'resources' || activeView === 'fullScreen') ? (deviceType === '' || (authentication === true && isLoggedIn === false)) ? 'main-single-column' : '' : 'main-single-column'}>
+          <main className={(activeView === 'resources' || activeView === 'fullScreen') ? (deviceType === '' || (authentication === true && isLoggedIn === false) || !metrics) ? 'main-single-column' : '' : 'main-single-column'}>
               {(activeView === "deviceTypeSelection") && (deviceType === '') && <DeviceTypeSelection setDeviceType={setDeviceType} activeView={activeView} setActiveView={setActiveView}/>}
               {(authentication === false || isLoggedIn === true ) && <>
 
@@ -322,6 +322,14 @@ export default function App() {
                           </>}
                       </>
                   }
+                  {!metrics && activeView === "resources" &&
+                      <div className={'metrics-notice__wrapper'}>
+                          <section style={{width:'60%'}}>
+                              <h1>Device can not be accessed</h1>
+                              <p>Make sure that your remote device script is running on the selected device, or make sure that your public ip address is correct</p>
+                          </section>
+                      </div>
+                  }
                   {activeView === "settings" && <Settings setActiveView={setActiveView}
                                                           setIsDarkMode={setIsDarkMode}
                                                           isDarkMode={isDarkMode}
@@ -334,7 +342,8 @@ export default function App() {
                   />}
                   {activeView === "devices" && <DeviceManagement devices={devices} setDevices={setDevices}
                                                                  handleNotification={handleNotification} hostIp={hostIp}
-                                                                 deviceType={deviceType}/>}
+                                                                 deviceType={deviceType}
+                                                                 setUser={setUser}/>}
               </>}
               {activeView === 'profile' && <Profile user={user} handleNotification={handleNotification} setUser={setUser}/>}
               {activeView === 'login' && <Login handleNotification={handleNotification}
@@ -344,12 +353,6 @@ export default function App() {
                                                                            setUser={setUser}
                                                                            devices={devices}
                                                                            setActiveView={setActiveView}/>}
-              {!metrics &&
-                  <>
-                      <h1>Device can not be accessed</h1>
-                      <p>Make sure that your remote device script is running on the selected device, or make sure that your public ip address is correct</p>
-                  </>
-              }
           </main>
       </>
   )

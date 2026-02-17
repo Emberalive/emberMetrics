@@ -9,7 +9,11 @@ export default function DeviceManagement (props) {
                     <header className="device-management__header">
                         <h1>Device Management</h1>
                     </header>
-                    <AddDevice handleNotification={props.handleNotification} deviceType={props.deviceType} hostIp={props.hostIp} setDevices={props.setDevices}/>
+                    <AddDevice handleNotification={props.handleNotification}
+                               deviceType={props.deviceType}
+                               hostIp={props.hostIp}
+                               setDevices={props.setDevices}
+                               setUser={props.setUser}/>
                     <div className="device-management__header">
                         <h1>Remote Devices</h1>
                     </div>
