@@ -2,13 +2,7 @@ import {useState} from 'react'
 
 export default function Profile (props) {
     const [isEditing, setEditing] = useState(false);
-    const [editUser, setEditUser] = useState({
-        username: props.user.username,
-        email: props.user.email ? props.user.email : '',
-        bio: props.user.bio ? props.user.bio : '',
-        devices: props.devices,
-        id: props.user.id,
-    });
+    const [editUser, setEditUser] = useState(props.user);
     let allowedDevicesList
     if (props.user.devices) {
         const allowedDevices = props.user.devices

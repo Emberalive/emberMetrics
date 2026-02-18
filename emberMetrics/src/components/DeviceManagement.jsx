@@ -13,11 +13,17 @@ export default function DeviceManagement (props) {
                                deviceType={props.deviceType}
                                hostIp={props.hostIp}
                                setDevices={props.setDevices}
-                               setUser={props.setUser}/>
+                               setUser={props.setUser} user={props.user}/>
                     <div className="device-management__header">
                         <h1>Remote Devices</h1>
                     </div>
-                    <DeviceList submitDevice={props.submitDevice} devices={props.devices} editDevice={props.editDevice} setEditDevice={props.setEditDevice} handleNotification={props.handleNotification} setDevices={props.setDevices}/>
+                    <DeviceList submitDevice={props.submitDevice} devices={props.devices}
+                                editDevice={props.editDevice}
+                                setEditDevice={props.setEditDevice}
+                                handleNotification={props.handleNotification}
+                                setDevices={props.setDevices}
+                                user={props.user}
+                                setUser={props.setUser}/>
                 </section>
             </div>
 

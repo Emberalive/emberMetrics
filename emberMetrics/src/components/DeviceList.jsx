@@ -23,15 +23,41 @@ export default function DeviceList (props) {
             if (response.ok) {
                 const index = props.devices.findIndex(device => device.id === deviceID);
                 if (index !== -1) {
-                    const updatedDevices = props.devices.filter((device) => device.id !== deviceID);
-                    props.setDevices(updatedDevices);
+                    const updatedDevices = props.user.devices.filter((device) => device.id !== deviceID);
+                    props.setUser((prev) => {
+                        return {...prev,
+                        devices: updatedDevices}
+                    });
                     props.handleNotification('notice', 'Successfully deleted devices');
                 }
             } else {
                 props.handleNotification('error', 'Failed to delete device');
             }
-        } catch {
+            const userData = {
+                ...props.user,
+                devices: props.user.devices.filter((device) => device.id !== deviceID)
+            }
+            const response1 = await fetch(`http://${props.deviceType === 'remote-access' ? props.hostIp : 'localhost'}:3000/users`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    newUser: userData,
+                    username: userData.username,
+                }),
+            })
+            if (response1.ok) {
+                const resData = await response1.json()
+                if (resData.success) {
+                    props.setUser(resData.updatedUser);
+                } else {
+                    props.handleNotification('error', 'Failed to update device');
+                }
+            }
+        } catch (e) {
             props.handleNotification('error', 'Sorry there was an issue deleting this device');
+            console.error("[Client - delete device] Failed to retrieve devices", e.message);
         }
     }
 
@@ -72,8 +98,8 @@ export default function DeviceList (props) {
         }
     }
 
-    if (props.devices) {
-        devicesList = props.devices.map(device => {
+    if (props.user.devices) {
+        devicesList = props.user.devices.map(device => {
             if (editDevice && editDevice.id === device.id) {
                 return (
                     <form onSubmit={patchDevice} className="device-management__form" style={{width:'100%'}}>

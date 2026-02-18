@@ -2,7 +2,7 @@ const express = require('express')
 const {createUser, deleteUser, authenticateUser, updateUser} = require('../opModules/user')
 const router = express.Router()
 
-//loggin the user in
+//login the user in
 router.post('/login', async(req, res) => {
     console.log('[Server - POST /users - login] starting route access')
     const {username, password} = req.body.user

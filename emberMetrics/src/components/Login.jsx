@@ -6,7 +6,6 @@ export default function Login (props) {
         const username = e.target.username.value;
         const password = e.target.password.value;
         const confirmPassword = e.target.confirmPassword ? e.target.confirmPassword.value : null;
-        console.info(username, password, confirmPassword);
         try {
             if (confirmPassword) {
                 if (username && password) {
@@ -22,10 +21,7 @@ export default function Login (props) {
                                 role: 'user',
                                 bio: '',
                                 email: '',
-                                devices: props.devices.map((device) => ({
-                                    deviceId: device.id,
-                                    name: device.name,
-                                }))
+                                devices: [{"name":"localhost","ip":"127.0.0.1","id":"DgxI77r32HDNeBfh0sK8B"}]
                         }})
                     })
                     if (response.ok) {

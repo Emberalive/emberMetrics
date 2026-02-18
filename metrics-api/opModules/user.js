@@ -25,7 +25,7 @@ async function createUser(username, password, role) {
             const response = await hashPassword(password, saltRounds);
             if (response.success) {
                 console.log('[Server - createUser] Successfully created!]')
-                return await addUser({username: username, password: response.hash, role, id: nanoid()});
+                return await addUser({username: username, password: response.hash, role, id: nanoid(), devices: [{"name":"localhost","ip":"127.0.0.1","id":"DgxI77r32HDNeBfh0sK8B"}]});
             } else {
                 console.error('[Server - createUser] Error hashing password')
                 return {
@@ -62,10 +62,8 @@ async function updateUser(username, newUser) {
         }
         const updatedUsers = currentUsers.map( (user) => {
             if (user.username === username) {
-                userData.devices = user.devices
                 return {
                     ...userData,
-                    devices: user.devices,
                     password: user.password
                 }
             }

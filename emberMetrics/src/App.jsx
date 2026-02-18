@@ -11,13 +11,14 @@ import Notification from "./components/Notification.jsx";
 import DeviceTypeSelection from "./components/DeviceTypeSelection.jsx";
 import NetworkData from "./components/NetworkData.jsx";
 import DiskData from "./components/DiskData.jsx";
+import Login from "./components/Login.jsx";
+import Profile from "./components/Profile.jsx";
 import CollapseWhite from "./assets/collapse-white.svg";
 import CollapseBlack from "./assets/collapse-black.svg";
 import ExpandWhite from "./assets/expand-white.svg";
 import ExpandBlack from "./assets/expand-black.svg";
 import Sparkr from "./assets/SVG 2.1 | Original Sparkr.svg";
-import Login from "./components/Login.jsx";
-import Profile from "./components/Profile.jsx";
+
 
 export default function App() {
 //<<-----------------------------Only edit this!!!!!----------------------------------------->>
@@ -219,7 +220,7 @@ export default function App() {
         }    }, [isDarkMode])
 
     useEffect( () => {
-        if (!isLoggedIn) return
+        if (!isLoggedIn || activeView !== 'resources') return
         console.log("[APP_METRICS] Getting metrics")
         try {
             const interval = setInterval(async () => {
@@ -244,7 +245,7 @@ export default function App() {
             console.error("[APP_METRICS] Error getting metrics: ", err.message)
             handleNotification("error", "There was an error fetching metrics")
         }
-    }, [selectedDevice, isLoggedIn])
+    }, [selectedDevice, isLoggedIn, activeView])
 
     function changeRemoteDevice(ip) {
         setSelectedDevice(ip)
@@ -256,7 +257,7 @@ export default function App() {
     let deviceButtonList
         if (devices){
             deviceButtonList = devices.map((device) => {
-                return(<button className={selectedDevice === device.ip ?"general-button disabled-button": "general-button"} onClick={() => changeRemoteDevice(device.ip)} style={{
+                return(<button key={device.id} className={selectedDevice === device.ip ?"general-button disabled-button": "general-button"} onClick={() => changeRemoteDevice(device.ip)} style={{
                     minWidth: "fit-content",
                     maxWidth: "fit-content",
                 }}>{device.name}</button>)
@@ -324,9 +325,15 @@ export default function App() {
                   }
                   {!metrics && activeView === "resources" &&
                       <div className={'metrics-notice__wrapper'}>
-                          <section style={{width:'60%'}}>
+                          <section className={'metrics-notice'}>
                               <h1>Device can not be accessed</h1>
-                              <p>Make sure that your remote device script is running on the selected device, or make sure that your public ip address is correct</p>
+                              <p>Check these things:</p>
+                              <p>1. The remote device is powered on</p>
+                              <p>2. The remote device API is running</p>
+                              <p>3. The remote device has port forwarding on for port: '3000'</p>
+                              <p>4. The router has port forwarding on for port: '3000'</p>
+                              <p>5. The IP address is correct - needs to be a public IPV4</p>
+
                           </section>
                       </div>
                   }
@@ -341,9 +348,10 @@ export default function App() {
                                                           setLogoImage={setLogoImage}
                   />}
                   {activeView === "devices" && <DeviceManagement devices={devices} setDevices={setDevices}
-                                                                 handleNotification={handleNotification} hostIp={hostIp}
+                                                                 handleNotification={handleNotification}
+                                                                 hostIp={hostIp}
                                                                  deviceType={deviceType}
-                                                                 setUser={setUser}/>}
+                                                                 setUser={setUser} user={user}/>}
               </>}
               {activeView === 'profile' && <Profile user={user} handleNotification={handleNotification} setUser={setUser}/>}
               {activeView === 'login' && <Login handleNotification={handleNotification}

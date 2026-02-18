@@ -578,6 +578,34 @@ section {
     width: 100%;
 }
 
+.metrics-notice {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    border-bottom: 1px solid var(--danger);
+    gap: 10px;
+}
+
+.metrics-notice > h1, .metrics-notice > p {
+    text-align: center;
+}
+
+.metrics-notice > p {
+    width: calc(100% - 30px);
+    margin: 0;
+    background-color: var(--neutral);
+    border: none;
+    padding: var(--element-padding);
+    font-size: 25px;
+    outline: none;
+    border-radius: var(--border-radius);
+}
+
+@media (max-width: 600px) {}
+
 /*Add Device form*/
 .device-management__form {
     width: 80%;
@@ -1293,7 +1321,7 @@ section {
     border-bottom: 1px solid var(--border-color);
 }
 
-@media (max-width: 700px) {
+@media (max-width: 800px) {
     .profile {
         width: calc(100% - var(--element-padding));
     }
@@ -1301,8 +1329,6 @@ section {
         width: 90%;
     }
 }
-
-
 
 .profile-container > .section-header > h1 {
     text-align: center;
@@ -1328,6 +1354,14 @@ section {
     width: 150px;
 }
 
+.profile-item__container > p {
+    overflow-y: scroll;
+    text-overflow: clip;
+    scroll-behavior: smooth;
+    white-space: nowrap;
+}
+
+
 .profile-item__container > p,
 .profile-item__container > textarea,
 .profile-item__container > input {
@@ -1335,8 +1369,8 @@ section {
     padding: var(--element-padding);
     border-radius: var(--border-radius);
     font-size: 20px;
-    min-width: 150px;
-    max-width: 150px;
+    min-width: 250px;
+    max-width: 250px;
     min-height: calc(20px * 1.2);
     outline: none;
     border-bottom: 1px solid var(--neutral);
@@ -1372,8 +1406,8 @@ section {
 .profile-item__container > input {
     border-bottom: 1px solid var(--secondary);
     font-size: 20px;
-    min-width: 150px;
-    max-width: 150px;
+    min-width: 250px;
+    max-width: 250px;
 }
 
 .profile-button__container {
