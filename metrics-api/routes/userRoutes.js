@@ -98,11 +98,12 @@ router.patch('/', async (req, res) => {
         if (response.success) {
             console.log('[Server - PATCH /users] update user succeeded.')
             return res.status(200).send(response)
+        } else {
+            console.log('[Server - PATCH /users] update user failed.')
+            return res.status(500).send({
+                success: false
+            })
         }
-        console.log('[Server - PATCH /users] update user failed.')
-        return res.status(500).send({
-            success: false
-        })
     }
 
 })

@@ -40,35 +40,49 @@ export default function AddDevice(props) {
                         devices: [...props.user.devices, newDevice]
                     }
                     console.info('[Client ] - attempting update user]')
-                    const response1 = await fetch(`http://${props.deviceType === 'host' ? "localhost" : props.hostIp}:3000/users`, {
-                        method: "PATCH",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({newUser: userData, username: props.user.username})
-                    })
-                    if (response1.ok) {
-                        console.info('[Client ] - response was 200 ok!')
-                        const resData = await response1.json()
-                        if (!resData.success) {
-                            if (props.user.role === 'user') props.handleNotification("error", `error adding device to your user, please speak to your admin.`)
-                            else props.handleNotification('error', `error adding device to your user, sorry`)
-                        } else {
-                            props.handleNotification("notice", `successfully added the device "${ip}"`)
-                            console.log(`Adding the ${ip} device.`)
-                            props.setUser((prev) => {
-                                const userDevices = prev.devices
-                                userDevices.push(newDevice)
-                                return {...prev, devices: userDevices}
-                            })
-                        }
+                    const response1 = props.patchUser(userData);
+
+                    if (response1.success) {
+                        props.handleNotification("notice", `successfully added the device "${ip}"`)
+                        console.log(`Adding the ${ip} device.`)
+                        props.setUser(response1.updatedUser)
                     } else {
                         if (props.user.role === 'user') props.handleNotification("error", `error adding device to your user, please speak to your admin.`)
                         else props.handleNotification('error', `error adding device to your user, sorry`)
                     }
+
+
+
+
+
+                    // const response1 = await fetch(`http://${props.deviceType === 'host' ? "localhost" : props.hostIp}:3000/users`, {
+                    //     method: "PATCH",
+                    //     headers: {
+                    //         "Content-Type": "application/json",
+                    //     },
+                    //     body: JSON.stringify({newUser: userData, username: props.user.username})
+                    // })
+                    // if (response1.ok) {
+                    //     console.info('[Client ] - response was 200 ok!')
+                    //     const resData = await response1.json()
+                    //     if (!resData.success) {
+                    //         if (props.user.role === 'user') props.handleNotification("error", `error adding device to your user, please speak to your admin.`)
+                    //         else props.handleNotification('error', `error adding device to your user, sorry`)
+                    //     } else {
+                    //         props.handleNotification("notice", `successfully added the device "${ip}"`)
+                    //         console.log(`Adding the ${ip} device.`)
+                    //         props.setUser((prev) => {
+                    //             const userDevices = prev.devices
+                    //             userDevices.push(newDevice)
+                    //             return {...prev, devices: userDevices}
+                    //         })
+                    //     }
+                    // } else {
+                    //     if (props.user.role === 'user') props.handleNotification("error", `error adding device to your user, please speak to your admin.`)
+                    //     else props.handleNotification('error', `error adding device to your user, sorry`)
+                    // }
                 }
             }
-
         } catch (e) {
             console.error('Error attempting to add a device to the api', e.message)
         }

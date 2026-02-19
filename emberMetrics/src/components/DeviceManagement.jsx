@@ -13,7 +13,9 @@ export default function DeviceManagement (props) {
                                deviceType={props.deviceType}
                                hostIp={props.hostIp}
                                setDevices={props.setDevices}
-                               setUser={props.setUser} user={props.user}/>
+                               setUser={props.setUser}
+                               user={props.user}
+                               patchUser={props.patchUser}/>
                     <div className="device-management__header">
                         <h1>Remote Devices</h1>
                     </div>
@@ -23,7 +25,8 @@ export default function DeviceManagement (props) {
                                 handleNotification={props.handleNotification}
                                 setDevices={props.setDevices}
                                 user={props.user}
-                                setUser={props.setUser}/>
+                                setUser={props.setUser}
+                                patchUser={props.patchUser}/>
                 </section>
             </div>
 

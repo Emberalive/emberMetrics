@@ -271,6 +271,32 @@ export default function App() {
             groupsRef.current.scrollLeft += e.deltaY;
         }
     }
+
+        async function patchUser (userData) {
+            const response = await fetch(`http://${deviceType === 'remote-access' ? hostIp : 'localhost'}:3000/users`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    newUser: userData,
+                    username: userData.username,
+                }),
+            })
+            if (response.ok) {
+                const resData = await response.json()
+                console.info(JSON.stringify('[Client - patchUser - APP] success: ', resData.success))
+                if (resData.success) {
+                    return {
+                        success: true,
+                        updatedUser: resData.updatedUser
+                    }
+                } else {
+                    handleNotification('error', 'Failed to update device');
+                    throw new Error("Failed to update user");
+                }
+            }
+        }
   return (
       <>
           <Notification notification={notification} setNotification={setNotification} />
@@ -351,7 +377,9 @@ export default function App() {
                                                                  handleNotification={handleNotification}
                                                                  hostIp={hostIp}
                                                                  deviceType={deviceType}
-                                                                 setUser={setUser} user={user}/>}
+                                                                 setUser={setUser}
+                                                                 user={user}
+                                                                 patchUser={patchUser}/>}
               </>}
               {activeView === 'profile' && <Profile user={user} handleNotification={handleNotification} setUser={setUser}/>}
               {activeView === 'login' && <Login handleNotification={handleNotification}

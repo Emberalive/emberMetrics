@@ -37,23 +37,12 @@ export default function DeviceList (props) {
                 ...props.user,
                 devices: props.user.devices.filter((device) => device.id !== deviceID)
             }
-            const response1 = await fetch(`http://${props.deviceType === 'remote-access' ? props.hostIp : 'localhost'}:3000/users`, {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    newUser: userData,
-                    username: userData.username,
-                }),
-            })
-            if (response1.ok) {
-                const resData = await response1.json()
-                if (resData.success) {
-                    props.setUser(resData.updatedUser);
-                } else {
-                    props.handleNotification('error', 'Failed to update device');
-                }
+            const response1 = props.patchUser(userData);
+
+            if (response1.success) {
+                props.setUser(response1.updatedUser);
+            } else {
+                props.handleNotification('error', 'Failed to update device');
             }
         } catch (e) {
             props.handleNotification('error', 'Sorry there was an issue deleting this device');
@@ -84,6 +73,12 @@ export default function DeviceList (props) {
                     })
                     if (newDevices.length === props.devices.length) {
                         props.setDevices(newDevices);
+                        const userdata = {
+                            ...props.user,
+                            devices: newDevices,
+                        }
+                        props.patchUser(userdata);
+                        props.handleNotification('notice', 'Successfully updated device', editDevice.id);
                     } else {
                         console.error('New devices is not the same length as devices')
                     }
@@ -92,6 +87,7 @@ export default function DeviceList (props) {
                     props.handleNotification('error', 'Could not edit the device')
                 }
             }
+
             } catch (e) {
             console.error('Error editing a patch', e.message);
             props.handleNotification('error', 'Could not edit your device, sorry');
