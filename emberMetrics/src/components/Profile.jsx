@@ -1,8 +1,13 @@
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 
 export default function Profile (props) {
     const [isEditing, setEditing] = useState(false);
     const [editUser, setEditUser] = useState(props.user);
+
+    useEffect(() => {
+        setEditUser(props.user)
+    }, [props.user]);
+
     let allowedDevicesList
     if (props.user.devices) {
         const allowedDevices = props.user.devices
@@ -26,55 +31,6 @@ export default function Profile (props) {
             devices: props.user.devices,
         })
     }
-
-    async function submitEdit () {
-        try {
-            const response = await fetch(`http://${props.deviceType === 'remote-device' ? props.hostIp : 'localhost'}:3000/users`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    username: props.user.username,
-                    newUser: editUser,
-                })
-            })
-            if (response.ok) {
-                const resData = await response.json()
-                console.info('response was ok!')
-                console.info(JSON.stringify(resData, null, 2))
-                if (resData.success) {
-                    props.handleNotification('notice', 'Successfully updated user data')
-                    props.setUser(resData.updatedUser)
-                    setEditing(prevState => !prevState)
-                    resetEditUser()
-                    return
-                }
-                props.handleNotification('error', 'The request was incorrect')
-            } else {
-                switch(response.status) {
-                    case 404:
-                        resetEditUser()
-                        props.handleNotification('error', 'Your user does not exist')
-                        break
-                    case 409:
-                        resetEditUser()
-                        props.handleNotification('error', 'username is already taken')
-                        break
-                    case 500:
-                        resetEditUser()
-                        props.handleNotification('error', 'Sorry there was a Server error')
-                        break
-                    default:
-                        resetEditUser()
-                        props.handleNotification('error', 'Something went wrong, sorry')
-                }
-            }
-        } catch (e) {
-            console.error('There was an error',e.message)
-            props.handleNotification('error', 'Server Error, sorry')
-        }
-    }
     return (
         <div className="profile-container__wrapper">
             <section className={'profile'}>
@@ -92,7 +48,7 @@ export default function Profile (props) {
                             :
                             <div className="profile-item__container">
                                 <h1>Name</h1>
-                                <p>{props.user.username}</p>
+                                <p className={'profile-item-container__text'}>{props.user.username}</p>
                             </div>
                         }
                         {isEditing ?
@@ -105,21 +61,21 @@ export default function Profile (props) {
                             :
                             <div className="profile-item__container">
                                 <h1>Email</h1>
-                                <p>{props.user.email}</p>
+                                <p className={'profile-item-container__text'}>{props.user.email}</p>
                             </div>
                         }
                         {isEditing ?
                             <div className="profile-item__container">
                                 <label>Bio</label>
-                                <textarea style={{borderBottom: '1px solid var(--secondary)'}} value={editUser.bio} onChange={(e) => {
+                                <p className={'profile-item-container__bio__edit'} style={{borderBottom: '1px solid var(--secondary)'}} onChange={(e) => {
                                     setEditUser({ ...editUser, bio: e.target.value })
-                                }}></textarea>
+                                }}>{editUser.bio}</p>
 
                             </div>
                             :
                             <div className="profile-item__container">
                                 <h1>Bio</h1>
-                                <textarea disabled value={props.user.bio}></textarea>
+                                <p className={'profile-item-container__bio'}>{props.user.bio}</p>
                             </div>
                         }
                     <div className="profile-button__container">
@@ -130,8 +86,28 @@ export default function Profile (props) {
                                     resetEditUser()
                                 }}>cancel</button>
 
-                                <button className={'general-button success-button'} onClick={() => {
-                                    submitEdit()
+                                <button className={'general-button success-button'} onClick={async() => {
+                                    const response = await props.patchUser(editUser)
+                                    if (!response.success) {
+                                        switch(response.status) {
+                                            case 404:
+                                                resetEditUser()
+                                                props.handleNotification('error', 'Your user does not exist')
+                                                break
+                                            case 409:
+                                                resetEditUser()
+                                                props.handleNotification('error', 'username is already taken')
+                                                break
+                                            case 500:
+                                                resetEditUser()
+                                                props.handleNotification('error', 'Sorry there was a Server error')
+                                                break
+                                            default:
+                                                resetEditUser()
+                                                props.handleNotification('error', 'Something went wrong, sorry')
+                                        }
+                                    }
+                                    setEditing(prevState => !prevState)
                                 }}>Save</button>
 
                             </>

@@ -103,7 +103,7 @@ export default function App() {
             if (authentication) return
             //if authentication is true don't run this effect
             try {
-                const response = await fetch(`http://${deviceType === "remote-access" ? hostIp : "localhost"}:3000/devices`);
+                const response = await fetch(`http://${deviceType === "remote-access" ? hostIp : "127.0.0.1"}:3000/devices`);
 
                 if (response.ok) {
                     const resData = await response.json();
@@ -272,31 +272,48 @@ export default function App() {
         }
     }
 
-        async function patchUser (userData) {
-            const response = await fetch(`http://${deviceType === 'remote-access' ? hostIp : 'localhost'}:3000/users`, {
-                method: "PATCH",
+    async function patchUser (updatedUser) {
+        try {
+            console.info('[ App.jsx - patchUser ] starting function')
+            const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp : '127.0.0.1'}:3000/users`, {
+                method: 'PATCH',
                 headers: {
-                    "Content-Type": "application/json"
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    newUser: userData,
-                    username: userData.username,
-                }),
+                    username: user.username,
+                    newUser: updatedUser,
+                })
             })
             if (response.ok) {
                 const resData = await response.json()
-                console.info(JSON.stringify('[Client - patchUser - APP] success: ', resData.success))
+                console.info('[ App.jsx - patchUser ] Response: ', resData.success)
+                console.info('response was ok!')
+                console.info(JSON.stringify(resData, null, 2))
                 if (resData.success) {
+                    console.info('[ App.jsx - patchUser ] setting the user data in state and sending notification')
+                    handleNotification('notice', 'Successfully updated user data')
                     return {
                         success: true,
+                        status: response.status,
                         updatedUser: resData.updatedUser
                     }
-                } else {
-                    handleNotification('error', 'Failed to update device');
-                    throw new Error("Failed to update user");
                 }
+                handleNotification('error', 'The request was incorrect')
+            }
+            console.info('[ App.jsx - patchUser ] error, API operation was unsuccessful')
+            return {
+                success: false,
+                status: response.status
+            }
+        } catch (e) {
+            console.error('There was an error',e.message)
+            handleNotification('error', 'Server Error, sorry')
+            return {
+                success: false,
             }
         }
+    }
   return (
       <>
           <Notification notification={notification} setNotification={setNotification} />
@@ -381,7 +398,7 @@ export default function App() {
                                                                  user={user}
                                                                  patchUser={patchUser}/>}
               </>}
-              {activeView === 'profile' && <Profile user={user} handleNotification={handleNotification} setUser={setUser}/>}
+              {activeView === 'profile' && <Profile user={user} handleNotification={handleNotification} setUser={setUser} patchUser={patchUser}/>}
               {activeView === 'login' && <Login handleNotification={handleNotification}
                                                                            hostIp={hostIp}
                                                                            setIsLoggedIn={setIsLoggedIn}

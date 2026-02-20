@@ -9,7 +9,7 @@ async function readDevices () {
 
 async function writeDevices (newDevices) {
     try {
-        await fs.writeFile(filePath, JSON.stringify(newDevices), 'utf8')
+        await fs.writeFile(filePath, JSON.stringify(newDevices, null, 2), 'utf8')
         return {
             success: true,
         }
@@ -64,6 +64,7 @@ async function deleteDevice (deviceID) {
 
 async function editDevice (device) {
     const devices = await readDevices()
+    console.log("[Server - PATCH | devices] editDevice: " + JSON.stringify(device, null, 2))
     const editedDevices = devices.map( oldDevice => {
         if (oldDevice.id === device.id) {
             return {
@@ -72,6 +73,7 @@ async function editDevice (device) {
         }
         return oldDevice
     })
+    console.log("[Server - PATCH | devices] writing new devices")
     return await writeDevices(editedDevices)
 }
 

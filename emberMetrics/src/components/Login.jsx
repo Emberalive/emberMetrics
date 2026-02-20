@@ -9,7 +9,7 @@ export default function Login (props) {
         try {
             if (confirmPassword) {
                 if (username && password) {
-                    const response = await fetch(`http://${props.deviceType === 'remote-device' ? props.hostIp : 'localhost'}:3000/users`, {
+                    const response = await fetch(`http://${props.deviceType === 'remote-device' ? props.hostIp : '127.0.0.1'}:3000/users`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ export default function Login (props) {
                 }
             } else {
                 if (username && password) {
-                    const response = await fetch(`http://${props.deviceType === 'remote-access' ? props.hostIp : 'localhost'}:3000/users/login`, {
+                    const response = await fetch(`http://${props.deviceType === 'remote-access' ? props.hostIp : '127.0.0.1'}:3000/users/login`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

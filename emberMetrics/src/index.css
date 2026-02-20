@@ -1362,8 +1362,7 @@ section {
 }
 
 
-.profile-item__container > p,
-.profile-item__container > textarea,
+.profile-item__container > .profile-item-container__text,
 .profile-item__container > input {
     background-color: var(--neutral);
     padding: var(--element-padding);
@@ -1379,6 +1378,34 @@ section {
     border-left: none;
     margin: 0;
     resize: none;
+}
+
+.profile-item__container >  .profile-item-container__bio__edit {
+    font-size: 20px;
+    background-color: var(--neutral);
+    padding: var(--element-padding);
+    border-radius: var(--border-radius);
+    min-width: 250px;
+    max-width: 250px;
+    height: 200px;
+    border-bottom: 1px solid var(--neutral);
+    font-family: inherit;
+    transition: height 0.3s ease-in-out;
+    text-wrap: wrap;
+}
+
+.profile-item__container > .profile-item-container__bio {
+    background-color: var(--neutral);
+    padding: var(--element-padding);
+    border-radius: var(--border-radius);
+    font-size: 20px;
+    min-width: 250px;
+    max-width: 250px;
+    height: calc((20px * 3) * 1.2);
+    max-height: calc((20px * 5) *1.2);
+    margin: 0;
+    text-wrap: wrap;
+    transition: height 0.3s ease-in-out;
 }
 
 @media (max-width: 500px) {

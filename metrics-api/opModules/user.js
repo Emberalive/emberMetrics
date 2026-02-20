@@ -131,7 +131,7 @@ async function deleteUser(user) {
 
 async function writeUser(newUsers) {
     try {
-        await fs.writeFile(filePath, JSON.stringify(newUsers), 'utf8')
+        await fs.writeFile(filePath, JSON.stringify(newUsers, null, 2), 'utf8')
         return {
             success: true,
         }

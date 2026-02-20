@@ -28,6 +28,6 @@ app.get('/', (req, res) => {
     res.status(200).json(metrics); // always send JSON
 });
 
-app.listen(port, "0.0.0.0", () => {
+app.listen(port, () => {
     console.log(`[Server] API Listening on port ${port}`)
 })
