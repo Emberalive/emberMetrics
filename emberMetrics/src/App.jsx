@@ -24,7 +24,7 @@ export default function App() {
 //<<-----------------------------Only edit this!!!!!----------------------------------------->>
     // This is a quick fix to allow the user to make the app have or not have authentication
     //change the value of authentication to false if you don't want a user system
-    const authentication = true
+    const authentication = false
 //<<-----------------------^^^^^^Only edit this!!!!!^^^^^^----------------------------------->>
 
     //Nothing below here should be touched, you will most likely break the application!!!
@@ -390,13 +390,15 @@ export default function App() {
                                                           changeFont={changeFont}
                                                           setLogoImage={setLogoImage}
                   />}
-                  {activeView === "devices" && <DeviceManagement devices={devices} setDevices={setDevices}
+                  {activeView === "devices" && <DeviceManagement devices={devices}
+                                                                 setDevices={setDevices}
                                                                  handleNotification={handleNotification}
                                                                  hostIp={hostIp}
                                                                  deviceType={deviceType}
                                                                  setUser={setUser}
                                                                  user={user}
-                                                                 patchUser={patchUser}/>}
+                                                                 patchUser={patchUser}
+                                                                 authentication={authentication}/>}
               </>}
               {activeView === 'profile' && <Profile user={user} handleNotification={handleNotification} setUser={setUser} patchUser={patchUser}/>}
               {activeView === 'login' && <Login handleNotification={handleNotification}

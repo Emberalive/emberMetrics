@@ -3,6 +3,7 @@ import {useEffect} from "react";
 
 export default function DeviceList (props) {
     let devicesList;
+    const devices = props.authentication ? props.user.devices : props.devices;
     const [editDevice, setEditID] = useState(null);
     const [deleteDeviceData, setDeleteDeviceData] = useState(null);
 
@@ -115,8 +116,8 @@ export default function DeviceList (props) {
         setEditID(null);
     }
 
-    if (props.user.devices) {
-        devicesList = props.user.devices.map(device => {
+    if (devices) {
+        devicesList = devices.map(device => {
             if (editDevice && editDevice.id === device.id) {
                 return (
                     <form onSubmit={patchDevice} className="device-management__form" style={{width:'100%'}} key={device.id}>

@@ -26,7 +26,8 @@ export default function DeviceManagement (props) {
                                 setDevices={props.setDevices}
                                 user={props.user}
                                 setUser={props.setUser}
-                                patchUser={props.patchUser}/>
+                                patchUser={props.patchUser}
+                                authentication={props.authentication}/>
                 </section>
             </div>
 
