@@ -28,7 +28,7 @@ export default function App() {
 //<<-----------------------^^^^^^Only edit this!!!!!^^^^^^----------------------------------->>
 
     //Nothing below here should be touched, you will most likely break the application!!!
-    const [isGraph, setIsGraph] = useState(true);
+    const [isGraph, setIsGraph] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(!authentication);
     const [user, setUser] = useState(null);
     const [hostIp, setHostIP] = useState(() => {
@@ -367,20 +367,45 @@ export default function App() {
                       <>
                           {(activeView === "resources" || activeView === "fullScreen") && <>
                               <div className={"left-column"}>
-                                  <ChildProcesses metrics={metrics}/>
-                                  <DeviceData metrics={metrics}/>
-                                  <DiskData metrics={metrics}/>
-
+                                  {isGraph?
+                                    <>
+                                        <NetworkData metrics={metrics}
+                                                     isGraph={isGraph}
+                                                     timeMetrics={timeMetrics}/>
+                                        <DeviceData metrics={metrics}/>
+                                    </>:
+                                    <>
+                                        <ChildProcesses metrics={metrics}/>
+                                        <DiskData metrics={metrics}/>
+                                        <DeviceData metrics={metrics}/>
+                                    </>
+                                  }
                               </div>
 
                               <div className={"right-column"}>
-                                  <CpuData metrics={metrics}/>
-                                  <MemoryData metrics={metrics}
-                                              viewPort={viewPort}
-                                              isGraph={isGraph}
-                                              timeMetrics={timeMetrics}
-                                  />
-                                  <NetworkData metrics={metrics}/>
+                                  {isGraph?
+                                    <>
+                                        <MemoryData metrics={metrics}
+                                                    viewPort={viewPort}
+                                                    isGraph={isGraph}
+                                                    timeMetrics={timeMetrics}
+                                        />
+                                        <CpuData metrics={metrics}/>
+                                        <ChildProcesses metrics={metrics}/>
+
+                                    </>:
+                                    <>
+                                        <CpuData metrics={metrics}/>
+                                        <MemoryData metrics={metrics}
+                                                    viewPort={viewPort}
+                                                    isGraph={isGraph}
+                                                    timeMetrics={timeMetrics}
+                                        />
+                                        <NetworkData metrics={metrics}
+                                                     isGraph={isGraph}
+                                                     timeMetrics={timeMetrics}/>
+                                    </>
+                                  }
                               </div>
                           </>}
                       </>

@@ -11,7 +11,6 @@ export default function MemoryData(props) {
     useEffect(() => {
         if (!props.timeMetrics) return;
         const graphData = props.timeMetrics.map((data, index) => {
-            console.info({x:index+1, y:data.memoryUsage.usage});
             return {x:index+1, y:parseFloat(data.memoryUsage.usage)}
         })
         setGraphData(graphData)

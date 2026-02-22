@@ -1056,6 +1056,19 @@ section {
 }
 
 /*Network data*/
+.network-interface__graph-view {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 750px) {
+    .network-interface__graph-view {
+        flex-direction: column;
+    }
+}
+
 .network-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -1096,6 +1109,7 @@ section {
     margin: 10px 0 10px 0;
     padding-left: 10px;
     font-size: var(--font-size-header);
+    text-align: center;
 }
 .network-interface-item__container {
     display: flex;
