@@ -22,7 +22,7 @@ export default function Settings (props) {
                 </div>
                 <div className="settings-entry">
                     <p className="settings-entry__label">Font Size:</p>
-                    <div style={{display: "flex"}}>
+                    <div className={'settings-entry__value-container'}>
                         <button style={{fontSize: "10px", maxWidth: "100px", minWidth: "100px"}} id="font-small" className={props.fontClicked === "small" ? "general-button general-button__clicked": "general-button"} onClick={ () => {
                             props.setFontClicked("small")
                             props.changeFont("text",10)
@@ -43,7 +43,15 @@ export default function Settings (props) {
                             props.changeFont("header", 40)
                         }}>Large</button>
                     </div>
-
+                </div>
+                <div className={'settings-entry'}>
+                    <p className="settings-entry__label">Interval: </p>
+                    <div className={"settings-entry__value-container"}>
+                        <input type={'text'} value={props.metricInterval/1000} onChange={(e) => {
+                            props.setmetricInterval(e.target.value * 1000)
+                        }}/>
+                        <p>Seconds</p>
+                    </div>
                 </div>
                 <div className="theme-container__wrapper">
                     <h1 style={{

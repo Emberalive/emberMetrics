@@ -27,7 +27,7 @@ export default function App() {
 
     //Nothing below here should be touched, you will most likely break the application!!!
 //<<-----------------------------DO NOT TOUCH!!!!!----------------------------------------->>
-
+    const [metricInterval, setMetricInterval] = useState(1000);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const [hostIp, setHostIP] = useState(() => {
@@ -193,7 +193,7 @@ export default function App() {
         if (authentication === true) {
             if (!isLoggedIn) return
         }
-        console.log("[APP_METRICS] Getting metrics")
+        console.log("[APP_METRICS] Getting metrics at an interval of", metricInterval/1000)
         try {
             const interval = setInterval(async () => {
                 const response = await fetch (`http://${selectedDevice}:3000`)
@@ -211,13 +211,13 @@ export default function App() {
                         console.log("[APP_METRICS] There was an error fetching metrics")
                     }
                 }
-            }, 1000)
+            }, metricInterval)
             return () => clearInterval(interval)
         } catch (err) {
             console.error("[APP_METRICS] Error getting metrics: ", err.message)
             handleNotification("error", "There was an error fetching metrics")
         }
-    }, [selectedDevice, isLoggedIn, authentication])
+    }, [selectedDevice, isLoggedIn, authentication, metricInterval, devices])
 
     function changeRemoteDevice(ip) {
         setSelectedDevice(ip)
@@ -304,7 +304,9 @@ export default function App() {
                                                           handleNotification={handleNotification}
                                                           changeFont={changeFont}
                                                           setLogoImage={setLogoImage}
-                  />}
+                                                          setmetricInterval={setMetricInterval}
+                                                          metricInterval={metricInterval}/>}
+
                   {activeView === "devices" && <DeviceManagement devices={devices} setDevices={setDevices}
                                                                  handleNotification={handleNotification} hostIp={hostIp}
                                                                  deviceType={deviceType}/>}
