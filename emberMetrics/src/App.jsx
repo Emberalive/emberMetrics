@@ -24,10 +24,11 @@ export default function App() {
 //<<-----------------------------Only edit this!!!!!----------------------------------------->>
     // This is a quick fix to allow the user to make the app have or not have authentication
     //change the value of authentication to false if you don't want a user system
-    const authentication = false
+    const authentication = true
 //<<-----------------------^^^^^^Only edit this!!!!!^^^^^^----------------------------------->>
 
     //Nothing below here should be touched, you will most likely break the application!!!
+    const [isGraph, setIsGraph] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(!authentication);
     const [user, setUser] = useState(null);
     const [hostIp, setHostIP] = useState(() => {
@@ -162,6 +163,20 @@ export default function App() {
     const [activeView, setActiveView] = useState(authentication ? deviceType ? "login" : "deviceTypeSelection" : "resources");
 
     const [metrics, setMetrics] = useState(null)
+    //stores data over time for metrics, each object in the array is a value of teh metrics of each interval value
+    const [timeMetrics, setTimeMetrics] = useState([])
+    useEffect(() => {
+        if (!metrics) return
+        setTimeMetrics(prev => {
+            const next = [...prev, metrics];
+            if (next.length > 20) {
+                next.shift(); //remove the oldest value
+            }
+            return next;
+        })
+        setTimeMetrics(prev => [...prev, metrics])
+    }, [metrics])
+
     const [isDarkMode, setIsDarkMode] = useState(() => {
         const darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
         if (darkMode) {
@@ -340,6 +355,9 @@ export default function App() {
           {((activeView === "resources" && devices) && isLoggedIn === true) && <div className={"device-navigation__wrapper"} ref={groupsRef} onWheel={handleWheel}>
               <div className={"device-navigation"}>
                   {deviceButtonList}
+                  <button className={'general-button'} onClick={() => {
+                      setIsGraph(prevState => !prevState)
+                  }}>{isGraph ? 'detailed' : 'graphs'}</button>
               </div>
           </div>}
           <main className={(activeView === 'resources' || activeView === 'fullScreen') ? (deviceType === '' || (authentication === true && isLoggedIn === false) || !metrics) ? 'main-single-column' : '' : 'main-single-column'}>
@@ -360,6 +378,7 @@ export default function App() {
                                   <CpuData metrics={metrics}/>
                                   <MemoryData metrics={metrics}
                                               viewPort={viewPort}
+                                              isGraph={isGraph}
                                   />
                                   <NetworkData metrics={metrics}/>
                               </div>
