@@ -28,7 +28,7 @@ export default function App() {
 //<<-----------------------^^^^^^Only edit this!!!!!^^^^^^----------------------------------->>
 
     //Nothing below here should be touched, you will most likely break the application!!!
-    const [isGraph, setIsGraph] = useState(false);
+    const [isGraph, setIsGraph] = useState(true);
     const [isLoggedIn, setIsLoggedIn] = useState(!authentication);
     const [user, setUser] = useState(null);
     const [hostIp, setHostIP] = useState(() => {
@@ -174,7 +174,6 @@ export default function App() {
             }
             return next;
         })
-        setTimeMetrics(prev => [...prev, metrics])
     }, [metrics])
 
     const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -379,6 +378,7 @@ export default function App() {
                                   <MemoryData metrics={metrics}
                                               viewPort={viewPort}
                                               isGraph={isGraph}
+                                              timeMetrics={timeMetrics}
                                   />
                                   <NetworkData metrics={metrics}/>
                               </div>
