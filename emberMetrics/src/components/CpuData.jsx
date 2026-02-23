@@ -1,5 +1,99 @@
+import {useEffect, useState} from "react";
+import {LineChart, lineElementClasses, markElementClasses} from "@mui/x-charts/LineChart";
+import {axisClasses} from "@mui/x-charts/ChartsAxis";
+import {legendClasses} from "@mui/x-charts/ChartsLegend";
+import {chartsGridClasses} from "@mui/x-charts/ChartsGrid";
+
 export default function CpuData (props) {
     const cpuUsage = props.metrics.cpuUsage
+
+    const [graphData, setGraphData] = useState([]);
+
+    useEffect(() => {
+        if (!props.timeMetrics?.length) return;
+
+        const coreCount = props.timeMetrics[0].cpuUsage.cores.length;
+
+        const datasets = Array.from({length: coreCount}, (_, i) =>
+            props.timeMetrics.map((snapshot, timeIndex) => (
+                {
+                    x: timeIndex,
+                    usage: parseFloat(snapshot.cpuUsage.cores[i].usage)
+                }
+            ))
+        )
+        setGraphData(datasets)
+    }, [props.timeMetrics])
+
+
+    const renderGraphs = graphData.map((graph, index) => {
+        return (
+            <div style={{flex: 1}} >
+                <LineChart
+                    dataset={graph}
+                    xAxis={[{
+                        dataKey: 'x',
+                    }]}
+                    series={[
+                        {
+                            dataKey: 'usage',
+                            label: `core - ${cpuUsage.cores[index].no}`,
+                            color: props.cpuColours[index]
+                        }
+                    ]}
+                    grid={{ stroke: '#333', strokeWidth: 0.5, vertical: true, horizontal: true }}
+                    height={200}
+                    sx={(theme) => ({
+                        // ===== Line styling =====
+                        [`.${lineElementClasses.root}`]: {
+                            stroke: props.cpuColours[index],
+                            strokeWidth: 2,
+                        },
+
+                        // ===== Point markers =====
+                        [`.${markElementClasses.root}`]: {
+                            fill: props.cpuColours[index],
+                            stroke: 'aliceblue',
+                            strokeWidth: 1,
+                            r: 3,
+                        },
+
+                        // ===== Axis styling =====
+                        [`.${axisClasses.root}`]: {
+                            [`.${axisClasses.line}`]: {
+                                stroke: '#888',
+                                strokeWidth: 2,
+                            },
+                            [`.${axisClasses.tick}`]: {
+                                stroke: '#888',
+                            },
+                            [`.${axisClasses.tickLabel}`]: {
+                                fill: 'aliceblue',
+                                fontSize: 12,
+                            },
+                        },
+
+                        [`.${legendClasses.label}`]: {
+                            color: 'aliceblue',   // text color
+                            fontSize: 14,
+                            fontWeight: 600,
+                        },
+
+                        // ===== Grid styling =====
+                        [`.${chartsGridClasses.line}`]: {
+                            stroke: 'var(--neutral)',
+                            strokeWidth: 2,
+                        },
+
+                        // ===== Container styling =====
+                        backgroundColor: '#121212',
+                        borderRadius: 8,
+                    })}
+                />
+            </div>
+        )
+    })
+
 
     function renderCpuUsage(cpuList) {
         return cpuList.map((core) => {
@@ -29,10 +123,15 @@ export default function CpuData (props) {
                     <h1>CPU's</h1>
                     <h2>Total {cpuUsage.total}%</h2>
                 </header>
-
-                <ul>
-                    {cpuUsagePercents}
-                </ul>
+                { props.isGraph ?
+                    <div className={'cpu-cores__graph-container'}>
+                        {renderGraphs}
+                    </div>
+                    :
+                    <ul>
+                        {cpuUsagePercents}
+                    </ul>
+                }
             </section>
         )
     } catch (err) {

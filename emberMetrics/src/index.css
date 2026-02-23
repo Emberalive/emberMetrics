@@ -415,6 +415,12 @@ section {
     padding: var(--element-padding);
 }
 
+.cpu-cores__graph-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    align-items: center;
+}
+
 .cpu-cores > ul {
     font-size: var(--font-size);
     font-weight: bold;

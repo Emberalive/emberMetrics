@@ -21,7 +21,6 @@ export default function DiskData (props) {
                 rIO_sec: parseFloat(snapshot.disks.totalDiskUsage.rIO_sec)
             }
         })
-        console.info(JSON.stringify(datasets, null, 2))
         setGraphData(datasets)
     }, [props.timeMetrics])
 

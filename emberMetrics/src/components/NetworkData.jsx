@@ -24,7 +24,6 @@ export default function NetworkData(props) {
                        }
                 ))
             )
-        console.info(JSON.stringify(datasets, null, 2))
         setGraphData(datasets)
     }, [props.timeMetrics])
 

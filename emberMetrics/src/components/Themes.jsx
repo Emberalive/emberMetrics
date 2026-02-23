@@ -26,61 +26,10 @@ export default function Themes (props){
         document.documentElement.style.setProperty("--dm-secondary", theme.colour.secondary)
     }
 
-    const [themes, setThemes] = useState([
-        {
-            name: "Sparkr Original",
-            colour: { secondary: "#FF8C42", tertiary: "#CC5803" },
-            logo: Sparkr,
-        },
-        {
-            name: "Ocean Blues",
-            colour: { secondary: "#4287f5", tertiary: "#0349cc" },
-            logo: Ocean,
-        },
-        {
-            name: "Forest Greens",
-            colour: { secondary: "#42b883", tertiary: "#0a7e4e" },
-            logo: Forest,
-        },
-        {
-            name: "Royal Purples",
-            colour: { secondary: "#8a42ff", tertiary: "#5e03cc" },
-            logo: Royal,
-        },
-        {
-            name: "Berry Red",
-            colour: { secondary: "#ff4270", tertiary: "#cc0349" },
-            logo: Berry,
-        },
-        {
-            name: "Sunset Magenta",
-            colour: { secondary: "#ff42a4", tertiary: "#cc0377" },
-            logo: Magenta,
-        },
-        {
-            name: "Golden Sunrise",
-            colour: { secondary: "#ffb142", tertiary: "#cc8403" },
-            logo: Sunrise,
-        },
-        {
-            name: "Teal Lagoon",
-            colour: { secondary: "#42f5e6", tertiary: "#03cccc" },
-            logo: Teal,
-        },
-        {
-            name: "Lavender Mist",
-            colour: { secondary: "#c742ff", tertiary: "#7f03cc" },
-            logo: Lavander,
-        },
-        {
-            name: "Minty Fresh",
-            colour: { secondary: "#42f57a", tertiary: "#03cc49" },
-            logo: Minty,
-        },
-    ]);
 
 
-    const themeList = themes.map(theme => {
+
+    const themeList = props.themes.map(theme => {
         return (
             <div key={theme.name} className={"theme_wrapper"} onClick={() => {
                 console.log("clicked Theme: " + theme.name)
@@ -121,7 +70,7 @@ export default function Themes (props){
                         const themeObj = JSON.parse(storedTheme);
                         changeTheme(themeObj)
                     } else {
-                        changeTheme(themes[0])
+                        changeTheme(props.themes[0])
                     }
                 }}>Cancel</button>
             </div>}
