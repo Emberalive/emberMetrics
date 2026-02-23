@@ -48,7 +48,7 @@ export default function App() {
     // }, [])
 
 
-    const [isGraph, setIsGraph] = useState(false);
+    const [isGraph, setIsGraph] = useState(true);
     const [isLoggedIn, setIsLoggedIn] = useState(!authentication);
     const [user, setUser] = useState(null);
     const [hostIp, setHostIP] = useState(() => {
@@ -188,9 +188,9 @@ export default function App() {
     useEffect(() => {
         if (!metrics || !isGraph) return
         setTimeMetrics(prev => {
-            const next = [...prev, metrics];
-            if (next.length > 20) {
-                next.shift(); //remove the oldest value
+            const next = [metrics, ...prev ];
+            if (next.length > 21) {
+                next.pop(); //remove the oldest value
             }
             return next;
         })

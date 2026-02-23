@@ -417,7 +417,7 @@ section {
 
 .cpu-cores__graph-container {
     display: grid;
-    grid-template-columns: repeat(3, auto);
+    grid-template-columns: repeat(3, 1fr);
     align-items: center;
     justify-content: center;
     gap: 0;

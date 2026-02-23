@@ -30,6 +30,10 @@ export default function MemoryData(props) {
                             dataset={graphData}
                             xAxis={[{
                                 dataKey: 'x',
+                                label: 'Time (1s)'
+                            }]}
+                            yAxis={[{
+                                label: 'percentage'
                             }]}
                             series={[{
                                 dataKey: 'y',
@@ -63,6 +67,10 @@ export default function MemoryData(props) {
                                         stroke: '#888',
                                     },
                                     [`.${axisClasses.tickLabel}`]: {
+                                        fill: 'aliceblue',
+                                        fontSize: 12,
+                                    },
+                                    [`.${axisClasses.label}`]: {
                                         fill: 'aliceblue',
                                         fontSize: 12,
                                     },

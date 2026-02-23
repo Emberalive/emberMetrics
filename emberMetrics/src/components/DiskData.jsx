@@ -33,6 +33,10 @@ export default function DiskData (props) {
                     dataset={graphData}
                     xAxis={[{
                         dataKey: 'x',
+                        label: 'Time (1s)'
+                    }]}
+                    yAxis={[{
+                        label: 'bytes'
                     }]}
                     series={[
                         {
@@ -73,6 +77,10 @@ export default function DiskData (props) {
                                 stroke: '#888',
                             },
                             [`.${axisClasses.tickLabel}`]: {
+                                fill: 'aliceblue',
+                                fontSize: 12,
+                            },
+                            [`.${axisClasses.label}`]: {
                                 fill: 'aliceblue',
                                 fontSize: 12,
                             },

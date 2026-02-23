@@ -39,7 +39,11 @@ export default function NetworkData(props) {
                     dataset={data}
                     xAxis={[{
                         dataKey: 'x',
+                        label: 'Time (1s)',
                      }]}
+                    yAxis={[{
+                        label: 'bytes'
+                    }]}
                     series={[
                         {
                             dataKey: 'transmitted',
@@ -79,6 +83,10 @@ export default function NetworkData(props) {
                                 stroke: '#888',
                             },
                             [`.${axisClasses.tickLabel}`]: {
+                                fill: 'aliceblue',
+                                fontSize: 12,
+                            },
+                            [`.${axisClasses.label}`]: {
                                 fill: 'aliceblue',
                                 fontSize: 12,
                             },

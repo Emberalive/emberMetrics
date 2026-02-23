@@ -23,20 +23,23 @@ export default function CpuData (props) {
                 }
             ))
         )
+        console.info(JSON.stringify(datasets, null, 2));
         setGraphData(datasets)
     }, [props.timeMetrics])
-
 
     let renderGraphs = []
     if (props.isGraph) {
         renderGraphs = graphData.map((graph, index) => {
             return (
-                <div style={{flex: 1}} >
+                <div style={{flex: 1, overflow: "visible"}} >
                     <LineChart
                         dataset={graph}
                         xAxis={[{
                             dataKey: 'x',
-                            label: 'Seconds',
+                            label: `Seconds`,
+                            scaleType: "linear",
+                            tickNumber: graph.length,
+                            tickLabelInterval: () => true,  // force all tick labels to render
                         }]}
                         yAxis={[{
                             label: 'Core Usage (%) ',
@@ -75,8 +78,8 @@ export default function CpuData (props) {
                                     stroke: '#888',
                                 },
                                 [`.${axisClasses.tickLabel}`]: {
-                                    fill: 'aliceblue',
-                                    fontSize: 12,
+                                    fill: 'aliceblue',  // This was empty before — tick labels had no color!
+                                    fontSize: 11,
                                 },
                                 [`.${axisClasses.label}`]: {
                                     fill: 'aliceblue',
