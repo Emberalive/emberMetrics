@@ -417,9 +417,22 @@ section {
 
 .cpu-cores__graph-container {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     align-items: center;
     gap: 0;
+    padding: 0;
+}
+
+@media (max-width: 1300px) {
+    .cpu-cores__graph-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .cpu-cores__graph-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 .cpu-cores > ul {
