@@ -16,7 +16,7 @@ export default function DeviceList (props) {
             const deviceID = device.id;
 
             // DELETE device from server
-            const response = await fetch(`http://${props.deviceType === 'remote-access' ? props.hostIp : '127.0.0.1'}:3000/devices`, {
+            const response = await fetch(`https://${props.deviceType === 'remote-access' ? props.hostIp : "metrics-api.emberalive.com"}/devices`, {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ deviceID }),
@@ -40,7 +40,7 @@ export default function DeviceList (props) {
                 props.handleNotification('notice', 'Successfully deleted device');
             } else {
                 // rollback device if PATCH fails
-                await fetch(`http://${props.deviceType === 'remote-access' ? props.hostIp : '127.0.0.1'}:3000/devices`, {
+                await fetch(`https://${props.deviceType === 'remote-access' ? props.hostIp : "metrics-api.emberalive.com"}/devices`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ device }),
@@ -60,7 +60,7 @@ export default function DeviceList (props) {
 
         try {
             // PATCH the device on the server
-            const response = await fetch(`http://${props.deviceType === 'remote-access' ? props.hostIp : '127.0.0.1'}:3000/devices`, {
+            const response = await fetch(`https://${props.deviceType === 'remote-access' ? props.hostIp : "metrics-api.emberalive.com"}/devices`, {
                 method: 'PATCH',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({device: editDevice}),
@@ -106,7 +106,7 @@ export default function DeviceList (props) {
 
             if (!userPatchSucceeded) {
                 // rollback device PATCH if user PATCH fails
-                await fetch(`http://${props.deviceType === 'remote-access' ? props.hostIp : '127.0.0.1'}:3000/devices`, {
+                await fetch(`https://${props.deviceType === 'remote-access' ? props.hostIp : "metrics-api.emberalive.com"}/devices`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ device: originalDevice }),
