@@ -83,10 +83,10 @@ export default function CpuData (props) {
                             },
 
                             // ===== Grid styling =====
-                            // [`.${chartsGridClasses.line}`]: {
-                            //     stroke: 'var(--neutral)',
-                            //     strokeWidth: 2,
-                            // },
+                            [`.${chartsGridClasses.line}`]: {
+                                stroke: 'var(--neutral)',
+                                strokeWidth: 2,
+                            },
 
                             // ===== Container styling =====
                             backgroundColor: '#121212',
