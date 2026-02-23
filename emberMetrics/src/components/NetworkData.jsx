@@ -44,7 +44,7 @@ export default function NetworkData(props) {
                         {
                             dataKey: 'transmitted',
                             label: 'Transmitted (b)',
-                            color: 'red'
+                            color: 'aliceblue'
                         },
                         {
                             dataKey: 'received',

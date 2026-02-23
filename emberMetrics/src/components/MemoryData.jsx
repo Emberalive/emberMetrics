@@ -29,12 +29,7 @@ export default function MemoryData(props) {
                         dataset={graphData}
                         xAxis={[{
                             dataKey: 'x',
-                            colorMap: {
-                                type: 'piecewise',
-                                thresholds: [45, 55],
-                                colors: ['green', 'orange', 'green'],
-                            }
-                        }]}
+                          }]}
                         series={[{
                             dataKey: 'y',
                             label: 'Memory Usage (%)',

@@ -392,7 +392,9 @@ export default function App() {
                                         />
                                         <CpuData metrics={metrics}/>
                                         <ChildProcesses metrics={metrics}/>
-
+                                        <DiskData metrics={metrics}
+                                                  isGraph={isGraph}
+                                                  timeMetrics={timeMetrics}/>
                                     </>:
                                     <>
                                         <CpuData metrics={metrics}/>
