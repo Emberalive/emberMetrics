@@ -417,8 +417,9 @@ section {
 
 .cpu-cores__graph-container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, auto);
     align-items: center;
+    justify-content: center;
     gap: 0;
     padding: 0;
 }
@@ -426,18 +427,21 @@ section {
 @media (max-width: 1300px) {
     .cpu-cores__graph-container {
         grid-template-columns: repeat(2, 1fr);
+        justify-content: center;
     }
 }
 
 @media (max-width: 900px) {
     .cpu-cores__graph-container {
         grid-template-columns: repeat(3, 1fr);
+        justify-content: center;
     }
 }
 
 @media (max-width: 800px) {
     .cpu-cores__graph-container {
         grid-template-columns: repeat(2, 1fr);
+        justify-content: center;
     }
 }
 
@@ -1251,9 +1255,12 @@ section {
 
 .disk-usage-item__single-item > .disk-item__entry {
     display: flex;
+    padding: 10px;
     flex-direction: row;
-    padding-left: 10px;
-    gap: 20px;
+    border: 1px solid var(--border-color);
+    gap: 10px;
+    margin: 0 10px 10px 0;
+    border-radius: var(--border-radius);
 }
 
 .disk-item__entry {
@@ -1261,6 +1268,24 @@ section {
     flex-direction: row;
     gap: 10px;
     padding-left: 10px;
+}
+
+@media (max-width: 500px) {
+    .disk-item__entry {
+        flex-direction: column;
+    }
+    .disk-usage-item__single-item > .disk-item__entry {
+        display: flex;
+        padding: 10px;
+        flex-direction: column;
+        border: 1px solid var(--border-color);
+        gap: 10px;
+        margin: 0 10px 10px 0;
+        border-radius: var(--border-radius);
+    }
+    .disk-usage-item__single-item {
+        gap: 0;
+    }
 }
 
 .disk-container__item > p {

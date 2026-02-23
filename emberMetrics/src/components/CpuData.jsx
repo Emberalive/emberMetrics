@@ -36,6 +36,10 @@ export default function CpuData (props) {
                         dataset={graph}
                         xAxis={[{
                             dataKey: 'x',
+                            label: 'Seconds',
+                        }]}
+                        yAxis={[{
+                            label: 'Core Usage (%) ',
                         }]}
                         series={[
                             {
@@ -71,6 +75,10 @@ export default function CpuData (props) {
                                     stroke: '#888',
                                 },
                                 [`.${axisClasses.tickLabel}`]: {
+                                    fill: 'aliceblue',
+                                    fontSize: 12,
+                                },
+                                [`.${axisClasses.label}`]: {
                                     fill: 'aliceblue',
                                     fontSize: 12,
                                 },
