@@ -11,7 +11,7 @@ export default function NetworkData(props) {
     const [graphData, setGraphData] = useState([]);
 
     useEffect(() => {
-        if (!props.timeMetrics?.length) return;
+        if (!props.timeMetrics?.length || !props.isGraph) return;
 
         const interfaceCount = props.timeMetrics[0].interfaces.length;
 
@@ -28,6 +28,7 @@ export default function NetworkData(props) {
     }, [props.timeMetrics])
 
     const graphDataArray = graphData.map((data, index) => {
+        if (!props.isGraph) return;
         return (
             <div style={{flex: 1}}>
                 <header className="network-interface__header" style={{borderBottom: 'none'}}>

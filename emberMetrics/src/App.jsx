@@ -38,77 +38,14 @@ export default function App() {
 
     //Nothing below here should be touched, you will most likely break the application!!!
     // -------------------------themes------------------------//
-    const [themes, setThemes] = useState([
-        {
-            name: "Sparkr Original",
-            colour: { secondary: "#FF8C42", tertiary: "#CC5803" },
-            logo: Sparkr,
-        },
-        {
-            name: "Ocean Blues",
-            colour: { secondary: "#4287f5", tertiary: "#0349cc" },
-            logo: Ocean,
-        },
-        {
-            name: "Forest Greens",
-            colour: { secondary: "#42b883", tertiary: "#0a7e4e" },
-            logo: Forest,
-        },
-        {
-            name: "Royal Purples",
-            colour: { secondary: "#8a42ff", tertiary: "#5e03cc" },
-            logo: Royal,
-        },
-        {
-            name: "Berry Red",
-            colour: { secondary: "#ff4270", tertiary: "#cc0349" },
-            logo: Berry,
-        },
-        {
-            name: "Sunset Magenta",
-            colour: { secondary: "#ff42a4", tertiary: "#cc0377" },
-            logo: Magenta,
-        },
-        {
-            name: "Golden Sunrise",
-            colour: { secondary: "#ffb142", tertiary: "#cc8403" },
-            logo: Sunrise,
-        },
-        {
-            name: "Teal Lagoon",
-            colour: { secondary: "#42f5e6", tertiary: "#03cccc" },
-            logo: Teal,
-        },
-        {
-            name: "Lavender Mist",
-            colour: { secondary: "#c742ff", tertiary: "#7f03cc" },
-            logo: Lavander,
-        },
-        {
-            name: "Minty Fresh",
-            colour: { secondary: "#42f57a", tertiary: "#03cc49" },
-            logo: Minty,
-        },
-    ]);
-
-    function randomColor() {
-        const index = Math.floor(Math.random() * themes.length);
-        console.info(themes[index].colour.secondary)
-        return themes[index].colour.secondary;
-    }
-
-    let cpuColours = []
-
-    useEffect (() => {
-        if (!metrics) return
-        let colours = []
-        for (let i = 0; i < metrics.cpuUsage.cores.length; i++) {
-            colours.push(randomColor())
-        }
-        console.info(colours)
-        cpuColours = colours;
-    }, [])
-
+    // useEffect (() => {
+    //     if (!isGraph) return
+    //     let colours = []
+    //     for (let i = 0; i <= metrics.cpuUsage.cores.length; i++) {
+    //         colours.push(randomColor())
+    //     }
+    //     cpuColours = colours;
+    // }, [])
 
 
     const [isGraph, setIsGraph] = useState(false);
@@ -249,7 +186,7 @@ export default function App() {
     //stores data over time for metrics, each object in the array is a value of teh metrics of each interval value
     const [timeMetrics, setTimeMetrics] = useState([])
     useEffect(() => {
-        if (!metrics) return
+        if (!metrics || !isGraph) return
         setTimeMetrics(prev => {
             const next = [...prev, metrics];
             if (next.length > 20) {
@@ -258,6 +195,59 @@ export default function App() {
             return next;
         })
     }, [metrics])
+
+    const [themes, setThemes] = useState([
+        {
+            name: "Sparkr Original",
+            colour: { secondary: "#FF8C42", tertiary: "#CC5803" },
+            logo: Sparkr,
+        },
+        {
+            name: "Ocean Blues",
+            colour: { secondary: "#4287f5", tertiary: "#0349cc" },
+            logo: Ocean,
+        },
+        {
+            name: "Forest Greens",
+            colour: { secondary: "#42b883", tertiary: "#0a7e4e" },
+            logo: Forest,
+        },
+        {
+            name: "Royal Purples",
+            colour: { secondary: "#8a42ff", tertiary: "#5e03cc" },
+            logo: Royal,
+        },
+        {
+            name: "Berry Red",
+            colour: { secondary: "#ff4270", tertiary: "#cc0349" },
+            logo: Berry,
+        },
+        {
+            name: "Sunset Magenta",
+            colour: { secondary: "#ff42a4", tertiary: "#cc0377" },
+            logo: Magenta,
+        },
+        {
+            name: "Golden Sunrise",
+            colour: { secondary: "#ffb142", tertiary: "#cc8403" },
+            logo: Sunrise,
+        },
+        {
+            name: "Teal Lagoon",
+            colour: { secondary: "#42f5e6", tertiary: "#03cccc" },
+            logo: Teal,
+        },
+        {
+            name: "Lavender Mist",
+            colour: { secondary: "#c742ff", tertiary: "#7f03cc" },
+            logo: Lavander,
+        },
+        {
+            name: "Minty Fresh",
+            colour: { secondary: "#42f57a", tertiary: "#03cc49" },
+            logo: Minty,
+        },
+    ]);
 
     const [isDarkMode, setIsDarkMode] = useState(() => {
         const darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -476,15 +466,14 @@ export default function App() {
                                         <CpuData metrics={metrics}
                                                  isGraph={isGraph}
                                                  timeMetrics={timeMetrics}
-                                                 themes={themes}
-                                                 cpuColours={cpuColours}/>
+                                                 themes={themes}/>
                                         <ChildProcesses metrics={metrics}/>
                                         <DiskData metrics={metrics}
                                                   isGraph={isGraph}
                                                   timeMetrics={timeMetrics}/>
                                     </>:
                                     <>
-                                        <CpuData metrics={metrics} themes={themes} cpuColours={cpuColours}/>
+                                        <CpuData metrics={metrics} themes={themes}/>
                                         <MemoryData metrics={metrics}
                                                     viewPort={viewPort}
                                                     isGraph={isGraph}

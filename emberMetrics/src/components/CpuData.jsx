@@ -3,6 +3,7 @@ import {LineChart, lineElementClasses, markElementClasses} from "@mui/x-charts/L
 import {axisClasses} from "@mui/x-charts/ChartsAxis";
 import {legendClasses} from "@mui/x-charts/ChartsLegend";
 import {chartsGridClasses} from "@mui/x-charts/ChartsGrid";
+import {ChartsWrapper} from "@mui/x-charts";
 
 export default function CpuData (props) {
     const cpuUsage = props.metrics.cpuUsage
@@ -10,7 +11,7 @@ export default function CpuData (props) {
     const [graphData, setGraphData] = useState([]);
 
     useEffect(() => {
-        if (!props.timeMetrics?.length) return;
+        if (!props.timeMetrics?.length || !props.isGraph) return;
 
         const coreCount = props.timeMetrics[0].cpuUsage.cores.length;
 
@@ -26,74 +27,76 @@ export default function CpuData (props) {
     }, [props.timeMetrics])
 
 
-    const renderGraphs = graphData.map((graph, index) => {
-        return (
-            <div style={{flex: 1}} >
-                <LineChart
-                    dataset={graph}
-                    xAxis={[{
-                        dataKey: 'x',
-                    }]}
-                    series={[
-                        {
-                            dataKey: 'usage',
-                            label: `core - ${cpuUsage.cores[index].no}`,
-                            color: props.cpuColours[index]
-                        }
-                    ]}
-                    grid={{ stroke: '#333', strokeWidth: 0.5, vertical: true, horizontal: true }}
-                    height={200}
-                    sx={(theme) => ({
-                        // ===== Line styling =====
-                        [`.${lineElementClasses.root}`]: {
-                            stroke: props.cpuColours[index],
-                            strokeWidth: 2,
-                        },
-
-                        // ===== Point markers =====
-                        [`.${markElementClasses.root}`]: {
-                            fill: props.cpuColours[index],
-                            stroke: 'aliceblue',
-                            strokeWidth: 1,
-                            r: 3,
-                        },
-
-                        // ===== Axis styling =====
-                        [`.${axisClasses.root}`]: {
-                            [`.${axisClasses.line}`]: {
-                                stroke: '#888',
+    let renderGraphs = []
+    if (props.isGraph) {
+        renderGraphs = graphData.map((graph, index) => {
+            return (
+                <div style={{flex: 1}} >
+                    <LineChart
+                        dataset={graph}
+                        xAxis={[{
+                            dataKey: 'x',
+                        }]}
+                        series={[
+                            {
+                                dataKey: 'usage',
+                                label: `core - ${cpuUsage.cores[index].no}`,
+                                color: 'var(--secondary)',
+                            }
+                        ]}
+                        grid={{ stroke: '#333', strokeWidth: 0.5, vertical: true, horizontal: true }}
+                        height={200}
+                        sx={(theme) => ({
+                            // ===== Line styling =====
+                            [`.${lineElementClasses.root}`]: {
+                                // stroke: props.cpuColours[index],
                                 strokeWidth: 2,
                             },
-                            [`.${axisClasses.tick}`]: {
-                                stroke: '#888',
+
+                            // ===== Point markers =====
+                            [`.${markElementClasses.root}`]: {
+                                fill: 'var(--tertiary)',
+                                stroke: 'aliceblue',
+                                strokeWidth: 1,
+                                r: 3,
                             },
-                            [`.${axisClasses.tickLabel}`]: {
-                                fill: 'aliceblue',
-                                fontSize: 12,
+
+                            // ===== Axis styling =====
+                            [`.${axisClasses.root}`]: {
+                                [`.${axisClasses.line}`]: {
+                                    stroke: '#888',
+                                    strokeWidth: 2,
+                                },
+                                [`.${axisClasses.tick}`]: {
+                                    stroke: '#888',
+                                },
+                                [`.${axisClasses.tickLabel}`]: {
+                                    fill: 'aliceblue',
+                                    fontSize: 12,
+                                },
                             },
-                        },
 
-                        [`.${legendClasses.label}`]: {
-                            color: 'aliceblue',   // text color
-                            fontSize: 14,
-                            fontWeight: 600,
-                        },
+                            [`.${legendClasses.label}`]: {
+                                color: 'aliceblue',   // text color
+                                fontSize: 14,
+                                fontWeight: 600,
+                            },
 
-                        // ===== Grid styling =====
-                        [`.${chartsGridClasses.line}`]: {
-                            stroke: 'var(--neutral)',
-                            strokeWidth: 2,
-                        },
+                            // ===== Grid styling =====
+                            // [`.${chartsGridClasses.line}`]: {
+                            //     stroke: 'var(--neutral)',
+                            //     strokeWidth: 2,
+                            // },
 
-                        // ===== Container styling =====
-                        backgroundColor: '#121212',
-                        borderRadius: 8,
-                    })}
-                />
-            </div>
-        )
-    })
-
+                            // ===== Container styling =====
+                            backgroundColor: '#121212',
+                            borderRadius: 8,
+                        })}
+                    />
+                </div>
+            )
+        })
+    }
 
     function renderCpuUsage(cpuList) {
         return cpuList.map((core) => {

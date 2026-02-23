@@ -12,7 +12,7 @@ export default function DiskData (props) {
 
 
     useEffect(() => {
-        if (!props.timeMetrics?.length) return;
+        if (!props.timeMetrics?.length || !props.isGraph) return;
 
         const datasets = props.timeMetrics.map((snapshot, index) => {
             return                 {
@@ -26,6 +26,7 @@ export default function DiskData (props) {
 
 
     const renderGraph = () => {
+        if (!props.isGraph) return;
         return(
             <div style={{flex: 1}} >
                 <LineChart
