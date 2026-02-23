@@ -180,7 +180,7 @@ export default function App() {
 
     const [fontClicked, setFontClicked] = useState("medium");
 
-    const [activeView, setActiveView] = useState(authentication ? deviceType ? "login" : "deviceTypeSelection" : "resources");
+    const [activeView, setActiveView] = useState(authentication ? deviceType === "" ? "login" : "deviceTypeSelection" : "deviceTypeSelection");
 
     const [metrics, setMetrics] = useState(null)
     //stores data over time for metrics, each object in the array is a value of teh metrics of each interval value
