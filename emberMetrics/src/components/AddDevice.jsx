@@ -25,7 +25,7 @@ export default function AddDevice(props) {
         }
         try {
             // requesting to create a device to the main device.json
-            const response = await fetch(`http://${props.deviceType === 'host' ? "metrics-api.emberalive" : props.hostIp}/devices`, {
+            const response = await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/devices`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -56,7 +56,7 @@ export default function AddDevice(props) {
                         else props.handleNotification('error', `error adding device to your user, sorry`)
 
                         //delete the device from the persistence storage
-                        const deleted = await fetch(`http://${props.deviceType === 'host' ? "127.0.0.1" : props.hostIp}:3000/devices`, {
+                        const deleted = await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/devices`, {
                             method: "DELETE",
                             headers: {
                                 "Content-Type": "application/json",
