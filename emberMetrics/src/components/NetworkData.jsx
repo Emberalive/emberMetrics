@@ -68,12 +68,10 @@ export default function NetworkData(props) {
                         // },
 
                         // ===== Point markers =====
-                        // [`.${markElementClasses.root}`]: {
-                        //     fill: 'var(--tertiary)',
-                        //     stroke: '#42b883',
-                        //     strokeWidth: 2,
-                        //     r: 4,
-                        // },
+                        [`.${markElementClasses.root}`]: {
+                            strokeWidth: 2,
+                            r: 0,
+                        },
 
                         // ===== Axis styling =====
                         [`.${axisClasses.root}`]: {

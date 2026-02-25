@@ -58,7 +58,7 @@ export default function MemoryData(props) {
                                     fill: 'var(--tertiary)',
                                     stroke: '#42b883',
                                     strokeWidth: 2,
-                                    r: 4,
+                                    r: 0,
                                 },
 
                                 // ===== Axis styling =====

@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {LineChart} from "@mui/x-charts/LineChart";
+import {LineChart, markElementClasses} from "@mui/x-charts/LineChart";
 import {axisClasses} from "@mui/x-charts/ChartsAxis";
 import {legendClasses} from "@mui/x-charts/ChartsLegend";
 import {chartsGridClasses} from "@mui/x-charts/ChartsGrid";
@@ -9,7 +9,6 @@ export default function DiskData (props) {
     const diskData = props.metrics.disks.totalDiskUsage
 
     const [graphData, setGraphData] = useState([]);
-
 
     useEffect(() => {
         if (!props.timeMetrics?.length || !props.isGraph) return;
@@ -62,12 +61,10 @@ export default function DiskData (props) {
                         // },
 
                         // ===== Point markers =====
-                        // [`.${markElementClasses.root}`]: {
-                        //     fill: 'var(--tertiary)',
-                        //     stroke: '#42b883',
-                        //     strokeWidth: 2,
-                        //     r: 4,
-                        // },
+                        [`.${markElementClasses.root}`]: {
+                            strokeWidth: 2,
+                            r: 0,
+                        },
 
                         // ===== Axis styling =====
                         [`.${axisClasses.root}`]: {

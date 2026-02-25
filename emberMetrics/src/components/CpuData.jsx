@@ -1,13 +1,32 @@
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {LineChart, lineElementClasses, markElementClasses} from "@mui/x-charts/LineChart";
 import {axisClasses} from "@mui/x-charts/ChartsAxis";
 import {legendClasses} from "@mui/x-charts/ChartsLegend";
 import {chartsGridClasses} from "@mui/x-charts/ChartsGrid";
-import {ChartsWrapper} from "@mui/x-charts";
 
 export default function CpuData (props) {
     const cpuUsage = props.metrics.cpuUsage
-    const [isChaosGraph, setIsChaosGraph] = useState(false)
+
+    const storageValue = localStorage.getItem("cpuChaosGraph");
+
+    const [isChaosGraph, setIsChaosGraph] = useState(() => {
+        if (!storageValue) {
+            return false;
+        } else {
+            return storageValue === "true";
+        }
+    })
+
+    const hasMounted = useRef(false);
+
+    useEffect(() => {
+        if (!hasMounted.current) {
+            hasMounted.current = true;
+            return;
+        }
+        localStorage.setItem("cpuChaosGraph", isChaosGraph.toString())
+    }, [isChaosGraph]);
+
 
     const cpuSeries = props.metrics.cpuUsage.cores.map((core, i) => {
         return {
@@ -238,6 +257,7 @@ export default function CpuData (props) {
                             <button className={'general-button'} onClick={() => {
                                 setIsChaosGraph(prevState => !prevState);
                                 setGraphData([])
+                                localStorage.setItem("cpuChaosGraph", isChaosGraph.toString())
                             }}>{isChaosGraph? 'Normal' : 'Chaos'}</button>
                         </div>
                         {isChaosGraph ?
