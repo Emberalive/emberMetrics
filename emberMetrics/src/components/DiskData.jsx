@@ -33,7 +33,9 @@ export default function DiskData (props) {
                     dataset={graphData}
                     xAxis={[{
                         dataKey: 'x',
-                        label: 'Time (1s)'
+                        label: 'Time (1s)',
+                        min: 20,
+                        max: 0,
                     }]}
                     yAxis={[{
                         label: 'bytes'

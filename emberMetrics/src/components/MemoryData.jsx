@@ -11,7 +11,7 @@ export default function MemoryData(props) {
     useEffect(() => {
         if (!props.timeMetrics) return;
         const graphData = props.timeMetrics.map((data, index) => {
-            return {x:index+1, y:parseFloat(data.memoryUsage.usage)}
+            return {x:index, y:parseFloat(data.memoryUsage.usage)}
         })
         setGraphData(graphData)
     }, [props.timeMetrics])
@@ -30,10 +30,14 @@ export default function MemoryData(props) {
                             dataset={graphData}
                             xAxis={[{
                                 dataKey: 'x',
-                                label: 'Time (1s)'
+                                label: 'Time (1s)',
+                                min: 20,
+                                max: 0,
                             }]}
                             yAxis={[{
-                                label: 'percentage'
+                                label: 'Memory Usage (%)',
+                                min: 0,
+                                max: 100,
                             }]}
                             series={[{
                                 dataKey: 'y',
@@ -102,7 +106,7 @@ export default function MemoryData(props) {
     }
     return (
         <>
-            {props.isGraph ?
+            {props.isGraph  ?
                 renderGraph()
                 :
                 <section className="memory-info">

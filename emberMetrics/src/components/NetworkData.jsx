@@ -40,6 +40,8 @@ export default function NetworkData(props) {
                     xAxis={[{
                         dataKey: 'x',
                         label: 'Time (1s)',
+                        min: 20,
+                        max: 0,
                      }]}
                     yAxis={[{
                         label: 'bytes'

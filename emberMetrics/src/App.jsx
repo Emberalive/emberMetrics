@@ -27,13 +27,19 @@ import Sunrise from "./assets/SVG 2.1 | orange sunrise.svg";
 import Teal from "./assets/SVG 2.1 | Teal Lagoon.svg";
 import Lavander from "./assets/SVG 2.1 | Lavander Mist.svg";
 import Minty from "./assets/SVG 2.1 | Minty Fresh.svg";
+import Sapphire from "./assets/SVG 2.1 | Midnight Sapphire.svg";
+import Crimson from "./assets/SVG 2.1 | Crimson Ember.svg";
+import Arctic from "./assets/SVG 2.1 | Arctic Cyan.svg";
+import Copper from "./assets/SVG 2.1 | Copper Flame.svg";
+import Emerald from "./assets/SVG 2.1 | Emerald Depths.svg";
+import Violet from "./assets/SVG 2.1 | Violet Storm.svg";
 
 
 export default function App() {
 //<<-----------------------------Only edit this!!!!!----------------------------------------->>
     // This is a quick fix to allow the user to make the app have or not have authentication
     //change the value of authentication to false if you don't want a user system
-    const authentication = true
+    const authentication = false
 //<<-----------------------^^^^^^Only edit this!!!!!^^^^^^----------------------------------->>
 
     //Nothing below here should be touched, you will most likely break the application!!!
@@ -188,6 +194,36 @@ export default function App() {
 
     const [themes, setThemes] = useState([
         {
+            name: "Midnight Sapphire",
+            colour: { secondary: "#2f5dff", tertiary: "#001f99" },
+            logo: Sapphire,
+        },
+        {
+            name: "Crimson Ember",
+            colour: { secondary: "#ff4d4d", tertiary: "#b30000" },
+            logo: Crimson,
+        },
+        {
+            name: "Arctic Cyan",
+            colour: { secondary: "#42d7ff", tertiary: "#0288a8" },
+            logo: Arctic,
+        },
+        {
+            name: "Copper Flame",
+            colour: { secondary: "#ff7a42", tertiary: "#b34700" },
+            logo: Copper,
+        },
+        {
+            name: "Emerald Depths",
+            colour: { secondary: "#2ecc71", tertiary: "#0b7a3e" },
+            logo: Emerald,
+        },
+        {
+            name: "Violet Storm",
+            colour: { secondary: "#9b42ff", tertiary: "#4b0099" },
+            logo: Violet,
+        },
+        {
             name: "Sparkr Original",
             colour: { secondary: "#FF8C42", tertiary: "#CC5803" },
             logo: Sparkr,
@@ -238,6 +274,11 @@ export default function App() {
             logo: Minty,
         },
     ]);
+
+    function randomColour () {
+        const index = Math.floor(Math.random() * themes.length);
+        return themes[index].secondary;
+    }
 
     const [isDarkMode, setIsDarkMode] = useState(() => {
         const darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -456,7 +497,7 @@ export default function App() {
                                         <CpuData metrics={metrics}
                                                  isGraph={isGraph}
                                                  timeMetrics={timeMetrics}
-                                                 themes={themes}/>
+                                                 themes={themes} randomColour={randomColour}/>
                                         <ChildProcesses metrics={metrics}/>
                                         <DiskData metrics={metrics}
                                                   isGraph={isGraph}
