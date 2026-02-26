@@ -167,7 +167,7 @@ export default function App() {
             localStorage.setItem("deviceType", deviceType);
     }, [deviceType])
 
-    const [selectedDevice, setSelectedDevice] = useState();
+    const [selectedDevice, setSelectedDevice] = useState('86.20.86.223');
 
     const [fontClicked, setFontClicked] = useState("medium");
 
