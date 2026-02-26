@@ -31,10 +31,10 @@ export default function Header (props) {
                         </a>
                         <a className={
                             localStorage.getItem('deviceType') === ""
-                                ? "header-navigation__links disabled-button"
+                                ? "header-navigation__links__end disabled-button"
                                 : props.activeView === "settings"
-                                    ? "header-navigation__links disabled-button"
-                                    : "header-navigation__links"
+                                    ? "header-navigation__links__end disabled-button"
+                                    : "header-navigation__links__end"
                         } onClick={() => {
                             props.setActiveView("settings")
                             console.log("view set to settings")
@@ -53,18 +53,18 @@ export default function Header (props) {
                         }}>
                             Profile
                         </a>}
-                        <a className={
-                            localStorage.getItem('deviceType') === ""
-                                ? "header-navigation__links__end disabled-button"
-                                : props.activeView === "devices"
-                                    ? "header-navigation__links__end disabled-button"
-                                    : "header-navigation__links__end"
-                        } onClick={() => {
-                            props.setActiveView("devices")
-                            console.log("view set to Devices")
-                        }}>
-                            Devices
-                        </a>
+                        {/*<a className={*/}
+                        {/*    localStorage.getItem('deviceType') === ""*/}
+                        {/*        ? "header-navigation__links__end disabled-button"*/}
+                        {/*        : props.activeView === "devices"*/}
+                        {/*            ? "header-navigation__links__end disabled-button"*/}
+                        {/*            : "header-navigation__links__end"*/}
+                        {/*} onClick={() => {*/}
+                        {/*    props.setActiveView("devices")*/}
+                        {/*    console.log("view set to Devices")*/}
+                        {/*}}>*/}
+                        {/*    Devices*/}
+                        {/*</a>*/}
                     </div>
             </header>
                 </>

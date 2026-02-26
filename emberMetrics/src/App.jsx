@@ -39,7 +39,7 @@ export default function App() {
 //<<-----------------------------Only edit this!!!!!----------------------------------------->>
     // This is a quick fix to allow the user to make the app have or not have authentication
     //change the value of authentication to false if you don't want a user system
-    const authentication = true
+    const authentication = false
 //<<-------------------------^^^^^Only edit this^^^^^---------------------------------------->>
 
     //Nothing below here should be touched, you will most likely break the application!!!
@@ -70,7 +70,7 @@ export default function App() {
 
     useEffect(() => {
         async function getPublicIP() {
-            const res = await fetch("http://api.ipify.org?format=json");
+            const res = await fetch("https://api.ipify.org?format=json");
             const data = await res.json();
             localStorage.setItem("hostPublicIP", data.ip);
             setHostIP(data.ip);
@@ -124,7 +124,7 @@ export default function App() {
             if (authentication) return
             //if authentication is true don't run this effect
             try {
-                const response = await fetch(`http://${deviceType === "remote-access" ? hostIp : "127.0.0.1"}:3000/devices`);
+                const response = await fetch(`https://metrics-api.emberalive.com/devices`);
 
                 if (response.ok) {
                     const resData = await response.json();
@@ -171,7 +171,7 @@ export default function App() {
 
     const [fontClicked, setFontClicked] = useState("medium");
 
-    const [activeView, setActiveView] = useState(authentication ? deviceType === "" ? "deviceTypeSelection" : "login" : deviceType === "" ? "deviceTypeSelection" : "resources");
+    const [activeView, setActiveView] = useState("resources");
 
     const [metrics, setMetrics] = useState(null)
     //stores data over time for metrics, each object in the array is a value of teh metrics of each interval value
@@ -343,7 +343,7 @@ export default function App() {
 
             const fetchMetrics = async () => {
                 try {
-                    const response = await fetch(`http://${selectedDevice}:3000`);
+                    const response = await fetch(`https://metrics-api.emberalive.com`);
                     if (response.ok) {
                         const resData = await response.json();
                         if (resData) {
@@ -397,7 +397,7 @@ export default function App() {
     async function patchUser (updatedUser) {
         try {
             console.info('[ App.jsx - patchUser ] starting function')
-            const response = await fetch(`http://${deviceType === "remote-access" ? hostIp : "127.0.0.1"}:3000/users`, {
+            const response = await fetch(`https://metrics-api.emberalive.com/users`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -554,15 +554,15 @@ export default function App() {
                                                           metricInterval={metricInterval}
                                                           themes={themes}/>}
 
-                  {activeView === "devices" && <DeviceManagement devices={devices}
-                                                                 setDevices={setDevices}
-                                                                 handleNotification={handleNotification}
-                                                                 hostIp={hostIp}
-                                                                 deviceType={deviceType}
-                                                                 setUser={setUser}
-                                                                 user={user}
-                                                                 patchUser={patchUser}
-                                                                 authentication={authentication}/>}
+                  {/*{activeView === "devices" && <DeviceManagement devices={devices}*/}
+                  {/*                                               setDevices={setDevices}*/}
+                  {/*                                               handleNotification={handleNotification}*/}
+                  {/*                                               hostIp={hostIp}*/}
+                  {/*                                               deviceType={deviceType}*/}
+                  {/*                                               setUser={setUser}*/}
+                  {/*                                               user={user}*/}
+                  {/*                                               patchUser={patchUser}*/}
+                  {/*                                               authentication={authentication}/>}*/}
               </>}
               {/*{(isLoggedIn === false && authentication === true) && <Login handleNotification={handleNotification}*/}
               {/*                                                             hostIp={hostIp} setIsLoggedIn={setIsLoggedIn}/>}*/}
