@@ -1,1 +1,42 @@
-[{"username":"admin","password":"$2b$10$EHQi6dNMCxeiIo5VnuyWVO37XRwcuduFRFKvk3p.HJn6mi5DsJddS","id":"jrG2rAwqUnemUVoWiA0Eo","role":"admin","bio":"","email":""},{"username":"Ember","password":"$2b$10$vZ1Q2I1D83zOf9nMgbyk7eFJXdCXZTlhuShtU9TntftS1kDYvXnOS","role":"user","id":"HXm1Ynv_kjER73gM4Ftqr","bio":"","email":""},{"username":"Neve","password":"$2b$10$DH9.aZSXKznT2Kq/4DsZOeuUBOFz4bd4S20oSLlxicpoKl2cSU4Yi","role":"user","id":"kqF_dKh8CgIqRljX_tOhi"},{"username":"Sam","password":"$2b$10$yG0/Xj3jBzo5xFpBH1roF.clAnt.XDSBGtbLvq5MewH8t3Y467MPO","role":"user","id":"0TXsk1KSZX6Zok23QuSNM"}]
+[
+  {
+    "username": "admin",
+    "password": "$2b$10$EHQi6dNMCxeiIo5VnuyWVO37XRwcuduFRFKvk3p.HJn6mi5DsJddS",
+    "id": "jrG2rAwqUnemUVoWiA0Eo",
+    "role": "admin",
+    "devices": [
+      {
+        "name": "localhost",
+        "ip": "127.0.0.1",
+        "id": "DgxI77r32HDNeBfh0sK8B"
+      }
+    ]
+  },
+  {
+    "username": "Ember",
+    "email": "samueltsutcliffe@gmail.com",
+    "bio": "This is my bio and i need to add some large text to see what is happening, when there is a lot of text, I need some more text, how about some more",
+    "id": "HXm1Ynv_kjER73gM4Ftqr",
+    "devices": [
+      {
+        "name": "localhost1",
+        "ip": "127.0.0.1",
+        "id": "DgxI77r32HDNeBfh0sK8B"
+      }
+    ],
+    "password": "$2b$10$vZ1Q2I1D83zOf9nMgbyk7eFJXdCXZTlhuShtU9TntftS1kDYvXnOS"
+  },
+  {
+    "username": "Neve",
+    "password": "$2b$10$Kwcs3tlpCbNrlrTijWlQ5.TBWYn9jGFNI3mBzhDzwiykRKsHwZ22y",
+    "role": "user",
+    "id": "s8Bh4gpXt0crTpRRM_VZR",
+    "devices": [
+      {
+        "name": "localhost",
+        "ip": "127.0.0.1",
+        "id": "DgxI77r32HDNeBfh0sK8B"
+      }
+    ]
+  }
+]

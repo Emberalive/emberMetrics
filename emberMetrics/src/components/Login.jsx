@@ -1,10 +1,7 @@
 import {useEffect, useState} from "react";
 
 export default function Login (props) {
-
-    const [isRegister, setIsRegister] = useState(false);
-
-    async function submit(e) {
+    async function submit (e) {
         e.preventDefault();
 
         const { username, password, confirmPassword } = e.target;

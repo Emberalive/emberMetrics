@@ -31,8 +31,10 @@ router.patch('/', async (req, res) => {
         try {
             const response = await editDevice(device)
             if (response.success === true) {
+                console.log("[Server - PATCH | devices] edit device successfully")
                 res.status(200).send(response)
             } else {
+                console.log('[Server - PATCH | devices] could not edit device')
                 res.status(500).send(response)
             }
         } catch (e) {

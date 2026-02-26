@@ -22,3 +22,5 @@
   "id": "opZinvP8sgpeEbJuiHukU"
 }
 ```
+
+**Please Do not touch the localhost device** It will break the application, leave that device in there

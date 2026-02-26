@@ -25,7 +25,7 @@ async function createUser(username, password, role) {
             const response = await hashPassword(password, saltRounds);
             if (response.success) {
                 console.log('[Server - createUser] Successfully created!]')
-                return await addUser({username: username, password: response.hash, role, id: nanoid()});
+                return await addUser({username: username, password: response.hash, role, id: nanoid(), devices: [{"name":"localhost","ip":"127.0.0.1","id":"DgxI77r32HDNeBfh0sK8B"}]});
             } else {
                 console.error('[Server - createUser] Error hashing password')
                 return {
@@ -41,6 +41,52 @@ async function createUser(username, password, role) {
     }
 }
 
+async function updateUser(username, newUser) {
+    try {
+        let userData = newUser
+        const currentUsers = await readUsers()
+        const exists = currentUsers.find(e => e.username === username)
+        if (!exists) {
+            console.log('[Server - updateUser] User doesnt exist | cant update details')
+            return {
+                success: false,
+                reason: 'user_notFound'
+            }
+        }
+        console.log('[Server - updateUser] User found successfully!');
+        //checking for username collision
+        const usernameTaken = currentUsers.some(u => u.username === userData.username && u.username !== username)
+        if (usernameTaken) {
+            console.log('[Server - updateUser] Username already exists!')
+            return { success: false, reason: 'username_taken' }
+        }
+        const updatedUsers = currentUsers.map( (user) => {
+            if (user.username === username) {
+                return {
+                    ...userData,
+                    password: user.password
+                }
+            }
+            return user
+        })
+        const written = await writeUser(updatedUsers)
+        if (written.success) {
+            console.log('[Server - updateUser] Successfully updated!')
+            return {
+                success: true,
+                updatedUser: userData,
+                reason: 'user_updated_successfully'
+            }
+        }
+    } catch (e) {
+        console.log('[Server - updateUser] Error updating user\n', e.message);
+        return {
+            success: false,
+            reason: 'user_updated_failed'
+        }
+    }
+}
+
 async function authenticateUser(user) {
     try {
         const userData = await getUser(user.username);
@@ -49,7 +95,10 @@ async function authenticateUser(user) {
                 success: false,
             }
         } else {
-            return await checkPassword(user.password, userData.user.password);
+            return {
+                success : await checkPassword(user.password, userData.user.password),
+                user: userData.user
+            }
         }
     } catch (e) {
         console.error(`[Server - authenticateUser] Error validating: ${user.username}`, e.message);
@@ -82,7 +131,7 @@ async function deleteUser(user) {
 
 async function writeUser(newUsers) {
     try {
-        await fs.writeFile(filePath, JSON.stringify(newUsers), 'utf8')
+        await fs.writeFile(filePath, JSON.stringify(newUsers, null, 2), 'utf8')
         return {
             success: true,
         }
@@ -139,7 +188,10 @@ async function addUser(user) {
         if (userData.find(e => e.username === user.username)) {
             console.log('[Server - addUser] new user has been added successfully!')
             console.log('[Server - addUser] updated users: ', JSON.stringify(userData));
-            return await writeUser(userData)
+            return {
+                success: await writeUser(userData),
+                user: userData
+            }
         }
         return {
             success: false,
@@ -204,4 +256,4 @@ async function checkPassword(password, hashedPassword) {
 }
 
 
-module.exports = {createUser, deleteUser, authenticateUser}
+module.exports = {createUser, deleteUser, authenticateUser, updateUser}

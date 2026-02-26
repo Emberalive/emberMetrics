@@ -4,6 +4,11 @@ export default function DeviceTypeSelection (props) {
         const formData = new FormData(e.target);
         const selectedType = formData.get('deviceType');
         props.setDeviceType(selectedType);
+        if (props.authentication) {
+            props.setActiveView('login');
+        } else {
+            props.setActiveView('resources');
+        }
     }
     return (
         <div className={props.activeView === 'fullScreen' ? "display-none" : 'device-type-selection__wrapper'}>

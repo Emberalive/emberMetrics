@@ -3,6 +3,7 @@ import {useEffect} from "react";
 
 export default function DeviceList (props) {
     let devicesList;
+    const devices = props.authentication ? props.user.devices : props.devices;
     const [editDevice, setEditID] = useState(null);
     const [deleteDeviceData, setDeleteDeviceData] = useState(null);
 
@@ -10,73 +11,116 @@ export default function DeviceList (props) {
         console.log('deleteDevice: ', deleteDeviceData);
     }, [deleteDeviceData]);
 
-    async function deleteDevice (device) {
+    async function deleteDevice(device) {
         try {
-            const deviceID = device.id
-            const response = await fetch(`http://${props.deviceType === 'remote-access' ? props.hostIp : 'localhost'}:3000/devices`, {
+            const deviceID = device.id;
+
+            // DELETE device from server
+            const response = await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/devices`, {
                 method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({deviceID: deviceID}),
-            })
-            if (response.ok) {
-                const index = props.devices.findIndex(device => device.id === deviceID);
-                if (index !== -1) {
-                    const updatedDevices = props.devices.filter((device) => device.id !== deviceID);
-                    props.setDevices(updatedDevices);
-                    props.handleNotification('notice', 'Successfully deleted devices');
-                }
-            } else {
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ deviceID }),
+            });
+
+            if (!response.ok) {
                 props.handleNotification('error', 'Failed to delete device');
+                return;
+            }
+
+            // Use latest user state to compute updated devices
+            const updatedDevices = props.user.devices.filter(d => d.id !== deviceID);
+            const userData = { ...props.user, devices: updatedDevices };
+
+            // PATCH user with updated devices
+            const patchResponse = await props.patchUser(userData);
+
+            if (patchResponse.success) {
+                // update user state after backend confirms
+                props.setUser(patchResponse.updatedUser);
+                props.handleNotification('notice', 'Successfully deleted device');
+            } else {
+                // rollback device if PATCH fails
+                await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/devices`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ device }),
+                });
+                props.handleNotification('error', 'Failed to update user; device restored');
+            }
+
+        } catch (e) {
+            console.error("[Client - deleteDevice] error:", e);
+            props.handleNotification('error', 'Error deleting device');
+        }
+    }
+
+    async function patchDevice(e) {
+        e.preventDefault();
+            const originalDevice = props.user.devices.find(d => d.id === editDevice.id);
+
+        try {
+            // PATCH the device on the server
+            const response = await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/devices`, {
+                method: 'PATCH',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({device: editDevice}),
+            });
+
+            if (!response.ok) {
+                props.handleNotification('error', 'Failed to edit device');
+                return;
+            }
+
+            const resData = await response.json();
+
+            if (!resData.success) {
+                props.handleNotification('error', 'Device update failed on server');
+                return;
             }
         } catch {
-            props.handleNotification('error', 'Sorry there was an issue deleting this device');
+            props.handleNotification('notice', 'Failed to update device');
+            return;
         }
-    }
+            // Build new devices array using latest user state
+            const newDevices = props.user.devices.map(d =>
+                d.id === editDevice.id ? { ...d, ip: editDevice.ip, name: editDevice.name } : d
+            );
+            //build new user object with the new devices
+            const userData = { ...props.user, devices: newDevices };
 
-    async function patchDevice (e) {
-        e.preventDefault();
-        try {
-            const response = await fetch(`http://${props.deviceType === 'remote-access' ? props.hostIp : 'localhost'}:3000/devices`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({device: editDevice}),
-            })
-            if (response.ok) {
-                const resData = response.json();
-                if (resData) {
-                    props.handleNotification('notice', 'Device has been updated')
-                    const newDevices = props.devices.map(device => {
-                        if (device.id === editDevice.id) {
-                            return {...device, ip: editDevice.ip, name: editDevice.name };
-                        } else {
-                            return device;
-                        }
-                    })
-                    if (newDevices.length === props.devices.length) {
-                        props.setDevices(newDevices);
-                    } else {
-                        console.error('New devices is not the same length as devices')
-                    }
-                    setEditID(null);
-                } else {
-                    props.handleNotification('error', 'Could not edit the device')
+            //flag to see if the device rollback is needed
+            let userPatchSucceeded = false;
+
+            try {
+                // PATCH user with updated devices
+                const patchResponse = await props.patchUser(userData);
+
+                if (patchResponse?.success) {
+                    userPatchSucceeded = true;
+                    props.setUser(patchResponse.updatedUser);
+                    props.handleNotification('notice', 'Device has been updated');
                 }
+            } catch {
+                props.handleNotification('error', 'Failed to update device on the user object');
             }
-            } catch (e) {
-            console.error('Error editing a patch', e.message);
-            props.handleNotification('error', 'Could not edit your device, sorry');
-        }
+
+            if (!userPatchSucceeded) {
+                // rollback device PATCH if user PATCH fails
+                await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/devices`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ device: originalDevice }),
+                });
+                props.handleNotification('error', 'Failed to update user; device rollback applied');
+            }
+        setEditID(null);
     }
 
-    if (props.devices) {
-        devicesList = props.devices.map(device => {
+    if (devices) {
+        devicesList = devices.map(device => {
             if (editDevice && editDevice.id === device.id) {
                 return (
-                    <form onSubmit={patchDevice} className="device-management__form" style={{width:'100%'}}>
+                    <form onSubmit={patchDevice} className="device-management__form" style={{width:'100%'}} key={device.id}>
                         <div className={"device-management__form-element"}>
                             <label>Device Name:</label>
                             <input name={'deviceName'} type={'text'} placeholder={'Device Name'} value={editDevice.name}
@@ -91,15 +135,12 @@ export default function DeviceList (props) {
                         </div>
 
                         <div className={"edit-device__form-buttons"}>
-                            <button className="general-button" style={{fontSize: "20px", alignSelf: "flex-end", backgroundColor: 'red'}} onClick={(e) => {
+                            <button className="general-button danger-button" style={{fontSize: "20px", alignSelf: "flex-end"}} onClick={(e) => {
                                 e.preventDefault()
                                 setEditID(null)
                             }}>Cancel</button>
-                            <button className="general-button" style={{fontSize: "20px", alignSelf: "flex-end"}}>Save</button>
-
-
+                            <button className="general-button success-button" style={{fontSize: "20px", alignSelf: "flex-end"}}>Save</button>
                         </div>
-
                     </form>
             )
             } else {
@@ -114,7 +155,7 @@ export default function DeviceList (props) {
                                 console.log('[Client - deleteDevice] setting deleteDevice data to show check screen')
                                 setDeleteDeviceData(device);
                             }}>Delete</button>
-                            <button className="general-button" style={{fontSize: "20px"}} onClick={() => {
+                            <button className="general-button success-button" style={{fontSize: "20px"}} onClick={() => {
                                 setEditID(device);
                             }}>Edit</button>
                         </div>
@@ -142,12 +183,12 @@ export default function DeviceList (props) {
                         <p style={{fontWeight: 700, color: 'var(--secondary)', fontSize: 'var(--font-size)'}}>{deleteDeviceData.name}</p>
                     </div>
                     <div style={{width: '100%', gap: '10px', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-                        <button className={'general-button'} style={{backgroundColor: 'darkRed'}} onClick={(e) => {
+                        <button className={'general-button  danger-button'} onClick={(e) => {
                             e.preventDefault()
                             deleteDevice(deleteDeviceData)
                             setDeleteDeviceData(null)
                         }}>Yes</button>
-                        <button className={'general-button'} onClick={() => {
+                        <button className={'general-button success-button'} onClick={() => {
                             setDeleteDeviceData(null)
                         }}>No</button>
                     </div>

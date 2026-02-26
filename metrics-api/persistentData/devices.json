@@ -1,1 +1,7 @@
-[{"name":"localhost","ip":"127.0.0.1","id":"DgxI77r32HDNeBfh0sK8B"},{"name":"Test Device","ip":"203.0.113.0","id":"cGTCTcdcXA-zxypMoTvq5"}]
+[
+  {
+    "name": "localhost1",
+    "ip": "127.0.0.1",
+    "id": "DgxI77r32HDNeBfh0sK8B"
+  }
+]

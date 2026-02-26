@@ -1,7 +1,8 @@
 const express = require('express')
-const {createUser, deleteUser, authenticateUser} = require('../opModules/user')
+const {createUser, deleteUser, authenticateUser, updateUser} = require('../opModules/user')
 const router = express.Router()
 
+//login the user in
 router.post('/login', async(req, res) => {
     console.log('[Server - POST /users - login] starting route access')
     const {username, password} = req.body.user
@@ -26,6 +27,7 @@ router.post('/login', async(req, res) => {
     }
 })
 
+//registering a new user
 router.post('/', async (req, res) => {
     console.log('[Server - POST /users] starting route access')
     const { username, password , confirmPassword, role} = req.body.user
@@ -60,6 +62,50 @@ router.post('/', async (req, res) => {
             })
         }
     }
+})
+
+//update user details
+router.patch('/', async (req, res) => {
+    console.log('[Server - PATCH /users] starting route access')
+    const { username, newUser } = req.body
+    if (!username || !newUser) {
+        console.log('[Server - PATCH /users] edit user failed, no username or new data provided')
+        return res.status(400).send({
+            success: false
+        })
+    } else {
+        const response = await updateUser(username, newUser)
+        if (response.success) {
+            const reason = response.reason
+            switch (reason) {
+                case 'user_notFound':
+                    console.log('[Server - PATCH /users] update user failed.')
+                    return res.status(404).send({
+                        success: false
+                    })
+                case 'username_taken':
+                    console.log('[Server - PATCH /users] update user failed.')
+                    return res.status(409).send({
+                        success: false
+                    })
+                case 'user_updated_failed':
+                    console.log('[Server - PATCH /users] update user failed - internal error.')
+                    return res.status(500).send({
+                        success: false
+                    })
+            }
+        }
+        if (response.success) {
+            console.log('[Server - PATCH /users] update user succeeded.')
+            return res.status(200).send(response)
+        } else {
+            console.log('[Server - PATCH /users] update user failed.')
+            return res.status(500).send({
+                success: false
+            })
+        }
+    }
+
 })
 
 router.delete('/', async (req, res) => {

@@ -7,6 +7,7 @@ export default function AddDevice(props) {
         e.preventDefault()
         const ip = e.target.ipAddress.value
         const name = e.target.deviceName.value
+        //----------------------------validating data-----------------------------------------------//
         //this only allows the ip[ address to be public ipv4 and valid ip addresses to be created  || (rangeCheck.isPrivateIP(ip))
         if ((!rangeCheck.isIP(ip)) || (rangeCheck.version(ip) !== 4)) {
             console.log("Please enter a valid public and IPv4 address")
@@ -23,7 +24,8 @@ export default function AddDevice(props) {
             id: nanoid()
         }
         try {
-            const response = await fetch(`http://${props.deviceType === 'host' ? "localhost" : props.hostIp}:3000/devices`, {
+            // requesting to create a device to the main device.json
+            const response = await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/devices`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -35,14 +37,37 @@ export default function AddDevice(props) {
             if (response.ok) {
                 const resData = await response.json()
                 if (resData.success) {
-                    props.handleNotification("notice", `successfully added the device "${ip}"`)
-                    console.log(`Adding the ${ip} device.`)
-                    props.setDevices((prev) => {
-                        return [
-                            ...prev,
-                            newDevice
-                        ]
-                    })
+                    //if the creation of the device was successful attempt to add the device to the users allowed devices
+                    const userData = {
+                        ...props.user,
+                        devices: [...props.user.devices, newDevice]
+                    }
+                    //Attempting to update the user data allowed devices
+                    const response1 = await props.patchUser(userData);
+
+                    if (response1.success) {
+                        // if user has been updated set the user data and notify the user
+                        props.setUser(response1.updatedUser)
+                        props.handleNotification("notice", `successfully added the device "${ip}"`)
+                        console.log(`Adding the ${ip} device.`)
+                    } else {
+                        // else send a notification dependent on the user
+                        if (props.user.role === 'user') props.handleNotification("error", `error adding device to your user, please speak to your admin.`)
+                        else props.handleNotification('error', `error adding device to your user, sorry`)
+
+                        //delete the device from the persistence storage
+                        const deleted = await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/devices`, {
+                            method: "DELETE",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({deviceID: newDevice.id})
+                        })
+                        const deletedData = await deleted.json()
+                        if (deletedData.success) {
+                            props.handleNotification("error", `sorry could not create the device: "${ip}"`)
+                        }
+                    }
                 }
             }
         } catch (e) {
@@ -50,7 +75,7 @@ export default function AddDevice(props) {
         }
         if (props.deviceType === "host") {
             try {
-                const response = await fetch("http://localhost:3001/")
+                const response = await fetch("http://127.0.0.1:3001/")
                 if (response.ok) {
                     const blob = await response.blob();
                     const url = window.URL.createObjectURL(blob);
@@ -91,7 +116,7 @@ export default function AddDevice(props) {
                 <label>Remote Device Name</label>
                 <input name={"deviceName"} type="text" placeholder={"My Server"} ></input>
             </div>
-            <button className="general-button" style={{fontSize: "20px", marginTop: "10px"}} type="submit">Create</button>
+            <button className="general-button success-button" style={{fontSize: "20px", marginTop: "10px"}} type="submit">Create</button>
         </form>
     )
 }
