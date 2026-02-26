@@ -11,7 +11,7 @@ export default function MemoryData(props) {
     useEffect(() => {
         if (!props.timeMetrics) return;
         const graphData = props.timeMetrics.map((data, index) => {
-            return {x:index, y:parseFloat(data.memoryUsage.usage)}
+            return {x:index*(props.metricInterval / 1000), y:parseFloat(data.memoryUsage.usage)}
         })
         setGraphData(graphData)
     }, [props.timeMetrics])
@@ -30,8 +30,8 @@ export default function MemoryData(props) {
                             dataset={graphData}
                             xAxis={[{
                                 dataKey: 'x',
-                                label: 'Time (1s)',
-                                min: 20,
+                                label: 'Time (s)',
+                                min: 20*(props.metricInterval / 1000),
                                 max: 0,
                             }]}
                             yAxis={[{

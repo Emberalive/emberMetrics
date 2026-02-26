@@ -48,7 +48,14 @@ export default function Settings (props) {
                     <p className="settings-entry__label">Interval: </p>
                     <div className={"settings-entry__value-container"}>
                         <input type={'text'} value={props.metricInterval/1000} onChange={(e) => {
-                            props.setmetricInterval(e.target.value * 1000)
+                            const parsed = Number(e.target.value)
+
+                            if (!Number.isNaN(parsed)) {
+                                props.setmetricInterval(parsed * 1000)
+                            } else {
+                                props.setmetricInterval(1000)
+                                props.handleNotification('error', 'Please enter a valid number')
+                            }
                         }}/>
                         <p>Seconds</p>
                     </div>

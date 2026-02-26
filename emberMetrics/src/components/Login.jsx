@@ -1,6 +1,9 @@
 import {useEffect, useState} from "react";
 
 export default function Login (props) {
+
+    const [isRegister, setIsRegister] = useState(false);
+
     async function submit (e) {
         e.preventDefault();
 
@@ -14,6 +17,13 @@ export default function Login (props) {
         if (isRegister) {
             user.confirmPassword = confirmPassword.value;
             user.role = 'user';
+            user.devices = [
+                {
+                    name: "localhost1",
+                    ip: "127.0.0.1",
+                    id: "DgxI77r32HDNeBfh0sK8B"
+                }
+            ]
         }
         // Validation
         if (!user.username || !user.password || (isRegister && !user.confirmPassword)) return props.handleNotification('error', 'Please send all fields required');
@@ -40,22 +50,18 @@ export default function Login (props) {
             }
             // Only login expects JSON back
             if (!isRegister) {
-                const data = await response.json();
-                if (data.success) {
+                const resData = await response.json();
+                if (resData.success) {
+                    props.setUser(resData.user);
+                    props.setActiveView('resources')
                     props.handleNotification('notice', `Successfully ${isRegister ? 'registered' : 'logged in'} as: ${user.username}`);
                 }
             }
             props.setIsLoggedIn(prev => !prev);
-
         } catch {
             props.handleNotification('error', 'There was an issue with the server, sorry');
         }
     }
-
-    useEffect(() => {
-        console.info('Register', isRegister);
-    }, [isRegister]);
-
     return (
         <div className="login-wrapper">
             <section className={'login'}>

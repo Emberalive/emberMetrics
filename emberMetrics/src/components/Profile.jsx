@@ -67,9 +67,9 @@ export default function Profile (props) {
                         {isEditing ?
                             <div className="profile-item__container">
                                 <label>Bio</label>
-                                <p className={'profile-item-container__bio__edit'} style={{borderBottom: '1px solid var(--secondary)'}} onChange={(e) => {
+                                <textarea className={'profile-item-container__bio__edit'} style={{borderBottom: '1px solid var(--secondary)'}} onChange={(e) => {
                                     setEditUser({ ...editUser, bio: e.target.value })
-                                }}>{editUser.bio}</p>
+                                }}>{editUser.bio}</textarea>
 
                             </div>
                             :

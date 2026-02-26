@@ -44,7 +44,7 @@ export default function CpuData (props) {
 
         if (isChaosGraph) {
             datasets = props.timeMetrics.map((snapshot, timeIndex) => {
-                const entry = {x: timeIndex}
+                const entry = {x: timeIndex * (props.metricInterval/1000)}
                 snapshot.cpuUsage.cores.forEach((core) => {
                     entry[`core: ${core.no}`] = parseFloat(core.usage)
                 })
@@ -55,7 +55,7 @@ export default function CpuData (props) {
             datasets = Array.from({length: coreCount}, (_, i) =>
                 props.timeMetrics.map((snapshot, timeIndex) => (
                     {
-                        x: timeIndex,
+                        x: timeIndex * (props.metricInterval/1000),
                         usage: parseFloat(snapshot.cpuUsage.cores[i].usage)
                     }
                 ))
@@ -70,15 +70,15 @@ export default function CpuData (props) {
         if (!isChaosGraph) {
             renderGraphs = graphData.map((graph, index) => {
                 return (
-                    <div style={{flex: 1, overflow: "visible"}} >
+                    <div style={{flex: 1, overflow: "visible"}} key={index}>
                         <LineChart
                             dataset={graph}
                             xAxis={[{
                                 dataKey: 'x',
-                                label: `Seconds`,
+                                label: `Time (s)`,
                                 scaleType: "linear",
                                 tickNumber: graph.length,
-                                min: 20,
+                                min: 20*(props.metricInterval / 1000),
                                 max: 0,
                             }]}
                             yAxis={[{
@@ -155,8 +155,8 @@ export default function CpuData (props) {
                             dataset={graphData}
                             xAxis={[{
                                 dataKey: 'x',
-                                label: 'Time (1s)',
-                                min: 20,
+                                label: `Time (s)`,
+                                min: 20*(props.metricInterval / 1000),
                                 max: 0,
                             }]}
                             yAxis={[{

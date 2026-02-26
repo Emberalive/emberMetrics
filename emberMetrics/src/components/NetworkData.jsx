@@ -18,7 +18,7 @@ export default function NetworkData(props) {
         const datasets = Array.from({length: interfaceCount}, (_, i) =>
                 props.timeMetrics.map((snapshot, timeIndex) => (
                        {
-                           x: timeIndex,
+                           x: timeIndex*(props.metricInterval / 1000),
                            transmitted: parseFloat(snapshot.interfaces[i].data.transmitted),
                            received: parseFloat(snapshot.interfaces[i].data.received)
                        }
@@ -30,7 +30,7 @@ export default function NetworkData(props) {
     const graphDataArray = graphData.map((data, index) => {
         if (!props.isGraph) return;
         return (
-            <div style={{flex: 1}}>
+            <div style={{flex: 1}} key={index}>
                 <header className="network-interface__header" style={{borderBottom: 'none'}}>
                     <p style={{margin: 'none'}}>{props.metrics.interfaces[index].name}</p>
                 </header>
@@ -39,8 +39,8 @@ export default function NetworkData(props) {
                     dataset={data}
                     xAxis={[{
                         dataKey: 'x',
-                        label: 'Time (1s)',
-                        min: 20,
+                        label: 'Time (s)',
+                        min: 20*(props.metricInterval / 1000),
                         max: 0,
                      }]}
                     yAxis={[{

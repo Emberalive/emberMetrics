@@ -44,9 +44,10 @@ export default function App() {
 
     //Nothing below here should be touched, you will most likely break the application!!!
 
-    const [isGraph, setIsGraph] = useState(true);
+    const [isGraph, setIsGraph] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(!authentication);
     const [user, setUser] = useState(null);
+    const [metricInterval, setMetricInterval] = useState(1000);
     const [hostIp, setHostIP] = useState(() => {
         const hostPublicIP = localStorage.getItem('hostPublicIP')
         if (hostPublicIP) {
@@ -92,25 +93,28 @@ export default function App() {
     useEffect(() => {
         if (!authentication) return;
         //if authentication doesn't exist don't run this function
-        if (isLoggedIn) {
+        if (isLoggedIn && user) {
             const userDevices = user.devices;
             if (deviceType === "remote-access") {
-                const hostDevice = userDevices.find((device) => device.name === 'localhost' || device.ip === '127.0.0.1')
-                if (hostDevice) {
-                    const remoteDevice_devices = userDevices.map((device) => {
+                const localhost = userDevices.find((device) => device.name === 'localhost' || device.ip === '127.0.0.1')
+                if (localhost) {
+                    const updatedDevices = userDevices.map((device) => {
                         if (device.name === "localhost" && device.ip === "127.0.0.1") {
-                            return {...device,
+                            return {
                                 name: 'host-device',
                                 ip: hostIp,
                             };
                         }
                         return device;
                     })
-                    setDevices(remoteDevice_devices);
+                    setDevices(updatedDevices);
+                    setSelectedDevice(updatedDevices[0].ip);
+                } else {
+                    handleNotification('error', 'could not find localhost device')
                 }
-                // handleNotification('error', 'could not find localhost device')
             } else {
                 setDevices(userDevices);
+                setSelectedDevice(userDevices[0].ip);
             }
         }
     }, [user, isLoggedIn, deviceType, hostIp, authentication])
@@ -128,25 +132,22 @@ export default function App() {
                     const newDevices = [...resData_devices];
                     if (deviceType === "") return
                     if (deviceType === "remote-access") {
-                        const index = newDevices.findIndex(
-                            (d) => {
-                                return d.ip === "localhost" && d.name === "localhost"
-                            }
+                        const filteredDevices = newDevices.filter(
+                            (d) => !(d.ip === "127.0.0.1" && d.name === "localhost")
                         );
-                        console.log("index of localhost", index);
-                        if (index !== -1) {
-                            console.log("[App.jsx - getInitialDevices] - removing localhost for remote-access device")
-                            newDevices.splice(index, 1);
+
+                        if (filteredDevices.length === newDevices.length) {
+                            handleNotification('error', 'Could not find localhost device');
                         }
+
                         if (hostIp) {
-                            console.log("[App.jsx - getInitialDevices] - adding hostDevice to remote-access device")
-                            newDevices.push({
+                            filteredDevices.push({
                                 name: "Host-Device",
                                 ip: hostIp,
                             });
                         }
-                        setDevices(newDevices);
-                        setSelectedDevice(newDevices[0].ip);
+
+                        setDevices(filteredDevices);
                         return;
                     }
                     setDevices(newDevices);
@@ -166,10 +167,7 @@ export default function App() {
             localStorage.setItem("deviceType", deviceType);
     }, [deviceType])
 
-    const [selectedDevice, setSelectedDevice] = useState(() => {
-        if (devices) return ""
-        return devices.length !== 0 ? devices[0].ip : null
-    });
+    const [selectedDevice, setSelectedDevice] = useState();
 
     const [fontClicked, setFontClicked] = useState("medium");
 
@@ -334,37 +332,42 @@ export default function App() {
             document.documentElement.classList.remove("dark-mode");
         }    }, [isDarkMode])
 
-    useEffect( () => {
-        if (authentication === true) {
-            if (!isLoggedIn) return
-        }
-        console.log("[APP_METRICS] Getting metrics at an interval of", metricInterval/1000)
-        if (!isLoggedIn || activeView !== 'resources') return
-        console.log("[APP_METRICS] Getting metrics")
-        try {
-            const interval = setInterval(async () => {
-                const response = await fetch (`http://${selectedDevice}:3000`)
-                if (response.ok) {
-                    if (response.status === 200) {
-                        const resData = await response.json()
+        useEffect(() => {
+            if (authentication && !isLoggedIn) return;
+            if (!isLoggedIn || activeView !== 'resources') return;
+            if (!selectedDevice) return;
 
-                        if (resData === null) {
-                            console.error("[APP_METRICS] There was an error fetching metrics")
+            let isMounted = true;
+            //This prevents the interval from setting metrics after the interval has changed. preventing any setMetrics from calling
+            //unexpectedly
+
+            const fetchMetrics = async () => {
+                try {
+                    const response = await fetch(`http://${selectedDevice}:3000`);
+                    if (response.ok) {
+                        const resData = await response.json();
+                        if (resData) {
+                            if (isMounted) setMetrics(resData);
                         } else {
-                            setMetrics(resData)
-                            console.log(JSON.stringify(resData))
+                            console.error("[APP_METRICS] Null metrics");
                         }
-                    }else {
-                        console.log("[APP_METRICS] There was an error fetching metrics")
+                    } else {
+                        console.log("[APP_METRICS] Fetch error");
                     }
+                } catch (err) {
+                    console.error("[APP_METRICS] Error fetching metrics:", err.message);
+                    handleNotification("error", "There was an error fetching metrics");
                 }
-            }, metricInterval)
-            return () => clearInterval(interval)
-        } catch (err) {
-            console.error("[APP_METRICS] Error getting metrics: ", err.message)
-            handleNotification("error", "There was an error fetching metrics")
-        }
-    }, [selectedDevice, isLoggedIn, authentication, metricInterval, devices])
+            };
+
+            fetchMetrics(); // optional: fetch immediately
+            const interval = setInterval(fetchMetrics, metricInterval);
+
+            return () => {
+                isMounted = false;
+                clearInterval(interval);
+            };
+        }, [selectedDevice, isLoggedIn, authentication, metricInterval, activeView]);
 
     function changeRemoteDevice(ip) {
         setSelectedDevice(ip)
@@ -406,9 +409,6 @@ export default function App() {
             })
             if (response.ok) {
                 const resData = await response.json()
-                console.info('[ App.jsx - patchUser ] Response: ', resData.success)
-                console.info('response was ok!')
-                console.info(JSON.stringify(resData, null, 2))
                 if (resData.success) {
                     console.info('[ App.jsx - patchUser ] setting the user data in state and sending notification')
                     handleNotification('notice', 'Successfully updated user data')
@@ -477,8 +477,10 @@ export default function App() {
                                     <>
                                         <NetworkData metrics={metrics}
                                                      isGraph={isGraph}
-                                                     timeMetrics={timeMetrics}/>
-                                        <DeviceData metrics={metrics}/>
+                                                     timeMetrics={timeMetrics}
+                                                     metricInterval={metricInterval}/>
+                                        <DeviceData metrics={metrics}
+                                                    metricInterval={metricInterval}/>
                                     </>:
                                     <>
                                         <ChildProcesses metrics={metrics}/>
@@ -495,15 +497,19 @@ export default function App() {
                                                     viewPort={viewPort}
                                                     isGraph={isGraph}
                                                     timeMetrics={timeMetrics}
+                                                    metricInterval={metricInterval}
                                         />
                                         <CpuData metrics={metrics}
                                                  isGraph={isGraph}
                                                  timeMetrics={timeMetrics}
-                                                 themes={themes} randomColour={randomColour}/>
+                                                 themes={themes}
+                                                 randomColour={randomColour}
+                                                 metricInterval={metricInterval}/>
                                         <ChildProcesses metrics={metrics}/>
                                         <DiskData metrics={metrics}
                                                   isGraph={isGraph}
-                                                  timeMetrics={timeMetrics}/>
+                                                  timeMetrics={timeMetrics}
+                                                  metricInterval={metricInterval}/>
                                     </>:
                                     <>
                                         <CpuData metrics={metrics} themes={themes}/>
@@ -545,13 +551,9 @@ export default function App() {
                                                           changeFont={changeFont}
                                                           setLogoImage={setLogoImage}
                                                           setmetricInterval={setMetricInterval}
-                                                          metricInterval={metricInterval}/>}
+                                                          metricInterval={metricInterval}
+                                                          themes={themes}/>}
 
-                  {activeView === "devices" && <DeviceManagement devices={devices} setDevices={setDevices}
-                                                                 handleNotification={handleNotification} hostIp={hostIp}
-                                                                 deviceType={deviceType}/>}
-                                                          themes={themes}
-                  />}
                   {activeView === "devices" && <DeviceManagement devices={devices}
                                                                  setDevices={setDevices}
                                                                  handleNotification={handleNotification}
@@ -562,8 +564,8 @@ export default function App() {
                                                                  patchUser={patchUser}
                                                                  authentication={authentication}/>}
               </>}
-              {(isLoggedIn === false && authentication === true) && <Login handleNotification={handleNotification}
-                                                                           hostIp={hostIp} setIsLoggedIn={setIsLoggedIn}/>}
+              {/*{(isLoggedIn === false && authentication === true) && <Login handleNotification={handleNotification}*/}
+              {/*                                                             hostIp={hostIp} setIsLoggedIn={setIsLoggedIn}/>}*/}
               {activeView === 'profile' && <Profile user={user} handleNotification={handleNotification} setUser={setUser} patchUser={patchUser}/>}
               {activeView === 'login' && <Login handleNotification={handleNotification}
                                                                            hostIp={hostIp}

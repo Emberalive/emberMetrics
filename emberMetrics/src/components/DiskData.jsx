@@ -15,7 +15,7 @@ export default function DiskData (props) {
 
         const datasets = props.timeMetrics.map((snapshot, index) => {
             return                 {
-                x: index,
+                x: index*(props.metricInterval / 1000),
                 wIO_sec: parseFloat(snapshot.disks.totalDiskUsage.wIO_sec),
                 rIO_sec: parseFloat(snapshot.disks.totalDiskUsage.rIO_sec)
             }
@@ -32,8 +32,8 @@ export default function DiskData (props) {
                     dataset={graphData}
                     xAxis={[{
                         dataKey: 'x',
-                        label: 'Time (1s)',
-                        min: 20,
+                        label: `Time (s)`,
+                        min: 20*(props.metricInterval / 1000),
                         max: 0,
                     }]}
                     yAxis={[{

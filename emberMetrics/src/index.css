@@ -1512,6 +1512,10 @@ section {
     text-overflow: clip;
     scroll-behavior: smooth;
     white-space: nowrap;
+    padding: var(--element-padding);
+    background: var(--neutral);
+    border-radius: var(--border-radius);
+    font-size: 20px;
 }
 
 
@@ -1539,9 +1543,11 @@ section {
     padding: var(--element-padding);
     border-radius: var(--border-radius);
     min-width: 250px;
+    outline: none;
+    resize: none;
     max-width: 250px;
     height: 200px;
-    border-bottom: 1px solid var(--neutral);
+    border: none;
     font-family: inherit;
     transition: height 0.3s ease-in-out;
     text-wrap: wrap;
