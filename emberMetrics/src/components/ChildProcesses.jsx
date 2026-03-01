@@ -109,23 +109,26 @@ export default function ChildProcesses (props) {
                             setSearchValue('')
                         }}>Stop</button>
                     </header>
-                    <div className={'child-processes__row'} key={foundChild.pid} title={foundChild.name}>
-                        <p className={'child-processes__row-item'}>
-                            {foundChild.pid}
-                        </p>
-                        <p className={'child-processes__row-item'} style={{fontWeight: 'bold', color: foundChild.cpu >= 70.00 ? 'var(--danger)' : foundChild.cpu > 40.00 ? 'orange' : ''}}>
-                            {foundChild.cpu.toFixed(2)}
-                        </p>
-                        <p className={'child-processes__row-item'}>
-                            {foundChild.name}
-                        </p>
-                        <p className={'child-processes__row-item'} style={{color: foundChild.memory >= 70.00 ? 'var(--danger)' : foundChild.memory > 40.00 ? 'orange' : ''}}>
-                            {foundChild.memory}
-                        </p>
-                        <p className={'child-processes__row-item'}>
-                            {foundChild.user}
-                        </p>
+                    <div className={'child-processes__found-child-wrapper'}>
+                        <div className={'child-processes__row'} key={foundChild.pid} title={foundChild.name}>
+                            <p className={'child-processes__row-item'}>
+                                {foundChild.pid}
+                            </p>
+                            <p className={'child-processes__row-item'} style={{fontWeight: 'bold', color: foundChild.cpu >= 70.00 ? 'var(--danger)' : foundChild.cpu > 40.00 ? 'orange' : ''}}>
+                                {foundChild.cpu.toFixed(2)}
+                            </p>
+                            <p className={'child-processes__row-item'}>
+                                {foundChild.name}
+                            </p>
+                            <p className={'child-processes__row-item'} style={{color: foundChild.memory >= 70.00 ? 'var(--danger)' : foundChild.memory > 40.00 ? 'orange' : ''}}>
+                                {foundChild.memory}
+                            </p>
+                            <p className={'child-processes__row-item'}>
+                                {foundChild.user}
+                            </p>
+                        </div>
                     </div>
+
                 </div>
             }
             <div  className={'child-processes__table__wrapper'}>
