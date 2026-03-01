@@ -14,12 +14,12 @@
   },
   {
     "username": "Ember",
-    "email": "samueltsutcliffe@gmail.com",
+    "email": "email",
     "bio": "This is my bio and i need to add some large text to see what is happening, when there is a lot of text, I need some more text, how about some more",
     "id": "HXm1Ynv_kjER73gM4Ftqr",
     "devices": [
       {
-        "name": "localhost1",
+        "name": "localhost",
         "ip": "127.0.0.1",
         "id": "DgxI77r32HDNeBfh0sK8B"
       }

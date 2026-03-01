@@ -110,21 +110,15 @@ async function getChildProcesses () {
         //this sorts the processes based on cpu usage
         childProcesses.sort((a, b) => b.cpu - a.cpu);
         if (childProcesses.length > 0) {
-            childData = childProcesses.splice(0, 10)
+            return childProcesses.splice(0, 10)
+        } else {
+            return         childProcesses.sort((a, b) => b.cpu - a.cpu);
+
         }
     } catch (e) {
         console.error(`There was an issue monitoring the child processes:\n ${e.message}`)
     }
 }
-
-//make child processes gathered every minute, as there is a lot of data to gather.
-;(async () => {
-    await getChildProcesses()
-
-    setInterval(() => {
-        getChildProcesses().catch(console.error)
-    }, 60000)
-})().catch(console.error)
 
 async function getCpuTemperature() {
     try {
@@ -245,7 +239,7 @@ const interval = setInterval(async () => {
             memoryUsage: await getMemory(),
             cpuUsage: await getCpu(),
             gpuData: await monitorGraphics(),
-            childProcesses: childData,
+            childProcesses: await getChildProcesses(),
             interfaces: await getInterfaceData(),
             disks: await getDiskInfo()
         }

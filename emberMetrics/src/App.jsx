@@ -483,9 +483,9 @@ export default function App() {
                                                     metricInterval={metricInterval}/>
                                     </>:
                                     <>
-                                        <ChildProcesses metrics={metrics}/>
-                                        <DiskData metrics={metrics}/>
-                                        <DeviceData metrics={metrics}/>
+                                        <ChildProcesses metrics={metrics} handleNotification={handleNotification}/>
+                                        {/*<DiskData metrics={metrics}/>*/}
+                                        {/*<DeviceData metrics={metrics}/>*/}
                                     </>
                                   }
                               </div>
@@ -512,15 +512,15 @@ export default function App() {
                                                   metricInterval={metricInterval}/>
                                     </>:
                                     <>
-                                        <CpuData metrics={metrics} themes={themes}/>
-                                        <MemoryData metrics={metrics}
-                                                    viewPort={viewPort}
-                                                    isGraph={isGraph}
-                                                    timeMetrics={timeMetrics}
-                                        />
-                                        <NetworkData metrics={metrics}
-                                                     isGraph={isGraph}
-                                                     timeMetrics={timeMetrics}/>
+                                        {/*<CpuData metrics={metrics} themes={themes}/>*/}
+                                        {/*<MemoryData metrics={metrics}*/}
+                                        {/*            viewPort={viewPort}*/}
+                                        {/*            isGraph={isGraph}*/}
+                                        {/*            timeMetrics={timeMetrics}*/}
+                                        {/*/>*/}
+                                        {/*<NetworkData metrics={metrics}*/}
+                                        {/*             isGraph={isGraph}*/}
+                                        {/*             timeMetrics={timeMetrics}/>*/}
                                     </>
                                   }
                               </div>
@@ -564,8 +564,6 @@ export default function App() {
                                                                  patchUser={patchUser}
                                                                  authentication={authentication}/>}
               </>}
-              {/*{(isLoggedIn === false && authentication === true) && <Login handleNotification={handleNotification}*/}
-              {/*                                                             hostIp={hostIp} setIsLoggedIn={setIsLoggedIn}/>}*/}
               {activeView === 'profile' && <Profile user={user} handleNotification={handleNotification} setUser={setUser} patchUser={patchUser}/>}
               {activeView === 'login' && <Login handleNotification={handleNotification}
                                                                            hostIp={hostIp}
