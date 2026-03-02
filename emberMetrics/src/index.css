@@ -1411,9 +1411,8 @@ section {
     gap: 10px;
 }
 
-.disk-usage-item__single-item > p {
-    grid-column-start: 1;
-    grid-column-end: 3;
+.disk-item__name {
+    width: 100%;
     color: var(--tertiary);
     font-weight: 700;
     font-size: var(--font-size);
@@ -1440,14 +1439,19 @@ section {
     padding-left: 10px;
 }
 
-@media (max-width: 500px) {
-    .disk-item__entry {
-        flex-direction: column;
+
+@media (max-width: 600px) {
+    .disk-usage-item__single-item {
+        grid-template-columns: repeat(1, 1fr);
     }
+    .disk-usage-item {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+@media (max-width: 500px) {
     .disk-usage-item__single-item > .disk-item__entry {
         display: flex;
         padding: 10px;
-        flex-direction: column;
         border: 1px solid var(--border-color);
         gap: 10px;
         margin: 0 10px 10px 0;

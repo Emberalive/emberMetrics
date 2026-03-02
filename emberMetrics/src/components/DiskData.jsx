@@ -106,17 +106,11 @@ export default function DiskData (props) {
         )
     }
 
-    // const graphDataArray = graphData.map((data, index) => {
-    //     return (
-    //
-    //     )
-    // })
-
-
     const diskList = disks.map((disk) => {
         return (
+            <>
+                <p className={'disk-item__name'}>{disk.name}</p>
                 <div className={disks.length < 2 ? 'disk-usage-item__single-item' : 'disk-container__item'} key={disk.name}>
-                    <p>{disk.name}</p>
                     <div className={'disk-item__entry'}>
                         <label>Type: </label>
                         <p>{disk.type}</p>
@@ -138,6 +132,7 @@ export default function DiskData (props) {
                         <p>{disk.interfaceType}</p>
                     </div>
                 </div>
+            </>
         )
     })
     return (
