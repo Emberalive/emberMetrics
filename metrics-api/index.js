@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 // functions for metrics gathering
-const {getMetrics} = require('./opModules/metrics')
+const {getMetrics, setChildLength} = require('./opModules/metrics')
 const cors = require('cors')
 const port = 3000
 
@@ -21,9 +21,14 @@ app.use('/users', userRoutes);
 //returns the metrics
 app.get('/', (req, res) => {
     const metrics = getMetrics();
-
+    const childLength = req.query.childLength
     if (!metrics || (typeof metrics === 'object' && Object.keys(metrics).length === 0)) {
         return res.status(500).json({ error: 'Metrics Data not available' });
+    }
+    const parsed = parseInt(childLength, 10)
+    if (!childLength) return res.status(500).json({ error: 'Invalid child length' });
+    if (typeof parsed === 'number') {
+        setChildLength(parsed);
     }
     res.status(200).json(metrics); // always send JSON
 });

@@ -60,6 +60,22 @@ export default function Settings (props) {
                         <p>Seconds</p>
                     </div>
                 </div>
+                <div className={'settings-entry'}>
+                    <p className="settings-entry__label">Processes No: </p>
+                    <div className={"settings-entry__value-container"}>
+                        <input type={'text'} value={props.childProcessLength} onChange={(e) => {
+                            const length = Number(e.target.value)
+
+                            if (!Number.isNaN(length)) {
+                                props.setChildProcessLength(length)
+                            } else {
+                                props.setChildProcessLength(10)
+                                props.handleNotification('error', 'Please enter a valid number')
+                            }
+                        }}/>
+                        <p>Processes</p>
+                    </div>
+                </div>
                 <div className="theme-container__wrapper">
                     <h1 style={{
                         textAlign: "center",

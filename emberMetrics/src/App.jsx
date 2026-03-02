@@ -57,6 +57,15 @@ export default function App() {
         }
     });
 
+    if (!localStorage.getItem('childProcessLength')) {
+        localStorage.setItem("childProcessLength", "10");
+    }
+    const [childProcessLength, setChildProcessLength] = useState(localStorage.getItem("childProcessLength"));
+
+    useEffect(() => {
+        localStorage.setItem("childProcessLength", childProcessLength);
+    }, [childProcessLength])
+
     const [deviceType, setDeviceType] = useState(() => {
         const localStoreDeviceType = localStorage.getItem("deviceType");
         if (localStoreDeviceType === null || localStoreDeviceType === undefined || !localStoreDeviceType) {
@@ -343,7 +352,11 @@ export default function App() {
 
             const fetchMetrics = async () => {
                 try {
-                    const response = await fetch(`http://${selectedDevice}:3000`);
+                    const url = new URL(`http://${selectedDevice}:3000`)
+                    url.searchParams.set("childLength", childProcessLength ? childProcessLength.toString() : "10");
+
+
+                    const response = await fetch(url);
                     if (response.ok) {
                         const resData = await response.json();
                         if (resData) {
@@ -552,7 +565,9 @@ export default function App() {
                                                           setLogoImage={setLogoImage}
                                                           setmetricInterval={setMetricInterval}
                                                           metricInterval={metricInterval}
-                                                          themes={themes}/>}
+                                                          themes={themes}
+                                                          childProcessLength={childProcessLength}
+                                                          setChildProcessLength={setChildProcessLength}/>}
 
                   {activeView === "devices" && <DeviceManagement devices={devices}
                                                                  setDevices={setDevices}

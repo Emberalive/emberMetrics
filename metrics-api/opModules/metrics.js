@@ -1,10 +1,8 @@
 const os = require('os')
 const si = require('systeminformation')
-const fs = require('fs').promises;
-const filePath = './devices.json'
 
 let metrics = {}
-let childData = []
+let childLength = 0
 let deviceData
 let oldCpus = os.cpus()
 
@@ -110,10 +108,18 @@ async function getChildProcesses () {
         //this sorts the processes based on cpu usage
         childProcesses.sort((a, b) => b.cpu - a.cpu);
         if (childProcesses.length > 0) {
-            return childProcesses.splice(0, 10)
+            if (childLength === 0) {
+                console.info('[ SERVER - metrics - getChildProcesses] - no child processes found')
+                return childProcesses.splice(0, 10)
+            } else {
+                if (typeof childLength === 'number') {
+                    return childProcesses.splice(0, childLength)
+                } else {
+                    return childProcesses.splice(0, 10)
+                }
+            }
         } else {
-            return         childProcesses.sort((a, b) => b.cpu - a.cpu);
-
+            return childProcesses.sort((a, b) => b.cpu - a.cpu);
         }
     } catch (e) {
         console.error(`There was an issue monitoring the child processes:\n ${e.message}`)
@@ -252,4 +258,8 @@ function getMetrics () {
     return metrics
 }
 
-module.exports = {getMetrics};
+function setChildLength (length) {
+    childLength = length
+}
+
+module.exports = {getMetrics, setChildLength};
