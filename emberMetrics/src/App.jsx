@@ -469,14 +469,19 @@ export default function App() {
                   authentication={authentication}
                   isLoggedIn={isLoggedIn}
           />
-          {((activeView === "resources" && devices) && isLoggedIn === true) && <div className={"device-navigation__wrapper"} ref={groupsRef} onWheel={handleWheel}>
-              <div className={"device-navigation"}>
-                  {deviceButtonList}
+          {((activeView === "resources" && devices) && isLoggedIn === true) &&
+              <>
+                  <div className={"device-navigation__wrapper"} ref={groupsRef} onWheel={handleWheel}>
+                  <div className={"device-navigation"}>
+                      {deviceButtonList}
+                  </div>
               </div>
-          </div>}
-          <button className={'general-button'} onClick={() => {
+              <button className={'general-button'} onClick={() => {
               setIsGraph(prevState => !prevState)
-          }}>{isGraph ? 'detailed' : 'graphs'}</button>
+              }}>{isGraph ? 'detailed' : 'graphs'}</button>
+        </>
+          }
+
           <main className={(activeView === 'resources' || activeView === 'fullScreen') ? (deviceType === '' || (authentication === true && isLoggedIn === false) || !metrics) ? 'main-single-column' : '' : 'main-single-column'}>
               {(activeView === "deviceTypeSelection") && (deviceType === '') && <DeviceTypeSelection setDeviceType={setDeviceType} activeView={activeView} setActiveView={setActiveView} authentication={authentication}/>}
               {(authentication === false || isLoggedIn === true ) && <>
@@ -496,7 +501,7 @@ export default function App() {
                                                     metricInterval={metricInterval}/>
                                     </>:
                                     <>
-                                        <ChildProcesses metrics={metrics} handleNotification={handleNotification}/>
+                                            <ChildProcesses metrics={metrics} handleNotification={handleNotification}/>
                                         <DiskData metrics={metrics}/>
                                         <DeviceData metrics={metrics}/>
                                     </>

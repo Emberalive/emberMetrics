@@ -417,6 +417,18 @@ section {
     padding: var(--element-padding);
 }
 
+.cpu-cores__item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.cpu-usage-bar {
+    height: 2px;
+}
+
 .cpu-cores__graph-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
