@@ -48,7 +48,7 @@ export default function Settings (props) {
                     <p className="settings-entry__label">Interval: </p>
                     <div className={"settings-entry__value-container"}>
                         <input type={'text'} value={props.metricInterval/1000} onChange={(e) => {
-                            const parsed = Number(e.target.value)
+                            const parsed = parseFloat(e.target.value)
 
                             if (!Number.isNaN(parsed)) {
                                 props.setmetricInterval(parsed * 1000)

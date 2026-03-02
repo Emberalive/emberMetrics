@@ -257,6 +257,8 @@ p {
     border: none;
     outline: none;
     background-color: var(--neutral);
+    border-top: 2px solid var(--tertiary);
+    border-left: 2px solid var(--tertiary);
     cursor: pointer;
 }
 
@@ -279,7 +281,7 @@ p {
 }
 
 .general-button:hover {
-    background-color: var(--neutral);
+    background-color: var(--tertiary);
 }
 
 .full-screen__close {
@@ -1209,10 +1211,11 @@ section {
     border-left: 2px solid var(--border-color);
     border-bottom: 2px solid var(--border-color);
     border-radius: 15px;
+    gap: 20px;
 }
 
 .child-processes__find-child > input {
-    width: 200px;
+    width: 60%;
     border: none;
     outline: none;
     padding: 10px;
