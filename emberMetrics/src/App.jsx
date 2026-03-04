@@ -1,22 +1,12 @@
-import {createRef, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import './index.css'
 import Header from "./components/Header";
-import DeviceData from "./components/DeviceData.jsx";
-import CpuData from "./components/CpuData.jsx";
-import MemoryData from "./components/MemoryData.jsx";
 import Settings from "./components/Settings.jsx";
-import ChildProcesses from "./components/ChildProcesses.jsx";
 import DeviceManagement from "./components/DeviceManagement.jsx";
 import Notification from "./components/Notification.jsx";
 import DeviceTypeSelection from "./components/DeviceTypeSelection.jsx";
-import NetworkData from "./components/NetworkData.jsx";
-import DiskData from "./components/DiskData.jsx";
 import Login from "./components/Login.jsx";
 import Profile from "./components/Profile.jsx";
-import CollapseWhite from "./assets/collapse-white.svg";
-import CollapseBlack from "./assets/collapse-black.svg";
-import ExpandWhite from "./assets/expand-white.svg";
-import ExpandBlack from "./assets/expand-black.svg";
 import Sparkr from "./assets/SVG 2.1 | Original Sparkr.svg";
 import Ocean from "./assets/SVG 2.1 | Ocean Blues.svg";
 import Forest from "./assets/SVG 2.1 | Forest Green.svg";
@@ -33,6 +23,15 @@ import Arctic from "./assets/SVG 2.1 | Arctic Cyan.svg";
 import Copper from "./assets/SVG 2.1 | Copper Flame.svg";
 import Emerald from "./assets/SVG 2.1 | Emerald Depths.svg";
 import Violet from "./assets/SVG 2.1 | Violet Storm.svg";
+import HoveringButtons from "./components/HoveringButtons.jsx";
+import Metrics from "./components/Metrics.jsx";
+import CollapseWhite from "./assets/collapse-white.svg";
+import CollapseBlack from "./assets/collapse-black.svg";
+import ExpandWhite from "./assets/expand-white.svg";
+import ExpandBlack from "./assets/expand-black.svg";
+import HamburgerBlack from "./assets/hamburger-menu-black.svg";
+import HamburgerWhite from "./assets/hamburger-menu-white.svg";
+import MetricsSettings from "./components/MetricsSettings.jsx";
 
 
 export default function App() {
@@ -181,6 +180,8 @@ export default function App() {
     const [fontClicked, setFontClicked] = useState("medium");
 
     const [activeView, setActiveView] = useState(authentication ? deviceType === "" ? "deviceTypeSelection" : "login" : deviceType === "" ? "deviceTypeSelection" : "resources");
+
+    const [isMetricSettings, setIsMetricSettings] = useState(false);
 
     const [metrics, setMetrics] = useState(null)
     //stores data over time for metrics, each object in the array is a value of teh metrics of each interval value
@@ -362,6 +363,7 @@ export default function App() {
                         if (resData) {
                             if (isMounted) setMetrics(resData);
                         } else {
+                            setMetrics(null)
                             console.error("[APP_METRICS] Null metrics");
                         }
                     } else {
@@ -370,6 +372,7 @@ export default function App() {
                 } catch (err) {
                     console.error("[APP_METRICS] Error fetching metrics:", err.message);
                     handleNotification("error", "There was an error fetching metrics");
+                    setMetrics(null)
                 }
             };
 
@@ -381,31 +384,6 @@ export default function App() {
                 clearInterval(interval);
             };
         }, [selectedDevice, isLoggedIn, authentication, metricInterval, activeView]);
-
-    function changeRemoteDevice(ip) {
-        setSelectedDevice(ip)
-        console.log("[APP_METRICS] Change remote device: ", ip)
-        handleNotification("notice", `changed Remote Device to:\n ${ip}`)
-        setMetrics(null)
-    }
-
-    let deviceButtonList
-        if (devices){
-            deviceButtonList = devices.map((device) => {
-                return(<button key={device.id} className={selectedDevice === device.ip ?"general-button disabled-button": "general-button"} onClick={() => changeRemoteDevice(device.ip)} style={{
-                    minWidth: "fit-content",
-                    maxWidth: "fit-content",
-                }}>{device.name}</button>)
-            })
-        }
-
-    const groupsRef = createRef()
-    const handleWheel = (e) => {
-        if (groupsRef.current) {
-            e.preventDefault()
-            groupsRef.current.scrollLeft += e.deltaY;
-        }
-    }
 
     async function patchUser (updatedUser) {
         try {
@@ -449,16 +427,22 @@ export default function App() {
   return (
       <>
           <Notification notification={notification} setNotification={setNotification} />
-          {(activeView === 'resources' || activeView === "fullScreen") && (authentication === false && isLoggedIn === false) && <div style={{marginLeft: '20px',}} onClick={() => {
-              if (activeView === "resources") {
-                  setActiveView("fullScreen")
-              } else {
-                  setActiveView("resources")
-              }
-          }} title={activeView === 'fullScreen' ? "Minimise" : "Maximise"}>
-              <img className={'full-screen__close'} alt={'expand icon'}
-                   src={activeView === 'fullScreen' ? isDarkMode ? CollapseWhite : CollapseBlack : isDarkMode ? ExpandWhite : ExpandBlack}></img>
-          </div>}
+
+          {(activeView === 'resources' || activeView === "fullScreen") &&
+              <HoveringButtons isMetricSettings={isMetricSettings}
+                           setIsMetricSettings={setIsMetricSettings}
+                           activeView={activeView}
+                           setActiveView={setActiveView}
+                           isDarkMode={isDarkMode}
+                           metricInterval={metricInterval}
+                           themes={themes}
+                           childProcessLength={childProcessLength}
+                           setChildProcessLength={setChildProcessLength}
+                           isGraph={isGraph}
+                           setIsGraph={setIsGraph}
+                           setMetricInterval={setMetricInterval}
+                           handleNotification={handleNotification} />}
+
           <Header metrics={metrics}
                    setIsDarkMode={setIsDarkMode}
                    isDarkMode={isDarkMode}
@@ -467,98 +451,32 @@ export default function App() {
                   logoImage={logoImage}
                   viewPort={viewPort}
                   authentication={authentication}
-                  isLoggedIn={isLoggedIn}
+                  isLoggedIn={isLoggedIn} selectedDevice={selectedDevice}
+                  isGraph={isGraph}
+                  setIsGraph={setIsGraph}
+                  devices={devices}
+                  setSelectedDevice={setSelectedDevice} handleNotification={handleNotification}
           />
-          {((activeView === "resources" && devices) && isLoggedIn === true) &&
-              <>
-                  <div className={"device-navigation__wrapper"} ref={groupsRef} onWheel={handleWheel}>
-                  <div className={"device-navigation"}>
-                      {deviceButtonList}
-                  </div>
-              </div>
-              <button className={'general-button'} onClick={() => {
-              setIsGraph(prevState => !prevState)
-              }}>{isGraph ? 'detailed' : 'graphs'}</button>
-        </>
-          }
 
           <main className={(activeView === 'resources' || activeView === 'fullScreen') ? (deviceType === '' || (authentication === true && isLoggedIn === false) || !metrics) ? 'main-single-column' : '' : 'main-single-column'}>
-              {(activeView === "deviceTypeSelection") && (deviceType === '') && <DeviceTypeSelection setDeviceType={setDeviceType} activeView={activeView} setActiveView={setActiveView} authentication={authentication}/>}
+              {(activeView === "deviceTypeSelection") && (deviceType === '') &&
+                  <DeviceTypeSelection setDeviceType={setDeviceType}
+                                       activeView={activeView}
+                                       setActiveView={setActiveView}
+                                       authentication={authentication}/>}
+
               {(authentication === false || isLoggedIn === true ) && <>
-                  {deviceType === "" && <DeviceTypeSelection setDeviceType={setDeviceType} activeView={activeView}/>}
+                    <Metrics metrics={metrics}
+                             isGraph={isGraph}
+                             timeMetrics={timeMetrics}
+                             metricInterval={metricInterval}
+                             handleNotification={handleNotification}
+                             viewPort={viewPort}
+                             themes={themes}
+                             randomColour={randomColour}
+                             activeView={activeView}
+                             setMetrics={setMetrics} />
 
-                  {metrics !== null &&
-                      <>
-                          {(activeView === "resources" || activeView === "fullScreen") && <>
-                              <div className={"left-column"}>
-                                  {isGraph?
-                                    <>
-                                        <NetworkData metrics={metrics}
-                                                     isGraph={isGraph}
-                                                     timeMetrics={timeMetrics}
-                                                     metricInterval={metricInterval}/>
-                                        <DeviceData metrics={metrics}
-                                                    metricInterval={metricInterval}/>
-                                    </>:
-                                    <>
-                                            <ChildProcesses metrics={metrics} handleNotification={handleNotification}/>
-                                        <DiskData metrics={metrics}/>
-                                        <DeviceData metrics={metrics}/>
-                                    </>
-                                  }
-                              </div>
-
-                              <div className={"right-column"}>
-                                  {isGraph?
-                                    <>
-                                        <MemoryData metrics={metrics}
-                                                    viewPort={viewPort}
-                                                    isGraph={isGraph}
-                                                    timeMetrics={timeMetrics}
-                                                    metricInterval={metricInterval}
-                                        />
-                                        <CpuData metrics={metrics}
-                                                 isGraph={isGraph}
-                                                 timeMetrics={timeMetrics}
-                                                 themes={themes}
-                                                 randomColour={randomColour}
-                                                 metricInterval={metricInterval}/>
-                                        <ChildProcesses metrics={metrics}/>
-                                        <DiskData metrics={metrics}
-                                                  isGraph={isGraph}
-                                                  timeMetrics={timeMetrics}
-                                                  metricInterval={metricInterval}/>
-                                    </>:
-                                    <>
-                                        <CpuData metrics={metrics} themes={themes}/>
-                                        <MemoryData metrics={metrics}
-                                                    viewPort={viewPort}
-                                                    isGraph={isGraph}
-                                                    timeMetrics={timeMetrics}
-                                        />
-                                        <NetworkData metrics={metrics}
-                                                     isGraph={isGraph}
-                                                     timeMetrics={timeMetrics}/>
-                                    </>
-                                  }
-                              </div>
-                          </>}
-                      </>
-                  }
-                  {!metrics && activeView === "resources" &&
-                      <div className={'metrics-notice__wrapper'}>
-                          <section className={'metrics-notice'}>
-                              <h1>Device can not be accessed</h1>
-                              <p>Check these things:</p>
-                              <p>1. The remote device is powered on</p>
-                              <p>2. The remote device API is running</p>
-                              <p>3. The remote device has port forwarding on for port: '3000'</p>
-                              <p>4. The router has port forwarding on for port: '3000'</p>
-                              <p>5. The IP address is correct - needs to be a public IPV4</p>
-
-                          </section>
-                      </div>
-                  }
                   {activeView === "settings" && <Settings setActiveView={setActiveView}
                                                           setIsDarkMode={setIsDarkMode}
                                                           isDarkMode={isDarkMode}

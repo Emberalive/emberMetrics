@@ -1,5 +1,37 @@
+import {createRef} from "react";
+
 export default function Header (props) {
     const metrics = props.metrics
+
+
+    function changeRemoteDevice(ip) {
+        props.setSelectedDevice(ip)
+        console.log("[APP_METRICS] Change remote device: ", ip)
+        props.handleNotification("notice", `changed Remote Device to:\n ${ip}`)
+        props.setMetrics(null)
+    }
+
+    let deviceButtonList
+    if (props.devices){
+        deviceButtonList = props.devices.map((device) => {
+            return(<button key={device.id} className={props.selectedDevice === device.ip ?"general-button disabled-button": "general-button"} onClick={() => {
+                changeRemoteDevice(device.ip)
+                props.setMetrics(null)
+            }} style={{
+                minWidth: "fit-content",
+                maxWidth: "fit-content",
+            }}>{device.name}</button>)
+        })
+    }
+
+    const groupsRef = createRef()
+    const handleWheel = (e) => {
+        if (groupsRef.current) {
+            e.preventDefault()
+            groupsRef.current.scrollLeft += e.deltaY;
+        }
+    }
+
     return (
         <>
         <header style={{display: 'flex', flexDirection: 'row'}} className={props.activeView === 'fullScreen' ? "display-none" : 'header'}>
@@ -24,7 +56,7 @@ export default function Header (props) {
                                     ? "header-navigation__links disabled-button"
                                     : "header-navigation__links"
                         } onClick={() => {
-                            props.setActiveView("resources")
+                            props.setActiveView("resources");
                             console.log("view set to Metrics")
                         }}>
                             Metrics
@@ -35,9 +67,9 @@ export default function Header (props) {
                                 : props.activeView === "settings"
                                     ? "header-navigation__links disabled-button"
                                     : "header-navigation__links"
-                        } onClick={() => {
+                        } onClick={(e) => {
                             props.setActiveView("settings")
-                            console.log("view set to settings")
+                            console.log("view set to Settings")
                         }}>
                             Settings
                         </a>
@@ -71,6 +103,18 @@ export default function Header (props) {
             }
             {(props.authentication === true && props.isLoggedIn === false) && <h1>Welcome to Ember Metrics</h1>}
         </header>
+            {((props.activeView === "resources" && props.devices) && props.isLoggedIn === true) &&
+                <>
+                    <div className={"device-navigation__wrapper"} ref={groupsRef} onWheel={handleWheel}>
+                        <div className={"device-navigation"}>
+                            {deviceButtonList}
+                        </div>
+                    </div>
+                    <button className={'general-button'} onClick={() => {
+                        props.setIsGraph(prevState => !prevState)
+                    }}>{props.isGraph ? 'detailed' : 'graphs'}</button>
+                </>
+            }
         </>
     )
 }

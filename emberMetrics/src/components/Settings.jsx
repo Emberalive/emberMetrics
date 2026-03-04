@@ -44,38 +44,6 @@ export default function Settings (props) {
                         }}>Large</button>
                     </div>
                 </div>
-                <div className={'settings-entry'}>
-                    <p className="settings-entry__label">Interval: </p>
-                    <div className={"settings-entry__value-container"}>
-                        <input type={'text'} value={props.metricInterval/1000} onChange={(e) => {
-                            const parsed = parseFloat(e.target.value)
-
-                            if (!Number.isNaN(parsed)) {
-                                props.setmetricInterval(parsed * 1000)
-                            } else {
-                                props.setmetricInterval(1000)
-                                props.handleNotification('error', 'Please enter a valid number')
-                            }
-                        }}/>
-                        <p>Seconds</p>
-                    </div>
-                </div>
-                <div className={'settings-entry'}>
-                    <p className="settings-entry__label">Processes No: </p>
-                    <div className={"settings-entry__value-container"}>
-                        <input type={'text'} value={props.childProcessLength} onChange={(e) => {
-                            const length = Number(e.target.value)
-
-                            if (!Number.isNaN(length)) {
-                                props.setChildProcessLength(length)
-                            } else {
-                                props.setChildProcessLength(10)
-                                props.handleNotification('error', 'Please enter a valid number')
-                            }
-                        }}/>
-                        <p>Processes</p>
-                    </div>
-                </div>
                 <div className="theme-container__wrapper">
                     <h1 style={{
                         textAlign: "center",

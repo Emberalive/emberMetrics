@@ -1,0 +1,85 @@
+import NetworkData from "./NetworkData.jsx";
+import DeviceData from "./DeviceData.jsx";
+import ChildProcesses from "./ChildProcesses.jsx";
+import DiskData from "./DiskData.jsx";
+import MemoryData from "./MemoryData.jsx";
+import CpuData from "./CpuData.jsx";
+
+export default function Metrics({metrics, isGraph, timeMetrics, metricInterval, handleNotification, viewPort, themes, randomColour, activeView}) {
+
+    return (
+        <>
+            {metrics !== null &&
+                <>
+                    {(activeView === "resources" || activeView === "fullScreen") && <>
+                        <div className={"left-column"}>
+                            {isGraph?
+                                <>
+                                    <NetworkData metrics={metrics}
+                                                 isGraph={isGraph}
+                                                 timeMetrics={timeMetrics}
+                                                 metricInterval={metricInterval}/>
+                                    <DeviceData metrics={metrics}
+                                                metricInterval={metricInterval}/>
+                                </>:
+                                <>
+                                    <ChildProcesses metrics={metrics} handleNotification={handleNotification}/>
+                                    <DiskData metrics={metrics}/>
+                                </>
+                            }
+                        </div>
+
+                        <div className={"right-column"}>
+                            {isGraph?
+                                <>
+                                    <MemoryData metrics={metrics}
+                                                viewPort={viewPort}
+                                                isGraph={isGraph}
+                                                timeMetrics={timeMetrics}
+                                                metricInterval={metricInterval}
+                                    />
+                                    <CpuData metrics={metrics}
+                                             isGraph={isGraph}
+                                             timeMetrics={timeMetrics}
+                                             themes={themes}
+                                             randomColour={randomColour}
+                                             metricInterval={metricInterval}/>
+                                    <ChildProcesses metrics={metrics}/>
+                                    <DiskData metrics={metrics}
+                                              isGraph={isGraph}
+                                              timeMetrics={timeMetrics}
+                                              metricInterval={metricInterval}/>
+                                </>:
+                                <>
+                                    <CpuData metrics={metrics} themes={themes}/>
+                                    <MemoryData metrics={metrics}
+                                                viewPort={viewPort}
+                                                isGraph={isGraph}
+                                                timeMetrics={timeMetrics}
+                                    />
+                                    <NetworkData metrics={metrics}
+                                                 isGraph={isGraph}
+                                                 timeMetrics={timeMetrics}/>
+                                    <DeviceData metrics={metrics}/>
+                                </>
+                            }
+                        </div>
+                    </>}
+                </>
+            }
+            {metrics === null &&
+                <div className={'metrics-notice__wrapper'}>
+                    <section className={'metrics-notice'}>
+                        <h1>Device can not be accessed</h1>
+                        <p>Check these things:</p>
+                        <p>1. The remote device is powered on</p>
+                        <p>2. The remote device API is running</p>
+                        <p>3. The remote device has port forwarding on for port: '3000'</p>
+                        <p>4. The router has port forwarding on for port: '3000'</p>
+                        <p>5. The IP address is correct - needs to be a public IPV4</p>
+                    </section>
+                </div>
+            }
+        </>
+    )
+}
