@@ -294,15 +294,13 @@ p {
     background-color: var(--primary);
     border: 1px solid var(--border-color);
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
-    right: calc(var(--section-padding) * 4 - 50px); /* anchor to right instead of left */
+    right: calc(var(--section-padding) * 4 - 50px);
     top: 230px;
-
-    width: 500px;
-    height: 250px;
-
+    height: 225px;
+    min-width: 200px;
     transform-origin: top right;
     transform: scale(1);
-    transition: all 0.5s ease-in-out;
+    transition: all 0.2s ease;
 }
 
 .metrics-settings-wrapper__closed {
@@ -310,7 +308,41 @@ p {
     height: 0;
     transform-origin: top right;
     transform: scale(0);
-    transition: all 0.5s ease-in-out;
+    transition: all 0.2s ease-in-out;
+}
+
+.metrics-settings-entry {
+    width: calc(100% - (var(--element-padding) * 2));
+    margin-right: var(--element-padding);
+    max-width: 600px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--element-padding);
+}
+
+@media (max-width: 500px) {
+    .metrics-settings-wrapper {
+        height: 415px;
+    }
+
+    .metrics-settings-entry {
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+
+    .metrics-settings-entry {
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        border-bottom: 2px solid var(--border-color);
+    }
+
+    .metrics-settings-entry:last-child {
+        border-bottom: none;
+    }
 }
 
 .metrics-menu {
