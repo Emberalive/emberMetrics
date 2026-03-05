@@ -109,7 +109,6 @@ async function getChildProcesses () {
         childProcesses.sort((a, b) => b.cpu - a.cpu);
         if (childProcesses.length > 0) {
             if (childLength === 0) {
-                console.info('[ SERVER - metrics - getChildProcesses] - no child processes found')
                 return childProcesses.splice(0, 10)
             } else {
                 if (typeof childLength === 'number') {

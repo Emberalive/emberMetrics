@@ -308,7 +308,7 @@ p {
     height: 0;
     transform-origin: top right;
     transform: scale(0);
-    transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease;
 }
 
 .metrics-settings-entry {

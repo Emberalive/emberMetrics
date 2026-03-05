@@ -23,6 +23,11 @@ export default function AddDevice(props) {
             ip: ip,
             id: nanoid()
         }
+
+        const userData = {
+            ...props.user,
+            devices: [...props.user.devices, newDevice]
+        }
         try {
             // requesting to create a device to the main device.json
             const response = await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/devices`, {
@@ -31,76 +36,26 @@ export default function AddDevice(props) {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    device: newDevice
+                    device: newDevice,
+                    user: userData,
                 })
             })
+
             if (response.ok) {
                 const resData = await response.json()
                 if (resData.success) {
-                    //if the creation of the device was successful attempt to add the device to the users allowed devices
-                    const userData = {
-                        ...props.user,
-                        devices: [...props.user.devices, newDevice]
-                    }
-                    //Attempting to update the user data allowed devices
-                    const response1 = await props.patchUser(userData);
-
-                    if (response1.success) {
-                        // if user has been updated set the user data and notify the user
-                        props.setUser(response1.updatedUser)
-                        props.handleNotification("notice", `successfully added the device "${ip}"`)
-                        console.log(`Adding the ${ip} device.`)
-                    } else {
-                        // else send a notification dependent on the user
-                        if (props.user.role === 'user') props.handleNotification("error", `error adding device to your user, please speak to your admin.`)
-                        else props.handleNotification('error', `error adding device to your user, sorry`)
-
-                        //delete the device from the persistence storage
-                        const deleted = await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/devices`, {
-                            method: "DELETE",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({deviceID: newDevice.id})
-                        })
-                        const deletedData = await deleted.json()
-                        if (deletedData.success) {
-                            props.handleNotification("error", `sorry could not create the device: "${ip}"`)
-                        }
-                    }
+                    props.setUser(resData.updatedUser)
+                    props.handleNotification("success", "Successfully added new device: ", newDevice.name)
+                } else {
+                    props.handleNotification("error", "device was not created, server error")
                 }
             }
+
         } catch (e) {
-            console.error('Error attempting to add a device to the api', e.message)
+            props.handleNotification("error", "device was not created, server error")
+        } finally {
+            e.target.reset()
         }
-        if (props.deviceType === "host") {
-            try {
-                const response = await fetch("http://127.0.0.1:3001/")
-                if (response.ok) {
-                    const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
-
-                    const link = document.createElement("a");
-                    link.className = "device-management__blob-link";
-                    link.href = url;
-                    link.download = "remote-device.zip";  // must match your filename
-                    document.body.appendChild(link);
-                    link.click();
-                    link.remove();
-
-                    //in the case where the browser is slow
-                    setTimeout(() => {
-                        window.URL.revokeObjectURL(url);
-                    }, 1000);
-
-                    props.handleNotification("success", "Downloaded your remote device script")
-                }
-            } catch (e) {
-                props.handleNotification("error", "couldn't download your remote device script")
-                console.error("Could not download the device script", e.message)
-            }
-        }
-        e.target.reset()
     }
 
     return (
