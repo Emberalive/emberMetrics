@@ -5,7 +5,7 @@ import DiskData from "./DiskData.jsx";
 import MemoryData from "./MemoryData.jsx";
 import CpuData from "./CpuData.jsx";
 
-export default function Metrics({metrics, isGraph, timeMetrics, metricInterval, handleNotification, viewPort, themes, randomColour, activeView}) {
+export default function Metrics({metrics, isGraph, timeMetrics, metricInterval, handleNotification, viewPort, themes, randomColour, activeView, isDarkMode}) {
 
     return (
         <>
@@ -18,9 +18,11 @@ export default function Metrics({metrics, isGraph, timeMetrics, metricInterval, 
                                     <NetworkData metrics={metrics}
                                                  isGraph={isGraph}
                                                  timeMetrics={timeMetrics}
-                                                 metricInterval={metricInterval}/>
+                                                 metricInterval={metricInterval}
+                                                 isDarkMode={isDarkMode}/>
                                     <DeviceData metrics={metrics}
-                                                metricInterval={metricInterval}/>
+                                                metricInterval={metricInterval}
+                                                isDarkMode={isDarkMode}/>
                                 </>:
                                 <>
                                     <ChildProcesses metrics={metrics} handleNotification={handleNotification}/>
@@ -37,18 +39,22 @@ export default function Metrics({metrics, isGraph, timeMetrics, metricInterval, 
                                                 isGraph={isGraph}
                                                 timeMetrics={timeMetrics}
                                                 metricInterval={metricInterval}
+                                                isDarkMode={isDarkMode}
                                     />
                                     <CpuData metrics={metrics}
                                              isGraph={isGraph}
                                              timeMetrics={timeMetrics}
                                              themes={themes}
                                              randomColour={randomColour}
-                                             metricInterval={metricInterval}/>
-                                    <ChildProcesses metrics={metrics}/>
+                                             metricInterval={metricInterval}
+                                             isDarkMode={isDarkMode}/>
+                                    <ChildProcesses metrics={metrics}
+                                                    isDarkMode={isDarkMode}/>
                                     <DiskData metrics={metrics}
                                               isGraph={isGraph}
                                               timeMetrics={timeMetrics}
-                                              metricInterval={metricInterval}/>
+                                              metricInterval={metricInterval}
+                                              isDarkMode={isDarkMode}/>
                                 </>:
                                 <>
                                     <CpuData metrics={metrics} themes={themes}/>

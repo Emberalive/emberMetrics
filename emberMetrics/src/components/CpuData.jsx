@@ -118,17 +118,17 @@ export default function CpuData (props) {
                                         stroke: '#888',
                                     },
                                     [`.${axisClasses.tickLabel}`]: {
-                                        fill: 'aliceblue',  // This was empty before — tick labels had no color!
-                                        fontSize: 11,
+                                        fill: 'var(--accent)',
+                                        fontSize: 12,
                                     },
                                     [`.${axisClasses.label}`]: {
-                                        fill: 'aliceblue',
+                                        fill: 'var(--accent)',
                                         fontSize: 12,
                                     },
                                 },
 
                                 [`.${legendClasses.label}`]: {
-                                    color: 'aliceblue',   // text color
+                                    color: 'var(--accent)',
                                     fontSize: 14,
                                     fontWeight: 600,
                                 },
@@ -140,7 +140,7 @@ export default function CpuData (props) {
                                 },
 
                                 // ===== Container styling =====
-                                backgroundColor: '#121212',
+                                backgroundColor: 'var(--primary)',
                                 borderRadius: 8,
                             })}
                         />
@@ -190,17 +190,17 @@ export default function CpuData (props) {
                                         stroke: '#888',
                                     },
                                     [`.${axisClasses.tickLabel}`]: {
-                                        fill: 'aliceblue',
+                                        fill: 'var(--accent)',
                                         fontSize: 12,
                                     },
                                     [`.${axisClasses.label}`]: {
-                                        fill: 'aliceblue',
+                                        fill: 'var(--accent)',
                                         fontSize: 12,
                                     },
                                 },
 
                                 [`.${legendClasses.label}`]: {
-                                    color: 'aliceblue',   // text color
+                                    color: 'var(--accent)',
                                     fontSize: 14,
                                     fontWeight: 600,
                                 },
@@ -212,7 +212,7 @@ export default function CpuData (props) {
                                 },
 
                                 // ===== Container styling =====
-                                backgroundColor: '#121212',
+                                backgroundColor: 'var(--primary)',
                                 borderRadius: 8,
                             })}
                         />

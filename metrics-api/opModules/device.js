@@ -1,18 +1,20 @@
 const fs = require('fs').promises;
 const path = require('path');
-const filePath = path.join(__dirname, `../persistentData/devices.json`);
+const storedFilePath = path.join(__dirname, `../persistentData/devices.json`);
+const tmpfilePath = storedFilePath + ".tmp"
+
 
 async function readDevices () {
-    const rawDevices = await fs.readFile(filePath, 'utf8')
+    const rawDevices = await fs.readFile(storedFilePath, 'utf8')
     return JSON.parse(rawDevices)
 }
 
 async function writeDevices (newDevices) {
     try {
-        await fs.writeFile(filePath, JSON.stringify(newDevices, null, 2), 'utf8')
-        return {
-            success: true,
-        }
+        await fs.writeFile(tmpfilePath, JSON.stringify(newDevices, null, 2), 'utf8')
+
+        await fs.rename(tmpfilePath, storedFilePath)
+        return {success: true}
     } catch (e) {
         console.error("Error writing to devices: ", e);
         return {

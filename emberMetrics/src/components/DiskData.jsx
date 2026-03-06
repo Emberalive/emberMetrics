@@ -43,7 +43,7 @@ export default function DiskData (props) {
                         {
                             dataKey: 'rIO_sec',
                             label: 'Reads /s',
-                            color: 'aliceblue'
+                            color: 'var(--accent)',
                         },
                         {
                             dataKey: 'wIO_sec',
@@ -54,12 +54,6 @@ export default function DiskData (props) {
                     grid={{ stroke: '#333', strokeWidth: 0.5, vertical: true, horizontal: true }}
                     height={400}
                     sx={(theme) => ({
-                        // ===== Line styling =====
-                        // [`.${lineElementClasses.root}`]: {
-                        //     stroke: 'var(--secondary)',
-                        //     strokeWidth: 3,
-                        // },
-
                         // ===== Point markers =====
                         [`.${markElementClasses.root}`]: {
                             strokeWidth: 2,
@@ -76,17 +70,17 @@ export default function DiskData (props) {
                                 stroke: '#888',
                             },
                             [`.${axisClasses.tickLabel}`]: {
-                                fill: 'aliceblue',
+                                fill: 'var(--accent)',
                                 fontSize: 12,
                             },
                             [`.${axisClasses.label}`]: {
-                                fill: 'aliceblue',
+                                fill: 'var(--accent)',
                                 fontSize: 12,
                             },
                         },
 
                         [`.${legendClasses.label}`]: {
-                            color: 'aliceblue',   // text color
+                            color: 'var(--accent)',
                             fontSize: 14,
                             fontWeight: 600,
                         },
@@ -98,7 +92,7 @@ export default function DiskData (props) {
                         },
 
                         // ===== Container styling =====
-                        backgroundColor: '#121212',
+                        backgroundColor: 'var(--primary)',
                         borderRadius: 8,
                     })}
                 />

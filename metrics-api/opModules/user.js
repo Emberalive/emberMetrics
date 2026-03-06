@@ -3,7 +3,9 @@ const path = require('path');
 const bcrypt = require('bcrypt')
 const {nanoid} = require("nanoid");
 const saltRounds = 10
-const filePath = path.join(__dirname, '../persistentData/user.json');
+const storedFilePath = path.join(__dirname, `../persistentData/user.json`);
+const tmpfilePath = storedFilePath + ".tmp"
+
 
 async function createUser(username, password, role) {
     try {
@@ -131,10 +133,10 @@ async function deleteUser(user) {
 
 async function writeUser(newUsers) {
     try {
-        await fs.writeFile(filePath, JSON.stringify(newUsers, null, 2), 'utf8')
-        return {
-            success: true,
-        }
+        await fs.writeFile(tmpfilePath, JSON.stringify(newUsers, null, 2), 'utf8')
+
+        await fs.rename(tmpfilePath, storedFilePath)
+        return {success: true}
     } catch (e) {
         console.error('[Server - writeUser] Internal error: ', e)
         return {
@@ -145,7 +147,7 @@ async function writeUser(newUsers) {
 
 async function readUsers() {
     try {
-        const rawUsers = await fs.readFile(filePath, 'utf8')
+        const rawUsers = await fs.readFile(storedFilePath, 'utf8')
 
         if (!rawUsers.trim()) {
             console.error('[Server - readUsers] Expected array, got:', JSON.stringify(rawUsers));

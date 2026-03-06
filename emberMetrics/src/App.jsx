@@ -475,7 +475,8 @@ export default function App() {
                              themes={themes}
                              randomColour={randomColour}
                              activeView={activeView}
-                             setMetrics={setMetrics} />
+                             setMetrics={setMetrics}
+                             isDarkMode={isDarkMode}/>
 
                   {activeView === "settings" && <Settings setActiveView={setActiveView}
                                                           setIsDarkMode={setIsDarkMode}
