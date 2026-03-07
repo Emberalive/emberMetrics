@@ -110,9 +110,6 @@ export default function Header (props) {
                             {deviceButtonList}
                         </div>
                     </div>
-                    <button className={'general-button'} onClick={() => {
-                        props.setIsGraph(prevState => !prevState)
-                    }}>{props.isGraph ? 'detailed' : 'graphs'}</button>
                 </>
             }
         </>

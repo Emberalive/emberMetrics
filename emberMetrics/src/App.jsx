@@ -348,28 +348,35 @@ export default function App() {
             if (!selectedDevice) return;
 
             let isMounted = true;
+            let interval
             //This prevents the interval from setting metrics after the interval has changed. preventing any setMetrics from calling
             //unexpectedly
 
             const fetchMetrics = async () => {
+                console.log('Fetching metrics');
                 try {
                     const url = new URL(`http://${selectedDevice}:3000`)
                     url.searchParams.set("childLength", childProcessLength ? childProcessLength.toString() : "10");
 
-
                     const response = await fetch(url);
                     if (response.ok) {
+                        console.log('metrics response resolved true')
                         const resData = await response.json();
                         if (resData) {
-                            if (isMounted) setMetrics(resData);
+                            console.log('resData resolved true')
+                            if (isMounted) setMetrics(resData)
                         } else {
+                            console.log('metrics not found')
+                            clearInterval(interval)
                             setMetrics(null)
                             console.error("[APP_METRICS] Null metrics");
+                            isMounted = false;
                         }
                     } else {
                         console.log("[APP_METRICS] Fetch error");
                     }
                 } catch (err) {
+                    clearInterval(interval);
                     console.error("[APP_METRICS] Error fetching metrics:", err.message);
                     handleNotification("error", "There was an error fetching metrics");
                     setMetrics(null)
@@ -377,7 +384,7 @@ export default function App() {
             };
 
             fetchMetrics(); // optional: fetch immediately
-            const interval = setInterval(fetchMetrics, metricInterval);
+            interval = setInterval(fetchMetrics, metricInterval);
 
             return () => {
                 isMounted = false;
@@ -385,45 +392,6 @@ export default function App() {
             };
         }, [selectedDevice, isLoggedIn, authentication, metricInterval, activeView]);
 
-    async function patchUser (updatedUser) {
-        try {
-            console.info('[ App.jsx - patchUser ] starting function')
-            const response = await fetch(`http://${deviceType === "remote-access" ? hostIp : "127.0.0.1"}:3000/users`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    username: user.username,
-                    newUser: updatedUser,
-                })
-            })
-            if (response.ok) {
-                const resData = await response.json()
-                if (resData.success) {
-                    console.info('[ App.jsx - patchUser ] setting the user data in state and sending notification')
-                    handleNotification('notice', 'Successfully updated user data')
-                    return {
-                        success: true,
-                        status: response.status,
-                        updatedUser: resData.updatedUser
-                    }
-                }
-                handleNotification('error', 'The request was incorrect')
-            }
-            console.info('[ App.jsx - patchUser ] error, API operation was unsuccessful')
-            return {
-                success: false,
-                status: response.status
-            }
-        } catch (e) {
-            console.error('There was an error',e.message)
-            handleNotification('error', 'Server Error, sorry')
-            return {
-                success: false,
-            }
-        }
-    }
   return (
       <>
           <Notification notification={notification} setNotification={setNotification} />
@@ -500,10 +468,9 @@ export default function App() {
                                                                  deviceType={deviceType}
                                                                  setUser={setUser}
                                                                  user={user}
-                                                                 patchUser={patchUser}
                                                                  authentication={authentication}/>}
               </>}
-              {activeView === 'profile' && <Profile user={user} handleNotification={handleNotification} setUser={setUser} patchUser={patchUser}/>}
+              {activeView === 'profile' && <Profile user={user} handleNotification={handleNotification} setUser={setUser}/>}
               {activeView === 'login' && <Login handleNotification={handleNotification}
                                                                            hostIp={hostIp}
                                                                            setIsLoggedIn={setIsLoggedIn}

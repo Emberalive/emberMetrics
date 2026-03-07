@@ -31,6 +31,47 @@ export default function Profile (props) {
             devices: props.user.devices,
         })
     }
+
+    async function patchUser (updatedUser) {
+        try {
+            console.info('[ App.jsx - patchUser ] starting function')
+            const response = await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/users`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: props.user.username,
+                    newUser: updatedUser,
+                })
+            })
+            if (response.ok) {
+                const resData = await response.json()
+                if (resData.success) {
+                    console.info('[ App.jsx - patchUser ] setting the user data in state and sending notification')
+                    props.handleNotification('notice', 'Successfully updated user data')
+                    return {
+                        success: true,
+                        status: response.status,
+                        updatedUser: resData.updatedUser
+                    }
+                }
+                props.handleNotification('error', 'The request was incorrect')
+            }
+            console.info('[ App.jsx - patchUser ] error, API operation was unsuccessful')
+            return {
+                success: false,
+                status: response.status
+            }
+        } catch (e) {
+            console.error('There was an error',e.message)
+            props.handleNotification('error', 'Server Error, sorry')
+            return {
+                success: false,
+            }
+        }
+    }
+
     return (
         <div className="profile-container__wrapper">
             <section className={'profile'}>
@@ -87,7 +128,7 @@ export default function Profile (props) {
                                 }}>cancel</button>
 
                                 <button className={'general-button success-button'} onClick={async() => {
-                                    const response = await props.patchUser(editUser)
+                                    const response = await patchUser(editUser)
                                     if (!response.success) {
                                         switch(response.status) {
                                             case 404:

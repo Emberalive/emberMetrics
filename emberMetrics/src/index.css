@@ -24,7 +24,7 @@
     --highlight: #FFEDD5; /* Light orange highlight */
 
     /* Dark Mode Color Palette */
-    --dm-primary: #121212; /* Dark background */
+    --dm-primary: #101010; /* Dark background */
     --dm-secondary: #FF8C42; /* Vibrant orange */
     --dm-tertiary: #CC5803; /* Darker orange */
     --dm-accent: #E5E7EB; /* Light text */
@@ -1355,6 +1355,10 @@ section {
     .child-processes__found-child-wrapper {
         overflow-x: scroll;
     }
+
+    .child-processes__found-child-wrapper > .child-processes__row {
+        width: 150%;
+    }
 }
 
 /*Network data*/
@@ -1535,9 +1539,6 @@ section {
 
 
 @media (max-width: 600px) {
-    .disk-usage-item__single-item {
-        grid-template-columns: repeat(1, 1fr);
-    }
     .disk-usage-item {
         grid-template-columns: repeat(1, 1fr);
     }
@@ -1551,6 +1552,11 @@ section {
         margin: 0 10px 10px 0;
         border-radius: var(--border-radius);
     }
+
+    .disk-usage-item__single-item > .disk-item__entry {
+        flex-direction: column;
+    }
+
     .disk-usage-item__single-item {
         gap: 0;
     }
