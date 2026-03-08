@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+const {getHostIp} = require('./opModules/utils')
 // functions for metrics gathering
 const {getMetrics, setChildLength} = require('./opModules/metrics')
 const cors = require('cors')
@@ -7,7 +8,7 @@ const port = 3000
 
 const deviceRoutes = require('./routes/deviceRoutes')
 const userRoutes = require('./routes/userRoutes')
-
+const adminRoutes = require('./routes/adminRoutes')
 
 app.use(express.json())
 app.use(cors({
@@ -17,6 +18,7 @@ app.use(cors({
 
 app.use('/devices', deviceRoutes);
 app.use('/users', userRoutes);
+app.use('/admin', adminRoutes)
 
 //returns the metrics
 app.get('/', (req, res) => {
@@ -33,6 +35,7 @@ app.get('/', (req, res) => {
     res.status(200).json(metrics); // always send JSON
 });
 
-app.listen(port, () => {
+app.listen(port, async () => {
     console.log(`[Server] API Listening on port ${port}`)
+    await getHostIp()
 })

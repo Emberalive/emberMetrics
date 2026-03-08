@@ -263,6 +263,10 @@ app.get('/', (req, res) => {
     res.status(200).send(metrics)
 })
 
+app.post('/', (req, res) => {
+
+})
+
 app.listen(port, () => {
     console.log(`[Server] API Listening on port ${port}`)
 })
