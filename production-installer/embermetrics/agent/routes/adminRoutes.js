@@ -27,7 +27,12 @@ router.post("/", async (req, res) => {
     //package sanitization
     if (!PACKAGE_REGEX.test(packageName) || !PACKAGE_REGEX.test(packageName)) return res.status(400).send({success: false})
 
-    return res.status(200).send(runSoftwareInstall(packageName, packageManager, device))
+    const subProcess = runSoftwareInstall(packageName, packageManager, device)
+
+    while (!subProcess.exitCode) {
+        console.log(subProcess.stdout)
+        res.status(200).send(subProcess.stdout)
+    }
 })
 
 module.exports = router
