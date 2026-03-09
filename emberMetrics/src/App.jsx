@@ -476,7 +476,7 @@ export default function App() {
                                                                            devices={devices}
                                                                            setActiveView={setActiveView}/>}
               {activeView === 'admin' && <Admin handleNotification={handleNotification}
-                                                devices={devices}/>}
+                                                devices={devices} hostIp={hostIp} deviceType={deviceType}/>}
           </main>
       </>
   )

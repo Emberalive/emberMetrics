@@ -1,6 +1,6 @@
 import {useState} from "react";
 
-export default function PackageSelection({selectedManager, setSelectedManager}) {
+export default function PackageManSelection({selectedManager, setSelectedManager}) {
 
     const packageManagers = [
         {name: "apt"},
