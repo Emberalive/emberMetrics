@@ -27,33 +27,7 @@ router.post("/", async (req, res) => {
     //package sanitization
     if (!PACKAGE_REGEX.test(packageName) || !PACKAGE_REGEX.test(packageName)) return res.status(400).send({success: false})
 
-    if (device.ip === 'localhost' || device.ip === '127.0.0.1' || device === getThisIp()) {
-        return res.status(200).send(runSoftwareInstall(packageName, packageManager, device))
-    }
-
-    let resData;
-
-    try {
-        const response = await fetch(`http://${device.ip}:3000/admin`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                packageName: packageName,
-                packageManager: packageManager,
-                device: device,
-            })
-        })
-
-        if (response.ok) {
-            resData = await response.json()
-            return res.status(200).send(resData)
-        }
-    } catch (e) {
-        console.error(e.message)
-        res.status(500).send({success: false})
-    }
+    return res.status(200).send(runSoftwareInstall(packageName, packageManager, device))
 })
 
 module.exports = router
