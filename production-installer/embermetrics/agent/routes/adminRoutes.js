@@ -29,10 +29,25 @@ router.post("/", async (req, res) => {
 
     const subProcess = runSoftwareInstall(packageName, packageManager, device)
 
-    while (!subProcess.exitCode) {
-        console.log(subProcess.stdout)
-        res.status(200).send(subProcess.stdout)
-    }
+    subProcess.stdout.on("data", (data) => {
+        const output = data.toString();
+        console.log(output);
+
+        res.write(output);
+    });
+
+    subProcess.stderr.on("data", (data) => {
+        const error = data.toString();
+        console.error(error);
+
+        res.write(error);
+    });
+
+    subProcess.on("close", (code) => {
+        console.log(`Process exited with code ${code}`);
+        res.end();
+    });
+    return res.status(200).send({success: true})
 })
 
 module.exports = router
