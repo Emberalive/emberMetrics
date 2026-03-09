@@ -1680,13 +1680,12 @@ section {
     cursor: pointer;
 }
 
-/*Profile Themes*/
 .disk-container {
     display: grid;
 
 }
 
-
+/*Profile Themes*/
 .profile-container__wrapper {
     display: flex;
     flex-direction: column;
@@ -1856,6 +1855,87 @@ section {
     width: 60%;
 }
 
+/*Admin themes*/
+.admin__wrapper {
+    width: calc(100% - var(--element-padding));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.admin {
+    display: flex;
+    flex-direction: column;
+    width: calc(70% - var(--element-padding));
+    align-items: center;
+    justify-content: center;
+}
+
+.admin > header{
+    border-bottom: 3px solid var(--neutral);
+    width: calc(100% - var(--element-padding) *2);
+}
+
+.admin > header > h1 {
+    width: 100%;
+    text-align: center;
+}
+
+.admin-selection__container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: calc(100% - var(--element-padding));
+}
+
+.admin-selection__items {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    width: 100%;
+    gap: 20px;
+}
+
+.admin-selection__item > p {
+    text-align: center;
+    margin: 0;
+    padding: 10px;
+    border: 2px solid var(--neutral);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+}
+
+.software-management > div > header {
+    width: 100%;
+}
+
+.software-management > div > header > p {
+    font-weight: bold;
+    font-size: 20px;
+    text-align: left;
+    width: 100%;
+}
+
+.disabled-selection > p{
+    border: 2px solid var(--tertiary);
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.admin-selection__item > p:hover {
+    border: 2px solid var(--secondary);
+    transform: scale(1.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+.admin-selection__container {
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - var(--element-padding) * 2);
+    justify-content: center;
+    align-items: center;
+}
 
 /* Dark Mode Specific Adjustments */
 .dark-mode {

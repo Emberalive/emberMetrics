@@ -119,17 +119,17 @@ export default function CpuData (props) {
                                     },
                                     [`.${axisClasses.tickLabel}`]: {
                                         fill: 'var(--accent)',
-                                        fontSize: 12,
+                                        fontSize: 'var(--font-size)',
                                     },
                                     [`.${axisClasses.label}`]: {
                                         fill: 'var(--accent)',
-                                        fontSize: 12,
+                                        fontSize: 'var(--font-size)',
                                     },
                                 },
 
                                 [`.${legendClasses.label}`]: {
                                     color: 'var(--accent)',
-                                    fontSize: 14,
+                                    fontSize: 'var(--font-size)',
                                     fontWeight: 600,
                                 },
 
@@ -141,7 +141,7 @@ export default function CpuData (props) {
 
                                 // ===== Container styling =====
                                 backgroundColor: 'var(--primary)',
-                                borderRadius: 8,
+                                borderRadius: 0,
                             })}
                         />
                     </div>
@@ -191,17 +191,17 @@ export default function CpuData (props) {
                                     },
                                     [`.${axisClasses.tickLabel}`]: {
                                         fill: 'var(--accent)',
-                                        fontSize: 12,
+                                        fontSize: 'var(--font-size)',
                                     },
                                     [`.${axisClasses.label}`]: {
                                         fill: 'var(--accent)',
-                                        fontSize: 12,
+                                        fontSize: 'var(--font-size)',
                                     },
                                 },
 
                                 [`.${legendClasses.label}`]: {
                                     color: 'var(--accent)',
-                                    fontSize: 14,
+                                    fontSize: 'var(--font-size)',
                                     fontWeight: 600,
                                 },
 

@@ -71,17 +71,17 @@ export default function DiskData (props) {
                             },
                             [`.${axisClasses.tickLabel}`]: {
                                 fill: 'var(--accent)',
-                                fontSize: 12,
+                                fontSize: 'var(--font-size)',
                             },
                             [`.${axisClasses.label}`]: {
                                 fill: 'var(--accent)',
-                                fontSize: 12,
+                                fontSize: 'var(--font-size)'    ,
                             },
                         },
 
                         [`.${legendClasses.label}`]: {
                             color: 'var(--accent)',
-                            fontSize: 14,
+                            fontSize: 'var(--font-size)',
                             fontWeight: 600,
                         },
 

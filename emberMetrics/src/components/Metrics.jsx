@@ -73,7 +73,7 @@ export default function Metrics({metrics, isGraph, timeMetrics, metricInterval, 
                     </>}
                 </>
             }
-            {metrics === null &&
+                {(metrics === null && activeView==='resources') &&
                 <div className={'metrics-notice__wrapper'}>
                     <section className={'metrics-notice'}>
                         <h1>Device can not be accessed</h1>

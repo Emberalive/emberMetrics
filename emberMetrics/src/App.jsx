@@ -25,13 +25,7 @@ import Emerald from "./assets/SVG 2.1 | Emerald Depths.svg";
 import Violet from "./assets/SVG 2.1 | Violet Storm.svg";
 import HoveringButtons from "./components/HoveringButtons.jsx";
 import Metrics from "./components/Metrics.jsx";
-import CollapseWhite from "./assets/collapse-white.svg";
-import CollapseBlack from "./assets/collapse-black.svg";
-import ExpandWhite from "./assets/expand-white.svg";
-import ExpandBlack from "./assets/expand-black.svg";
-import HamburgerBlack from "./assets/hamburger-menu-black.svg";
-import HamburgerWhite from "./assets/hamburger-menu-white.svg";
-import MetricsSettings from "./components/MetricsSettings.jsx";
+import Admin from "./components/adminComponents/Admin.jsx";
 
 
 export default function App() {
@@ -423,7 +417,10 @@ export default function App() {
                   isGraph={isGraph}
                   setIsGraph={setIsGraph}
                   devices={devices}
-                  setSelectedDevice={setSelectedDevice} handleNotification={handleNotification}
+                  setSelectedDevice={setSelectedDevice}
+                  handleNotification={handleNotification}
+                  setMetrics={setMetrics}
+                  setTimeMetrics={setTimeMetrics}
           />
 
           <main className={(activeView === 'resources' || activeView === 'fullScreen') ? (deviceType === '' || (authentication === true && isLoggedIn === false) || !metrics) ? 'main-single-column' : '' : 'main-single-column'}>
@@ -478,6 +475,8 @@ export default function App() {
                                                                            setUser={setUser}
                                                                            devices={devices}
                                                                            setActiveView={setActiveView}/>}
+              {activeView === 'admin' && <Admin handleNotification={handleNotification}
+                                                devices={devices}/>}
           </main>
       </>
   )

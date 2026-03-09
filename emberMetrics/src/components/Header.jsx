@@ -9,6 +9,7 @@ export default function Header (props) {
         console.log("[APP_METRICS] Change remote device: ", ip)
         props.handleNotification("notice", `changed Remote Device to:\n ${ip}`)
         props.setMetrics(null)
+        props.setTimeMetrics([])
     }
 
     let deviceButtonList
@@ -85,6 +86,18 @@ export default function Header (props) {
                         }}>
                             Profile
                         </a>}
+                        <a className={
+                            localStorage.getItem('deviceType') === ""
+                                ? "header-navigation__links disabled-button"
+                                : props.activeView === "admin"
+                                    ? "header-navigation__links disabled-button"
+                                    : "header-navigation__links"
+                        } onClick={() => {
+                            props.setActiveView("admin")
+                            console.log("view set to Admin")
+                        }}>
+                            Administration
+                        </a>
                         <a className={
                             localStorage.getItem('deviceType') === ""
                                 ? "header-navigation__links__end disabled-button"
