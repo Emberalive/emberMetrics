@@ -34,9 +34,9 @@ function killProcess(process) {
     })
 }
 
-function runSoftwareInstall (packageName, selectedManager, device)  {
+function runSoftwareInstall (packageName, selectedManager)  {
     console.log('[Server - runSoftwareInstall] starting operation')
-    if (!packageName || !selectedManager || !device) return {success: false}
+    if (!packageName || !selectedManager) return {success: false}
 
 
     const packageManagers = {
