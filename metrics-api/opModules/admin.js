@@ -30,9 +30,9 @@ function killProcess(process) {
     return spawn(command, args)
 }
 
-function runSoftwareInstall (packageName, selectedManager, device)  {
+function runSoftwareInstall (packageName, selectedManager)  {
     console.log('[Server - runSoftwareInstall] starting operation')
-    if (!packageName || !selectedManager || !device) return {success: false}
+    if (!packageName || !selectedManager) return {success: false}
 
 
     const packageManagers = {
@@ -59,4 +59,21 @@ function runSoftwareInstall (packageName, selectedManager, device)  {
     return {success: false}
 }
 
-module.exports = { runSoftwareInstall }
+function addFireWallRule (chosenPort, rule) {
+    console.log('[ Server - addFireWallRule] starting operation')
+    if (!chosenPort || !rule) return {success: false}
+
+    const command = 'sudo'
+
+    const args = ['ufw', rule, chosenPort]
+    console.log(`[ Server - addFireWallRule] Running: ${command} ${args.join(' ')}`)
+
+    const subProcess = spawn(command, args)
+
+    if (subProcess) {
+        return { process: subProcess, success: true }
+    }
+    return {success: false}
+}
+
+module.exports = { runSoftwareInstall, addFireWallRule }

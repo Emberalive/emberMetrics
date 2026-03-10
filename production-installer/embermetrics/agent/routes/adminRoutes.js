@@ -2,6 +2,19 @@ const express = require('express')
 const router = express.Router()
 const { runSoftwareInstall } = require('../opModule/admin')
 
+function checkDevice (device) {
+    if (typeof device !== 'object') {
+        for (const property of Object.keys(exampleDevice)) {
+            const hasProperty = device.hasOwnProperty(property)
+            if (!hasProperty) {
+                return false
+            }
+        }
+        return false
+    }
+    return true
+}
+
 //run a command on the machine
 router.post("/", async (req, res) => {
     const {packageName, packageManager, device} = req.body;
@@ -13,15 +26,7 @@ router.post("/", async (req, res) => {
         id: 'id'
     }
 
-    if (!device && typeof device !== 'object') {
-        for (const property of Object.keys(exampleDevice)) {
-            const hasProperty = device.hasOwnProperty(property)
-            if (!hasProperty) {
-                return res.status(400).send({success: false})
-            }
-        }
-        return res.status(400).send({success: false})
-    }
+    if (!device || checkDevice(device)) return res.status(400).send({success: false})
 
     if (!packageName || !packageManager) return res.status(400).send({success: false})
     //package sanitization
@@ -35,8 +40,8 @@ router.post("/", async (req, res) => {
 
     const subProcess = result.process;
 
-    res.setHeader("Content-Type", "text/plain");
-    res.status(200);
+    // res.setHeader("Content-Type", "text/plain");
+    // res.status(200);
 
     console.log(`[ Server - Host API ] starting install logs`)
 
@@ -44,19 +49,19 @@ router.post("/", async (req, res) => {
         const output = data.toString().trim();
         console.log(`\n${output}`);
 
-        res.write(output);
+        // res.write(output);
     });
 
     subProcess.stderr.on("data", (data) => {
         const error = data.toString().trim();
         console.error(`\n${error}`);
 
-        res.write(error);
+        // res.write(error);
     });
 
     subProcess.on("close", (code) => {
         console.log(`[ Server - Host API ] Process exited with code ${code} | Logs finished`);
-        res.end();
+        // res.end();
     });
 })
 
