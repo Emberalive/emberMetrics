@@ -38,6 +38,8 @@ router.post("/", async (req, res) => {
     res.setHeader("Content-Type", "text/plain");
     res.status(200);
 
+    console.log(`[ Server - Host API ] starting install logs`)
+
     subProcess.stdout.on("data", (data) => {
         const output = data.toString();
         console.log(output);
@@ -53,7 +55,7 @@ router.post("/", async (req, res) => {
     });
 
     subProcess.on("close", (code) => {
-        console.log(`Process exited with code ${code}`);
+        console.log(`[ Server - Host API ] Process exited with code ${code} | Logs finished`);
         res.end();
     });
 })
