@@ -27,7 +27,16 @@ router.post("/", async (req, res) => {
     //package sanitization
     if (!PACKAGE_REGEX.test(packageName) || !PACKAGE_REGEX.test(packageName)) return res.status(400).send({success: false})
 
-    const subProcess = runSoftwareInstall(packageName, packageManager, device)
+    const result = runSoftwareInstall(packageName, packageManager, device)
+
+    if (!result.success) {
+        return res.status(500).send({ success: false });
+    }
+
+    const subProcess = result.process;
+
+    res.setHeader("Content-Type", "text/plain");
+    res.status(200);
 
     subProcess.stdout.on("data", (data) => {
         const output = data.toString();
@@ -47,7 +56,6 @@ router.post("/", async (req, res) => {
         console.log(`Process exited with code ${code}`);
         res.end();
     });
-    return res.status(200).send({success: true})
 })
 
 module.exports = router
