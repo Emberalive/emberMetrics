@@ -44,14 +44,14 @@ router.post("/", async (req, res) => {
         const output = data.toString().trim();
         console.log(`\n${output}`);
 
-        res.write(JSON.parse(output));
+        res.write(output);
     });
 
     subProcess.stderr.on("data", (data) => {
         const error = data.toString().trim();
         console.error(`\n${error}`);
 
-        res.write(JSON.parse(error));
+        res.write(error);
     });
 
     subProcess.on("close", (code) => {
