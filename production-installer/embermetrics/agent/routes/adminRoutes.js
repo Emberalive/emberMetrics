@@ -41,17 +41,17 @@ router.post("/", async (req, res) => {
     console.log(`[ Server - Host API ] starting install logs`)
 
     subProcess.stdout.on("data", (data) => {
-        const output = data.toString();
-        console.log(output);
+        const output = data.toString().trim();
+        console.log(`\n${output}`);
 
-        res.write(output);
+        res.write(JSON.parse(output));
     });
 
     subProcess.stderr.on("data", (data) => {
-        const error = data.toString();
-        console.error(error);
+        const error = data.toString().trim();
+        console.error(`\n${error}`);
 
-        res.write(error);
+        res.write(JSON.parse(error));
     });
 
     subProcess.on("close", (code) => {
