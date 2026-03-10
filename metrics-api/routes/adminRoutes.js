@@ -4,6 +4,12 @@ const { runSoftwareInstall, addFireWallRule } = require('../opModules/admin')
 const { getThisIp } = require('../opModules/utils')
 
 function checkDevice (device) {
+    const exampleDevice = {
+        name: 'name',
+        ip: 'ip',
+        id: 'id'
+    }
+
     if (typeof device !== 'object') {
         for (const property of Object.keys(exampleDevice)) {
             const hasProperty = device.hasOwnProperty(property)
@@ -21,30 +27,28 @@ router.post("/softwareInstall", async (req, res) => {
     const {packageName, packageManager, device} = req.body;
     const PACKAGE_REGEX = /^[a-zA-Z0-9.+:-]+$/;
 
-    const exampleDevice = {
-        name: 'name',
-        ip: 'ip',
-        id: 'id'
-    }
-
-    if (!device || checkDevice(device)) return res.status(400).send({success: false})
+    if (!device || !checkDevice(device)) return res.status(400).send({success: false})
 
     if (!packageName || !packageManager) return res.status(400).send({success: false})
     //package sanitization
     if (!PACKAGE_REGEX.test(packageName) || !PACKAGE_REGEX.test(packageName)) return res.status(400).send({success: false})
 
     if (device.ip === 'localhost' || device.ip === '127.0.0.1' || device === getThisIp()) {
-        const subProcess = await runSoftwareInstall(packageManager, device)
+        const result = await runSoftwareInstall(packageName, packageManager)
+
+        if (!result.success) return res.status(500).send({ success: false })
+
+        const subProcess = result.process;
 
         // res.setHeader("Content-Type", "text/plain");
         // res.status(200);
 
         console.log(`[ Server - Host API ] starting install logs`)
-
+        console.log('|---------------------------------Logs-start------------------------------------|')
+        let i = 0
         subProcess.stdout.on("data", (data) => {
             const output = data.toString().trim();
-            console.log(`\n${output}`);
-
+            console.log(`Log-${i++}:${output}`);
             // res.write(output);
         });
 
@@ -56,6 +60,7 @@ router.post("/softwareInstall", async (req, res) => {
         });
 
         subProcess.on("close", (code) => {
+            console.log('\n|---------------------------------Logs-end------------------------------------|')
             console.log(`[ Server - Host API ] Process exited with code ${code} | Logs finished`);
             // res.end();
         });
@@ -89,13 +94,7 @@ router.post("/softwareInstall", async (req, res) => {
 router.post("/fireWallRule", async (req, res) => {
     const {chosenPort, rule, device} = req.body;
 
-    const exampleDevice = {
-        name: 'name',
-        ip: 'ip',
-        id: 'id'
-    }
-
-    if (!device || checkDevice(device)) return res.status(400).send({success: false})
+    if (!device || !checkDevice(device)) return res.status(400).send({success: false})
 
     if (!rule) return res.status(400).send({success: false})
 
@@ -107,7 +106,11 @@ router.post("/fireWallRule", async (req, res) => {
     }
 
     if (device.ip === 'localhost' || device.ip === '127.0.0.1' || device === getThisIp()) {
-        const subProcess = await addFireWallRule(chosenPort, rule)
+        const result = await addFireWallRule(chosenPort, rule)
+
+        if (!result.success) return res.status(500).send({ success: false });
+
+        const subProcess = result.process;
 
         console.log(`[ Server - Host API ] starting install logs`)
 
