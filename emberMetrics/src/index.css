@@ -1933,11 +1933,11 @@ section {
     cursor: pointer;
 }
 
-.software-management > div > header {
+.admin > div > div > header {
     width: 100%;
 }
 
-.software-management > div > header > p {
+.admin > div > div > header > p {
     font-weight: bold;
     font-size: 20px;
     text-align: left;

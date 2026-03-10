@@ -1,13 +1,11 @@
-import DeviceSelection from "./DeviceSelection.jsx";
+import DeviceSelection from "../DeviceSelection.jsx";
 import PackageManSelection from "./packageManSelection.jsx";
 import {useState} from "react";
 import PackageSelection from "./PackageSelection.jsx";
 
-export default function SoftwareManagement({devices, handleNotification, hostIp, deviceType}) {
+export default function SoftwareManagement({devices, handleNotification, hostIp, deviceType, selectedDevice, setSelectedDevice}) {
     const [selectedManager, setSelectedManager] = useState(null);
-    const [selectedDevice, setSelectedDevice] = useState({
-        name: ""
-    });
+
     const [chosenPackage, setChosenPackage] = useState('');
     const [installation, setInstallation] = useState(false);
     const [subProcess, setSubProcess] = useState(null);
@@ -26,7 +24,7 @@ export default function SoftwareManagement({devices, handleNotification, hostIp,
         try {
             console.info("attempting to call the host API");
 
-            const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp: '127.0.0.1'}:3000/admin`, {
+            const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp: '127.0.0.1'}:3000/admin/softwareInstall`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
