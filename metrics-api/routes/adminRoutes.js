@@ -24,8 +24,11 @@ function checkDevice (device) {
 
 //run a command on the machine
 router.post("/softwareInstall", async (req, res) => {
+    console.log('[ Server - admin /softwareInstall ] Enpoint started')
     const {packageName, packageManager, device} = req.body;
     const PACKAGE_REGEX = /^[a-zA-Z0-9.+:-]+$/;
+
+    console.log('[ Server - admin /softwareInstall ] doing sanitation checks')
 
     if (!device || !checkDevice(device)) return res.status(400).send({success: false})
 
@@ -34,6 +37,7 @@ router.post("/softwareInstall", async (req, res) => {
     if (!PACKAGE_REGEX.test(packageName) || !PACKAGE_REGEX.test(packageName)) return res.status(400).send({success: false})
 
     if (device.ip === 'localhost' || device.ip === '127.0.0.1' || device === getThisIp()) {
+        console.log('[ Server - admin /softwareInstall ] Installing software locally')
         const result = await runSoftwareInstall(packageName, packageManager)
 
         if (!result.success) return res.status(500).send({ success: false })
@@ -66,10 +70,12 @@ router.post("/softwareInstall", async (req, res) => {
         });
         return res.status(200).send(subProcess)
     }
+    console.log(`[ Server - admin /softwareInstall ] Installing on remote-device: ${device.name}`)
 
     let resData;
 
     try {
+        console.log('[ Server - admin /softwareInstall ] Installing on remote-device')
         const response = await fetch(`http://${device.ip}:3000/admin/softwareInstall`, {
             method: 'POST',
             headers: {

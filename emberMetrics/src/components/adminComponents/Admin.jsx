@@ -1,6 +1,4 @@
 import {useState} from "react";
-import PackageManSelection from "./SoftwareManagement/packageManSelection.jsx";
-import DeviceSelection from "./DeviceSelection.jsx";
 import SoftwareManagement from "./SoftwareManagement/SoftwareManagement.jsx";
 import AdminNavigation from "./AdminNavigation.jsx";
 import FirewallManagement from "./firewallManagement/FirewallManagement.jsx";

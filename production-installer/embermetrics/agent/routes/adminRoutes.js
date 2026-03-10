@@ -3,6 +3,12 @@ const router = express.Router()
 const { runSoftwareInstall } = require('../opModule/admin')
 
 function checkDevice (device) {
+    const exampleDevice = {
+        name: 'name',
+        ip: 'ip',
+        id: 'id'
+    }
+
     if (typeof device !== 'object') {
         for (const property of Object.keys(exampleDevice)) {
             const hasProperty = device.hasOwnProperty(property)
@@ -16,15 +22,9 @@ function checkDevice (device) {
 }
 
 //run a command on the machine
-router.post("/", async (req, res) => {
+router.post("/softwareInstall", async (req, res) => {
     const {packageName, packageManager, device} = req.body;
     const PACKAGE_REGEX = /^[a-zA-Z0-9.+:-]+$/;
-
-    const exampleDevice = {
-        name: 'name',
-        ip: 'ip',
-        id: 'id'
-    }
 
     if (!device || checkDevice(device)) return res.status(400).send({success: false})
 
@@ -44,11 +44,11 @@ router.post("/", async (req, res) => {
     // res.status(200);
 
     console.log(`[ Server - Host API ] starting install logs`)
-
+    console.log('|---------------------------------Logs-start------------------------------------|')
+    let i = 0
     subProcess.stdout.on("data", (data) => {
         const output = data.toString().trim();
-        console.log(`\n${output}`);
-
+        console.log(`Log-${i++}:${output}`);
         // res.write(output);
     });
 
@@ -60,6 +60,7 @@ router.post("/", async (req, res) => {
     });
 
     subProcess.on("close", (code) => {
+        console.log('\n|---------------------------------Logs-end------------------------------------|')
         console.log(`[ Server - Host API ] Process exited with code ${code} | Logs finished`);
         // res.end();
     });
