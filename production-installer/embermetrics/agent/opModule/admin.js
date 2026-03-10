@@ -27,7 +27,11 @@ function killProcess(process) {
      console.log('[Server - runComm] running a command on the machine')
     if (!command || !args || !Array.isArray(args)) return {success: false}
 
-    return spawn(command, args)
+    return spawn(command, args, {
+        stdio: [
+            0, 'pipe', 'pipe'
+        ]
+    })
 }
 
 function runSoftwareInstall (packageName, selectedManager, device)  {
