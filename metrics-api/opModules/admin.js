@@ -101,10 +101,10 @@ function addFireWallRule (chosenPort, rule) {
     const args = ['ufw', rule, chosenPort]
     console.log(`[ Server - addFireWallRule] Running: ${command} ${args.join(' ')}`)
 
-    const subProcess = spawn(command, args)
+    const subProcess = runCommand(command, args)
 
-    if (subProcess) {
-        return { process: subProcess, success: true }
+    if (subProcess.success) {
+        return subProcess
     }
     return {success: false}
 }

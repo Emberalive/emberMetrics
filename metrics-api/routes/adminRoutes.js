@@ -76,7 +76,7 @@ router.post("/software", async (req, res) => {
     let resData;
 
     try {
-        console.log('[ Server - admin /software ] Installing on remote-device')
+        console.log(`[ Server - admin /software ] running operation: ${operation} \n                             on remote-device: ${device.name}`)
         const response = await fetch(`http://${device.ip}:3000/admin/software`, {
             method: 'POST',
             headers: {
@@ -99,28 +99,37 @@ router.post("/software", async (req, res) => {
     }
 })
 
+function needPort (rule) {
+    if (rule === "allow" || rule === "deny") return true
+}
+
 router.post("/fireWallRule", async (req, res) => {
+    console.log('[ Server - admin /firewall ] starting endpoint')
+    const allowedRules = [
+        'allow','deny', 'default allow incoming', 'default deny incoming', 'default allow outgoing', 'default deny outgoing'
+    ]
     const {chosenPort, rule, device} = req.body;
 
+    console.log('[ Server - admin /firewall ] doing sanitation checks')
     if (!device || !checkDevice(device)) return res.status(400).send({success: false})
+    if (!rule || !allowedRules.includes(rule)) {
+        console.log('[ Server - admin /firewall ] rule is not allowed');
+        return res.status(400).send({ success: false });
+    }
 
-    if (!rule) return res.status(400).send({success: false})
-
-    if (chosenPort === 0 || chosenPort > 65535) return res.status(400).send({success: false})
-
-    //temporarily only allow - allow and deny all for the given port
-    if (rule !== 'allow' || rule !== 'deny') {
-        return res.status(400).send({success: false})
+    if (needPort(rule)) {
+        if (chosenPort <= 0 || chosenPort > 65535) return res.status(400).send({success: false})
     }
 
     if (device.ip === 'localhost' || device.ip === '127.0.0.1' || device === getThisIp()) {
+        console.log('[ Server - admin /firewall ] Creating rule locally')
+        console.log(`[ Server - admin /firewall ] starting rule addition: \n${rule} - ${chosenPort}`)
+
         const result = await addFireWallRule(chosenPort, rule)
 
         if (!result.success) return res.status(500).send({ success: false });
 
         const subProcess = result.process;
-
-        console.log(`[ Server - Host API ] starting install logs`)
 
         subProcess.stdout.on("data", (data) => {
             const output = data.toString().trim();
@@ -144,6 +153,8 @@ router.post("/fireWallRule", async (req, res) => {
         return res.status(200).send(subProcess)
     }
 
+    console.log(`[ Server - admin /firewall ] creating rule on device: ${device.name}`)
+
     let resData;
 
     try {
@@ -162,6 +173,7 @@ router.post("/fireWallRule", async (req, res) => {
             resData = await response.json()
             return res.status(200).send(resData)
         }
+        return res.status(500).send({success: false})
     } catch (e) {
         console.error(e.message)
         res.status(500).send({success: false})
