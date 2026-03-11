@@ -63,25 +63,40 @@ router.post("/software", async (req, res) => {
 
 })
 
+function needPort (rule) {
+    return rule === "allow" || rule === "deny"
+}
+
 router.post("/fireWallRule", async (req, res) => {
+    console.log('[ Server - admin /firewall ] starting endpoint')
+    const allowedRules = [
+        'allow','deny', 'default allow incoming', 'default deny incoming', 'default allow outgoing', 'default deny outgoing'
+    ]
     const {chosenPort, rule} = req.body;
 
-    if (!rule) return res.status(400).send({success: false})
-
-    if (chosenPort <= 0 || chosenPort > 65535) return res.status(400).send({success: false})
-
-    //temporarily only allow - allow and deny all for the given port
-    if (rule !== 'allow' && rule !== 'deny') {
-        return res.status(400).send({success: false})
+    console.log('[ Server - admin /firewall ] doing sanitation checks')
+    if (!rule || !allowedRules.includes(rule)) {
+        console.log('[ Server - admin /firewall ] rule is not allowed');
+        return res.status(400).send({ success: false });
     }
 
-    const result = await addFireWallRule(chosenPort, rule)
+    const needAport = needPort(rule);
 
-    if (!result.success) return res.status(500).send({ success: false });
+    if (needAport) {
+        if (chosenPort <= 0 || chosenPort > 65535) return res.status(400).send({success: false})
+    }
+
+    let result
+
+    if (needAport) {
+        result = await addFireWallRule(rule, chosenPort)
+    } else {
+        result = await addFireWallRule(rule)
+    }
+
+    if (!result.success) return res.status(500).send({ success: false, reason: 'could not add firewall rule' });
 
     const subProcess = result.process;
-
-    console.log(`[ Server - Host API ] adding rule ${rule} - ${chosenPort} logs`)
     generateLogs(subProcess)
 
     return res.status(200).send(subProcess)
