@@ -92,19 +92,35 @@ function runSoftwareOperation (packageName, selectedManager, operation)  {
     return {success: false}
 }
 
-function addFireWallRule (chosenPort, rule) {
+function needPort (rule) {
+    return rule === "allow" || rule === "deny";
+}
+
+function addFireWallRule (rule, chosenPort = null) {
     console.log('[ Server - addFireWallRule] starting operation')
-    if (!chosenPort || !rule) return {success: false}
+    const needAport = needPort(rule)
+
+    if (!rule) return {success: false}
+    if (needAport) {
+        if (!chosenPort) return {success: false}
+    }
+
+    let args
+    if (needAport) {
+        args = ['ufw', rule, chosenPort]
+    } else {
+        const ruleParts = rule.split(' ')
+        args = ['ufw', ...ruleParts]
+    }
 
     const command = 'sudo'
 
-    const args = ['ufw', rule, chosenPort]
     console.log(`[ Server - addFireWallRule] Running: ${command} ${args.join(' ')}`)
 
-    const subProcess = runCommand(command, args)
+    const subProcess = spawn(command, args)
 
-    if (subProcess.success) {
-        return subProcess
+    if (subProcess) {
+        return { process: subProcess, success: true }
     }
     return {success: false}
 }

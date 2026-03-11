@@ -22,6 +22,29 @@ function checkDevice (device) {
     return true
 }
 
+function generateLogs(subProcess) {
+    console.log('|---------------------------------Logs-start------------------------------------|\n')
+    let i = 0
+    subProcess.stdout.on("data", (data) => {
+        const output = data.toString().trim();
+        console.log(`Log-${i++}:${output.trim()}`);
+        // res.write(output);
+    });
+
+    subProcess.stderr.on("data", (data) => {
+        const error = data.toString().trim();
+        console.error(`\n${error}`);
+
+        // res.write(error);
+    });
+
+    subProcess.on("close", (code) => {
+        console.log('\n|---------------------------------Logs-end------------------------------------|')
+        console.log(`[ Server - Host API ] Process exited with code ${code} | Logs finished`);
+        // res.end();
+    });
+}
+
 //run a command on the machine
 router.post("/software", async (req, res) => {
     console.log('[ Server - admin /software ] Enpoint started')
@@ -49,26 +72,7 @@ router.post("/software", async (req, res) => {
         // res.status(200);
 
         console.log(`[ Server - Host API ] starting install logs`)
-        console.log('|---------------------------------Logs-start------------------------------------|')
-        let i = 0
-        subProcess.stdout.on("data", (data) => {
-            const output = data.toString().trim();
-            console.log(`Log-${i++}:${output}`);
-            // res.write(output);
-        });
-
-        subProcess.stderr.on("data", (data) => {
-            const error = data.toString().trim();
-            console.error(`\n${error}`);
-
-            // res.write(error);
-        });
-
-        subProcess.on("close", (code) => {
-            console.log('\n|---------------------------------Logs-end------------------------------------|')
-            console.log(`[ Server - Host API ] Process exited with code ${code} | Logs finished`);
-            // res.end();
-        });
+        generateLogs(subProcess)
         return res.status(200).send(subProcess)
     }
     console.log(`[ Server - admin /software ] Installing on remote-device: ${device.name}`)
@@ -100,7 +104,7 @@ router.post("/software", async (req, res) => {
 })
 
 function needPort (rule) {
-    if (rule === "allow" || rule === "deny") return true
+    return rule === "allow" || rule === "deny";
 }
 
 router.post("/fireWallRule", async (req, res) => {
@@ -117,38 +121,27 @@ router.post("/fireWallRule", async (req, res) => {
         return res.status(400).send({ success: false });
     }
 
-    if (needPort(rule)) {
+    const needAport = needPort(rule);
+
+    if (needAport) {
         if (chosenPort <= 0 || chosenPort > 65535) return res.status(400).send({success: false})
     }
 
     if (device.ip === 'localhost' || device.ip === '127.0.0.1' || device === getThisIp()) {
         console.log('[ Server - admin /firewall ] Creating rule locally')
-        console.log(`[ Server - admin /firewall ] starting rule addition: \n${rule} - ${chosenPort}`)
 
-        const result = await addFireWallRule(chosenPort, rule)
+        let result
 
-        if (!result.success) return res.status(500).send({ success: false });
+        if (needAport) {
+            result = await addFireWallRule(rule, chosenPort)
+        } else {
+            result = await addFireWallRule(rule)
+        }
+
+        if (!result.success) return res.status(500).send({ success: false, reason: 'could not add firewall rule' });
 
         const subProcess = result.process;
-
-        subProcess.stdout.on("data", (data) => {
-            const output = data.toString().trim();
-            console.log(`\n${output}`);
-
-            // res.write(output);
-        });
-
-        subProcess.stderr.on("data", (data) => {
-            const error = data.toString().trim();
-            console.error(`\n${error}`);
-
-            // res.write(error);
-        });
-
-        subProcess.on("close", (code) => {
-            console.log(`[ Server - Host API ] Process exited with code ${code} | Logs finished`);
-            // res.end();
-        });
+        generateLogs(subProcess)
 
         return res.status(200).send(subProcess)
     }
@@ -168,15 +161,16 @@ router.post("/fireWallRule", async (req, res) => {
                 rule: rule,
             })
         })
+        resData = await response.json()
 
         if (response.ok) {
-            resData = await response.json()
             return res.status(200).send(resData)
         }
+        console.log(`Device: ${device.name} could not spawn a process\n`, JSON.stringify(resData))
         return res.status(500).send({success: false})
     } catch (e) {
         console.error(e.message)
-        res.status(500).send({success: false})
+        res.status(500).send({success: false, reason: e.message})
     }
 })
 
