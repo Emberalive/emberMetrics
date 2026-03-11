@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { runSoftwareInstall, addFireWallRule } = require('../opModules/admin')
+const { addFireWallRule, runSoftwareOperation } = require('../opModules/admin')
 const { getThisIp } = require('../opModules/utils')
 
 function checkDevice (device) {
@@ -23,24 +23,25 @@ function checkDevice (device) {
 }
 
 //run a command on the machine
-router.post("/softwareInstall", async (req, res) => {
-    console.log('[ Server - admin /softwareInstall ] Enpoint started')
-    const {packageName, packageManager, device} = req.body;
+router.post("/software", async (req, res) => {
+    console.log('[ Server - admin /software ] Enpoint started')
+    const {packageName, packageManager, device, operation} = req.body;
     const PACKAGE_REGEX = /^[a-zA-Z0-9.+:-]+$/;
 
-    console.log('[ Server - admin /softwareInstall ] doing sanitation checks')
+    console.log('[ Server - admin /software ] doing sanitation checks')
 
     if (!device || !checkDevice(device)) return res.status(400).send({success: false})
 
-    if (!packageName || !packageManager) return res.status(400).send({success: false})
+    if (!packageName || !packageManager || !operation) return res.status(400).send({success: false})
     //package sanitization
     if (!PACKAGE_REGEX.test(packageName) || !PACKAGE_REGEX.test(packageName)) return res.status(400).send({success: false})
 
     if (device.ip === 'localhost' || device.ip === '127.0.0.1' || device === getThisIp()) {
-        console.log('[ Server - admin /softwareInstall ] Installing software locally')
-        const result = await runSoftwareInstall(packageName, packageManager)
+        console.log('[ Server - admin /software ] managing software locally')
 
-        if (!result.success) return res.status(500).send({ success: false })
+        const result = runSoftwareOperation(packageName, packageManager, operation);
+
+        if (!result || !result.success) return res.status(500).send({ success: false })
 
         const subProcess = result.process;
 
@@ -70,13 +71,13 @@ router.post("/softwareInstall", async (req, res) => {
         });
         return res.status(200).send(subProcess)
     }
-    console.log(`[ Server - admin /softwareInstall ] Installing on remote-device: ${device.name}`)
+    console.log(`[ Server - admin /software ] Installing on remote-device: ${device.name}`)
 
     let resData;
 
     try {
-        console.log('[ Server - admin /softwareInstall ] Installing on remote-device')
-        const response = await fetch(`http://${device.ip}:3000/admin/softwareInstall`, {
+        console.log('[ Server - admin /software ] Installing on remote-device')
+        const response = await fetch(`http://${device.ip}:3000/admin/software`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -84,6 +85,7 @@ router.post("/softwareInstall", async (req, res) => {
             body: JSON.stringify({
                 packageName: packageName,
                 packageManager: packageManager,
+                operation: operation,
             })
         })
 

@@ -1,16 +1,16 @@
 const express = require('express')
 const router = express.Router()
-const { runSoftwareInstall } = require('../opModule/admin')
+const { runSoftwareOperation } = require('../opModule/admin')
 
 //run a command on the machine
-router.post("/softwareInstall", async (req, res) => {
-    console.log('[ Server - POST /softwareInstall ] endpoint starting')
-    const {packageName, packageManager} = req.body;
+router.post("/software", async (req, res) => {
+    console.log('[ Server - POST /software ] endpoint starting')
+    const {packageName, packageManager, operation} = req.body;
     const PACKAGE_REGEX = /^[a-zA-Z0-9.+:-]+$/;
 
     console.log('[ Server - POST /softwareInstall ] doing sanitation checks')
 
-    if (!packageName || !packageManager) {
+    if (!packageName || !packageManager || !operation) {
         console.log('[ Server - POST /softwareInstall ] Please send all parameters')
         return res.status(400).send({success: false})
     }
@@ -20,22 +20,22 @@ router.post("/softwareInstall", async (req, res) => {
         return res.status(400).send({success: false})
     }
 
-    console.log('[ Server - POST /softwareInstall ] sanitation checks successful')
+    console.log('[ Server - POST /software ] sanitation checks successful')
 
-    const result = runSoftwareInstall(packageName, packageManager)
+    const result = runSoftwareOperation(packageName, packageManager)
 
     if (!result.success) {
-        console.log('[ Server - POST /softwareInstall ] Error - failed to spawn a process')
+        console.log('[ Server - POST /software ] Error - failed to spawn a process')
         return res.status(500).send({ success: false });
     }
 
     const subProcess = result.process;
-    console.log('[ Server - POST /softwareInstall ] Process has been spawned successfully')
+    console.log('[ Server - POST /software ] Process has been spawned successfully')
 
     // res.setHeader("Content-Type", "text/plain");
     // res.status(200);
 
-    console.log(`[ Server - Host API ] starting install logs`)
+    console.log(`[ Server - Host API ] starting ${operation} logs`)
     console.log('|---------------------------------Logs-start------------------------------------|')
     let i = 0
     subProcess.stdout.on("data", (data) => {

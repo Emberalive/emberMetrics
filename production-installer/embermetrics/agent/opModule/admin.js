@@ -7,7 +7,7 @@ function killProcess(process) {
         try {
             return process.kill(process.pid)
         } catch (e) {
-            console.log(`[ Server - killProcess] {${process.pid}} kill process failed: ${e.message}`)
+            console.log(`[ Server - killProcess ] {${process.pid}} kill process failed: ${e.message}`)
         }
     }
     if (process.killed) {
@@ -23,39 +23,85 @@ function killProcess(process) {
     }
 }
 
- function runCommand (command, args) {
-     console.log('[Server - runComm] running a command on the machine')
-    if (!command || !args || !Array.isArray(args)) return {success: false}
+function getManager(manager, operation) {
+    if (operation === 'install' || operation === 'remove') {
+        console.log(`[ Server - getManager ] running ${operation} pathway`)
+        const packageManagers = {
+            apt: { cmd: 'sudo', args: ['apt', operation, '-y'] },
+            yum: { cmd: 'sudo', args: ['yum', operation, '-y'] },
+            dnf: { cmd: 'sudo', args: ['dnf', operation, '-y'] },
+            pacman: { cmd: 'sudo', args: ['pacman', operation === 'install' ? '-S' : '-R', '--noconfirm'] },
+            zypper: { cmd: 'sudo', args: ['zypper', operation, '-y'] },
+            emerge: { cmd: 'sudo', args: operation === "install" ? ["emerge", "--quiet"] : ["emerge", "--unmerge", "--quiet"] },
+            flatpak: { cmd: 'sudo', args: ['flatpak', operation === 'installer' ? 'install' : 'uninstall', '-y', '--noninteractive'] }
+        }
+        return packageManagers[manager]
+    }
+    if (operation === 'check') {
+        // exit code is 0 if installed, and 1 if not installed
+        console.log('[ Server - getManager ] running check pathway')
 
-    return spawn(command, args, {
-        stdio: [
-            0, 'pipe', 'pipe'
-        ]
-    })
+        const checkCommands = {
+            apt: { cmd: "sudo", args: ["dpkg", "-s"] },
+            dnf: { cmd: "sudo", args: ["rpm", "-q"] },
+            yum: { cmd: "sudo", args: ["rpm", "-q"] },
+            pacman: { cmd: "sudo", args: ["pacman", "-Qi"] },
+            zypper: { cmd: "sudo", args: ["rpm", "-q"] },
+            emerge: { cmd: "sudo", args: ["qlist", "-I"] },
+            flatpak: { cmd: "sudo", args: ["flatpak", "info"] }
+        }
+        return checkCommands[manager]
+    }
+    console.log(`[ Server - getManager ] operation is: ${operation}, expected \'install\', \'remove\', \'check\'`);
+    return {success: false}
 }
 
-function runSoftwareInstall (packageName, selectedManager)  {
-    console.log('[Server - runSoftwareInstall] starting operation')
-    if (!packageName || !selectedManager) return {success: false}
+function runCommand (command, args) {
+    console.log('[ Server - runComm ] running the command on the machine')
+    if (!command || !args || !Array.isArray(args)) return {success: false}
 
+    return spawn(command, args)
+}
 
-    const packageManagers = {
-        apt: { cmd: 'sudo', args: ['apt', 'install', '-y'] },
-        yum: { cmd: 'sudo', args: ['yum', 'install', '-y'] },
-        dnf: { cmd: 'sudo', args: ['dnf', 'install', '-y'] },
-        pacman: { cmd: 'sudo', args: ['pacman', '-S', '--noconfirm'] },
-        zypper: { cmd: 'sudo', args: ['zypper', 'install', '-y'] },
-        emerge: { cmd: 'sudo', args: ['emerge', '--quiet'] },
-        flatpak: { cmd: 'sudo', args: ['flatpak', 'install', '-y', '--noninteractive'] }
-    }
-
-    const manager = packageManagers[selectedManager]
+function commandHelper (selectedManager, packageName, operation) {
+    const manager = getManager(selectedManager, operation)
     if (!manager) return {success: false}
 
     const args = [...manager.args, packageName]
-    console.log(`[Server - runSoftwareInstall] Running: ${manager.cmd} ${args.join(' ')}`)
+    console.log(`[ Server - commandHelper - ${operation} ] Running: ${manager.cmd} ${args.join(' ')}`)
 
-    const subProcess = runCommand(manager.cmd, args)
+    const result = runCommand(manager.cmd, args)
+    if (result) {
+        return {
+            success: true,
+            process: result
+        }
+    }
+    return {success: false}
+}
+
+function runSoftwareOperation (packageName, selectedManager, operation)  {
+    console.log(`[ Server - runSoftwareOperation ] starting operation: ${operation}`)
+    if (!packageName || !selectedManager) return {success: false}
+    console.log('[ Server - runSoftwareOperation ] calling commandHelper')
+    const subProcess = commandHelper(selectedManager, packageName, operation)
+
+    if (subProcess.success) {
+        return subProcess
+    }
+    return {success: false}
+}
+
+function addFireWallRule (chosenPort, rule) {
+    console.log('[ Server - addFireWallRule] starting operation')
+    if (!chosenPort || !rule) return {success: false}
+
+    const command = 'sudo'
+
+    const args = ['ufw', rule, chosenPort]
+    console.log(`[ Server - addFireWallRule] Running: ${command} ${args.join(' ')}`)
+
+    const subProcess = spawn(command, args)
 
     if (subProcess) {
         return { process: subProcess, success: true }
@@ -63,4 +109,4 @@ function runSoftwareInstall (packageName, selectedManager)  {
     return {success: false}
 }
 
-module.exports = { runSoftwareInstall }
+module.exports = { addFireWallRule, runSoftwareOperation }

@@ -1,12 +1,31 @@
 import DeviceSelection from "../DeviceSelection.jsx";
-import PackageManSelection from "./packageManSelection.jsx";
+import PackageManSelection from "./ItemSelection.jsx";
 import {useState} from "react";
 import PackageSelection from "./PackageSelection.jsx";
+import ItemSelection from "./ItemSelection.jsx";
 
 export default function SoftwareManagement({devices, handleNotification, hostIp, deviceType, selectedDevice, setSelectedDevice}) {
     const [selectedManager, setSelectedManager] = useState(null);
-
     const [chosenPackage, setChosenPackage] = useState('');
+    const [chosenOperation, setChosenOperation] = useState('');
+
+    const packageManagers = [
+        {name: "apt"},
+        {name: "yum"},
+        {name: "dnf"},
+        {name: "pacman"},
+        {name: "zypper"},
+        {name: "emerge"},
+        {name: "flatpak"},
+    ];
+
+    const softwareOperation = [
+        {name: 'install'},
+        {name: 'remove'},
+        {name: 'check'},
+    ]
+
+    //These are all going to be used later on..... - Don't need to use them yet
     const [installation, setInstallation] = useState(false);
     const [subProcess, setSubProcess] = useState(null);
 
@@ -24,13 +43,14 @@ export default function SoftwareManagement({devices, handleNotification, hostIp,
         try {
             console.info("attempting to call the host API");
 
-            const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp: '127.0.0.1'}:3000/admin/softwareInstall`, {
+            const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp: '127.0.0.1'}:3000/admin/software`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     packageName: pkg,
                     device: device,
                     packageManager: packageManager,
+                    operation: chosenOperation,
                 })
             })
 
@@ -53,12 +73,16 @@ export default function SoftwareManagement({devices, handleNotification, hostIp,
                 <header className={'section-header'}>
                     <h1>Software Management</h1>
                 </header>
-                <PackageManSelection selectedManager={selectedManager}
-                                     setSelectedManager={setSelectedManager} />
+                <ItemSelection selectedItem={chosenOperation}
+                               setSelectedItem={setChosenOperation}
+                               items={softwareOperation} title={'operation'} />
+                <ItemSelection selectedItem={selectedManager}
+                               setSelectedItem={setSelectedManager}
+                               items={packageManagers} title={'package manager'} />
                 <DeviceSelection devices={devices}
                                  selectedDevice={selectedDevice}
                                  setSelectedDevice={setSelectedDevice} />
-                <PackageSelection setChosenPackage={setChosenPackage}  chosenPackage={chosenPackage} />
+                <PackageSelection setChosenPackage={setChosenPackage}  chosenPackage={chosenPackage}/>
                 <div style={{display: 'flex', justifyContent: 'space-between'}}>
                     <button className={'general-button success-button'} onClick={async () => {
                         await installPackage()
