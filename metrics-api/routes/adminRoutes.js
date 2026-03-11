@@ -73,7 +73,7 @@ router.post("/software", async (req, res) => {
 
         console.log(`[ Server - Host API ] starting install logs`)
         generateLogs(subProcess)
-        return res.status(200).send(subProcess)
+        return res.status(200).send(result)
     }
     console.log(`[ Server - admin /software ] Installing on remote-device: ${device.name}`)
 
@@ -143,7 +143,7 @@ router.post("/fireWallRule", async (req, res) => {
         const subProcess = result.process;
         generateLogs(subProcess)
 
-        return res.status(200).send(subProcess)
+        return res.status(200).send(result)
     }
 
     console.log(`[ Server - admin /firewall ] creating rule on device: ${device.name}`)

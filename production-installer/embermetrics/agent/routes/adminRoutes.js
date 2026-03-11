@@ -56,11 +56,10 @@ router.post("/software", async (req, res) => {
     console.log('[ Server - POST /software ] Process has been spawned successfully')
     generateLogs(subProcess)
 
+    return res.status(200).send(result)
+
     // res.setHeader("Content-Type", "text/plain");
     // res.status(200);
-
-    // console.log(`[ Server - Host API ] starting ${operation} logs`)
-
 })
 
 function needPort (rule) {
@@ -99,7 +98,7 @@ router.post("/fireWallRule", async (req, res) => {
     const subProcess = result.process;
     generateLogs(subProcess)
 
-    return res.status(200).send(subProcess)
+    return res.status(200).send(result)
 })
 
 module.exports = router

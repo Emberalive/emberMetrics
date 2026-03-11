@@ -86,7 +86,7 @@ export default function SoftwareManagement({devices, handleNotification, hostIp,
                 <div style={{display: 'flex', justifyContent: 'space-between'}}>
                     <button className={'general-button success-button'} onClick={async () => {
                         await installPackage()
-                    }}>Install</button>
+                    }}>Run Operation</button>
                     <button className={'general-button danger-button'} onClick={() => {
                         setSelectedDevice({name: ''})
                         setChosenPackage('')

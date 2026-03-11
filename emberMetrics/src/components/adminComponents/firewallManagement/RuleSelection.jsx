@@ -1,19 +1,19 @@
 export default function RuleSelection({chosenRule, setChosenRule}) {
 
     const rules = [
-        {name: "allow"},
-        {name: "deny"},
-        {name: "allow incoming"}, //default allow incoming
-        {name: "deny incoming"},
-        {name: "allow outgoing"}, //default allow outgoing
-        {name: "deny outgoing"},
+        'allow',
+        'deny',
+        'default allow incoming',
+        'default deny incoming',
+        'default allow outgoing',
+        'default deny outgoing',
     ];
 
     const rulesList = rules.map(rule => {
         return (
-            <div  key={rule.id} className={chosenRule.name === rule.name? "admin-selection__item disabled-selection" : 'admin-selection__item'}
-                  onClick={() => setChosenRule(rule)}>
-                <p>{rule.name}</p>
+            <div  key={rule} className={chosenRule === rule? "admin-selection__item disabled-selection" : 'admin-selection__item'}
+                  onClick={() => setChosenRule(rule.toString())}>
+                <p>{rule}</p>
             </div>
         )
     })
