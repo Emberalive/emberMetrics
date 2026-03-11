@@ -57,7 +57,7 @@ export default function SoftwareManagement({devices, handleNotification, hostIp,
             if (response.ok) {
                 const resData = await response.json();
                 if (resData.success) {
-                    handleNotification('notice', `${chosenPackage} is being installed on ${device.name}`)
+                    handleNotification('notice', `${chosenPackage} is being ${chosenOperation}${chosenOperation === "install" ? 'ed': 'd'} on ${device.name}`)
                     setInstallation(true);
                     setSubProcess(resData.process);
                 }
