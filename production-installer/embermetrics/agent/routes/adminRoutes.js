@@ -2,26 +2,31 @@ const express = require('express')
 const router = express.Router()
 const { runSoftwareOperation, addFireWallRule } = require('../opModule/admin')
 
-function generateLogs(subProcess) {
+function generateLogs(subProcess, res) {
     console.log('|---------------------------------Logs-start------------------------------------|\n')
+    res.write('|--------------------------------remote-device------------------------------------|\n'
+    )
+    res.write('|----------------------------------Logs-start-------------------------------------|\n')
     let i = 0
     subProcess.stdout.on("data", (data) => {
         const output = data.toString().trim();
         console.log(`Log-${i++}:${output.trim()}`);
-        // res.write(output);
+        res.write(output);
     });
 
     subProcess.stderr.on("data", (data) => {
         const error = data.toString().trim();
         console.error(`\n${error}`);
 
-        // res.write(error);
+        res.write(error);
     });
 
     subProcess.on("close", (code) => {
-        console.log('\n|---------------------------------Logs-end------------------------------------|')
-        console.log(`[ Server - Host API ] Process exited with code ${code} | Logs finished`);
-        // res.end();
+        console.log('\n|---------------------------------Logs-end------------------------------------|\n' +
+            'Process exited with code ${code} | Logs finished')
+        res.write('\n|---------------------------------Logs-end------------------------------------|\n' +
+            'Process exited with code ${code} | Logs finished');
+        res.end();
     });
 }
 
