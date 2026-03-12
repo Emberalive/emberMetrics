@@ -4,7 +4,7 @@ import DeviceSelection from "../DeviceSelection.jsx";
 import RuleSelection from "./RuleSelection.jsx";
 
 export default function FirewallManagement({ devices, selectedDevice, setSelectedDevice,
-                                               handleNotification, deviceType, hostIp }) {
+                                               handleNotification, deviceType, hostIp, handleLogs, installation}) {
     const [chosenPort, setChosenPort] = useState(0)
     const [chosenRule, setChosenRule] = useState('')
 
@@ -27,11 +27,8 @@ export default function FirewallManagement({ devices, selectedDevice, setSelecte
             })
 
             if (response.ok) {
-                const resData = await response.json();
-                if (resData.success) {
-                    handleNotification('notice', `fireWall rule has been set successfully.`);
-                    return
-                }
+                const installed = await handleLogs(response)
+                if (installed) handleNotification('notice', `Set the rule: ${chosenRule} ${(chosenRule === "allow" || chosenRule === "deny" ? `- ${chosenPort}`: '')} on the machine: ${selectedDevice.name}`);
                 return
             }
             handleNotification('error', `fireWall rule failed.`);
@@ -60,7 +57,7 @@ export default function FirewallManagement({ devices, selectedDevice, setSelecte
     }
 
     return (
-        <div className={"firewall-management"}>
+        <div className={installation? "firewall-management disabled-element" : "firewall-management"}>
             <header className={'section-header'}>
                 <h1>Firewall Management</h1>
             </header>

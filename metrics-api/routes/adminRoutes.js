@@ -3,6 +3,34 @@ const router = express.Router()
 const { addFireWallRule, runSoftwareOperation } = require('../opModules/admin')
 const { getThisIp } = require('../opModules/utils')
 
+async function returnReads (response, res) {
+    console.log("[ Server - returnReads] Starting function")
+    if (!response || !response.body) {
+        console.log("[ Server - returnReads] failed to return reads")
+        return false
+    }
+    res.status(200);
+    res.setHeader('Content-Type', 'text/plain');
+    res.setHeader('Transfer-Encoding', 'chunked');
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let isDone = false;
+
+    while(!isDone) {
+        const {value, done} = await reader.read();
+        isDone = done;
+
+        if(value) {
+            const chunk = decoder.decode(value, {stream: true});
+
+            console.log("[ Server - returnReads] chunk: ", chunk)
+            res.write(chunk);
+        }
+    }
+    console.log("[ Server - returnReads ] Installation on remote-device completed");
+    res.end()
+}
+
 function checkDevice (device) {
     const exampleDevice = {
         name: 'name',
@@ -22,26 +50,31 @@ function checkDevice (device) {
     return true
 }
 
-function generateLogs(subProcess) {
+function generateLogs(subProcess, res) {
+    res.setHeader('Content-Type', 'text/plain');
+    res.setHeader('Transfer-Encoding', 'chunked');
     console.log('|---------------------------------Logs-start------------------------------------|\n')
+    res.write('|---------------------------------Logs-start------------------------------------|\n')
     let i = 0
     subProcess.stdout.on("data", (data) => {
         const output = data.toString().trim();
         console.log(`Log-${i++}:${output.trim()}`);
-        // res.write(output);
+        res?.write(output);
     });
 
     subProcess.stderr.on("data", (data) => {
         const error = data.toString().trim();
         console.error(`\n${error}`);
 
-        // res.write(error);
+        res?.write(error);
     });
 
     subProcess.on("close", (code) => {
-        console.log('\n|---------------------------------Logs-end------------------------------------|')
-        console.log(`[ Server - Host API ] Process exited with code ${code} | Logs finished`);
-        // res.end();
+        console.log('\n|---------------------------------Logs-end------------------------------------|\n' +
+            `[ Server - Host API ] Process exited with code ${code} | Logs finished`)
+        res.write('\n|---------------------------------Logs-end------------------------------------|\n' +
+            `[ Server - Host API ] Process exited with code ${code} | Logs finished`);
+        res?.end();
     });
 }
 
@@ -68,16 +101,13 @@ router.post("/software", async (req, res) => {
 
         const subProcess = result.process;
 
-        // res.setHeader("Content-Type", "text/plain");
-        // res.status(200);
+        res.status(200);
 
         console.log(`[ Server - Host API ] starting install logs`)
-        generateLogs(subProcess)
-        return res.status(200).send(result)
+        generateLogs(subProcess, res)
+        return
     }
     console.log(`[ Server - admin /software ] Installing on remote-device: ${device.name}`)
-
-    let resData;
 
     try {
         console.log(`[ Server - admin /software ] running operation: ${operation} \n                             on remote-device: ${device.name}`)
@@ -94,8 +124,8 @@ router.post("/software", async (req, res) => {
         })
 
         if (response.ok) {
-            resData = await response.json()
-            return res.status(200).send(resData)
+            if (await returnReads(response, res)) return
+            res.status(500).send({success: false})
         }
     } catch (e) {
         console.error(e.message)
@@ -141,14 +171,11 @@ router.post("/fireWallRule", async (req, res) => {
         if (!result.success) return res.status(500).send({ success: false, reason: 'could not add firewall rule' });
 
         const subProcess = result.process;
-        generateLogs(subProcess)
-
-        return res.status(200).send(result)
+        generateLogs(subProcess, res)
+        return
     }
 
     console.log(`[ Server - admin /firewall ] creating rule on device: ${device.name}`)
-
-    let resData;
 
     try {
         const response = await fetch(`http://${device.ip}:3000/admin/fireWallRule`, {
@@ -161,13 +188,11 @@ router.post("/fireWallRule", async (req, res) => {
                 rule: rule,
             })
         })
-        resData = await response.json()
 
         if (response.ok) {
-            return res.status(200).send(resData)
+            if (await returnReads(response, res)) return
+            res.status(500).send({success: false})
         }
-        console.log(`Device: ${device.name} could not spawn a process\n`, JSON.stringify(resData))
-        return res.status(500).send({success: false})
     } catch (e) {
         console.error(e.message)
         res.status(500).send({success: false, reason: e.message})

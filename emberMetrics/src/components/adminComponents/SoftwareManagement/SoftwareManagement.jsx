@@ -1,10 +1,10 @@
 import DeviceSelection from "../DeviceSelection.jsx";
 import PackageManSelection from "./ItemSelection.jsx";
-import {useState} from "react";
+import {useRef, useState} from "react";
 import PackageSelection from "./PackageSelection.jsx";
 import ItemSelection from "./ItemSelection.jsx";
 
-export default function SoftwareManagement({devices, handleNotification, hostIp, deviceType, selectedDevice, setSelectedDevice}) {
+export default function SoftwareManagement({devices, handleNotification, hostIp, deviceType, selectedDevice, setSelectedDevice, handleLogs, installation}) {
     const [selectedManager, setSelectedManager] = useState(null);
     const [chosenPackage, setChosenPackage] = useState('');
     const [chosenOperation, setChosenOperation] = useState('');
@@ -26,18 +26,12 @@ export default function SoftwareManagement({devices, handleNotification, hostIp,
     ]
 
     //These are all going to be used later on..... - Don't need to use them yet
-    const [installation, setInstallation] = useState(false);
-    const [subProcess, setSubProcess] = useState(null);
-
     async function installPackage(){
-        const packageManager = selectedManager;
-        const device = selectedDevice;
-        const pkg = chosenPackage;
-
         console.info("Install package has started");
 
-        if (!packageManager || !selectedManager || !selectedDevice) {
+        if (selectedManager === '' || selectedDevice.name === '' || chosenPackage === '') {
             handleNotification('error', 'Make sure all fields are selected')
+            return
         }
 
         try {
@@ -47,21 +41,19 @@ export default function SoftwareManagement({devices, handleNotification, hostIp,
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
-                    packageName: pkg,
-                    device: device,
-                    packageManager: packageManager,
+                    packageName: chosenPackage,
+                    device: selectedDevice,
+                    packageManager: selectedManager,
                     operation: chosenOperation,
                 })
             })
 
             if (response.ok) {
-                const resData = await response.json();
-                if (resData.success) {
-                    handleNotification('notice', `${chosenPackage} is being ${chosenOperation}${chosenOperation === "install" ? 'ed': 'd'} on ${device.name}`)
-                    setInstallation(true);
-                    setSubProcess(resData.process);
-                }
+                const installed = await handleLogs(response)
+                if (installed) handleNotification('notice', `Successfully ${chosenOperation === 'install' ? 'installed' : 'removed'} ${chosenPackage}`);
+                return
             }
+            handleNotification('error', `was unable to ${chosenOperation} ${chosenPackage}`);
         } catch (e) {
             console.info(e)
             handleNotification('error', 'There was an error with the server, sorry')
@@ -69,7 +61,7 @@ export default function SoftwareManagement({devices, handleNotification, hostIp,
     }
 
     return (
-            <div className={"software-management"}>
+            <div className={installation ? "software-management disabled-element" : "software-management"}>
                 <header className={'section-header'}>
                     <h1>Software Management</h1>
                 </header>

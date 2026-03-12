@@ -8,7 +8,7 @@ export default function PortSelection({chosenPort, setChosenPort, chosenRule}) {
     }
 
     return (
-        <div className={checkChosenRule()? "package-selection" : "package-selection package-selection__disabled"}>
+        <div className={checkChosenRule()? "package-selection" : "package-selection disabled-element"}>
             <label>Select a port</label>
             <input type={'number'} value={checkChosenRule() ? chosenPort: 0} placeholder={'8080'}
                    onChange={(e) => setChosenPort(e.target.value)}></input>
