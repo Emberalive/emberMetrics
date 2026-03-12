@@ -4,7 +4,7 @@ const { addFireWallRule, runSoftwareOperation } = require('../opModules/admin')
 const { getThisIp } = require('../opModules/utils')
 
 async function returnReads (response, res) {
-    console.log("[ Server - returnReads] Starting function")
+    console.log("[ Server - returnReads] Starting function\n")
     if (!response || !response.body) {
         console.log("[ Server - returnReads] failed to return reads")
         return false
@@ -23,12 +23,13 @@ async function returnReads (response, res) {
         if(value) {
             const chunk = decoder.decode(value, {stream: true});
 
-            console.log("[ Server - returnReads] chunk: ", chunk)
+            console.log(chunk)
             res.write(chunk);
         }
     }
-    console.log("[ Server - returnReads ] Installation on remote-device completed");
+    console.log("[ Server - returnReads ] Operation on remote-device completed");
     res.end()
+    return true
 }
 
 function checkDevice (device) {

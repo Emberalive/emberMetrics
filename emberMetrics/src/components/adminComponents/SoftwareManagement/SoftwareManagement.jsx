@@ -27,16 +27,12 @@ export default function SoftwareManagement({devices, handleNotification, hostIp,
 
     //These are all going to be used later on..... - Don't need to use them yet
     async function installPackage(){
-        console.info("Install package has started");
-
         if (selectedManager === '' || selectedDevice.name === '' || chosenPackage === '') {
             handleNotification('error', 'Make sure all fields are selected')
             return
         }
 
         try {
-            console.info("attempting to call the host API");
-
             const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp: '127.0.0.1'}:3000/admin/software`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},

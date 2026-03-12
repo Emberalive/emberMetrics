@@ -7,7 +7,6 @@ export default function LogDisplay({logs, setDisplayLogs, setLogs, logDisplayRef
 
     useEffect(() => {
         log = logs.join('\n');
-
     }, [logs]);
 
     const onMouseUp=() => {
@@ -31,7 +30,7 @@ export default function LogDisplay({logs, setDisplayLogs, setLogs, logDisplayRef
 
 
     return (
-        <div style={{height: '100%', width: '100%', zIndex: '100', position: 'absolute'}}  onMouseUp={() => onMouseUp()} onMouseMove={(e) => onMouseMove(e)} >
+        <div style={{height: '100%', width: '100%', zIndex: '100', position: 'absolute', left: 'var(--element-padding)', top: 'var(--element-padding)'}}  onMouseUp={() => onMouseUp()} onMouseMove={(e) => onMouseMove(e)} >
             <section id="log-container" ref={logDisplayRef} >
                 <header id={'log-mover'} onMouseDown={(e) => onMouseDown(e) }>
                     <p className={'log-title'}>Logs</p>
