@@ -3,7 +3,7 @@ export default function AdminNavigation({adminView, setAdminView}) {
         <div className="admin-navigation">
             <a className={adminView === 'software'? "admin-navigation__link disabled-button" : "admin-navigation__link"}
                 onClick={() => setAdminView('software')}>
-                Software Install
+                Software
             </a>
             <a className={adminView === 'firewall'? "admin-navigation__link disabled-button" : "admin-navigation__link"}
                onClick={() => setAdminView('firewall')}>

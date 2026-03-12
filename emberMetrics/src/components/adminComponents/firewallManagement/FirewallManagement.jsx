@@ -2,9 +2,11 @@ import {useState} from "react";
 import PortSelection from "./PortSelection.jsx";
 import DeviceSelection from "../DeviceSelection.jsx";
 import RuleSelection from "./RuleSelection.jsx";
+import ItemSelection from "../SoftwareManagement/ItemSelection.jsx";
 
 export default function FirewallManagement({ devices, selectedDevice, setSelectedDevice,
-                                               handleNotification, deviceType, hostIp, handleLogs, installation}) {
+                                               handleNotification, deviceType,
+                                               hostIp, handleLogs, installation, viewPort}) {
     const [chosenPort, setChosenPort] = useState(0)
     const [chosenRule, setChosenRule] = useState('')
 
@@ -15,6 +17,15 @@ export default function FirewallManagement({ devices, selectedDevice, setSelecte
         setChosenRule('')
         setChosenPort(0)
     }
+
+    const rules = [
+        {name: 'allow'},
+        {name: 'deny'},
+        {name: 'default allow incoming'},
+        {name: 'default deny incoming'},
+        {name: 'default allow outgoing'},
+        {name: 'default deny outgoing'},
+    ];
 
     async function setFireWallRule(args) {
         try {
@@ -61,7 +72,8 @@ export default function FirewallManagement({ devices, selectedDevice, setSelecte
             <header className={'section-header'}>
                 <h1>Firewall Management</h1>
             </header>
-            <RuleSelection chosenRule={chosenRule} setChosenRule={setChosenRule}/>
+            <ItemSelection selectedItem={chosenRule} setSelectedItem={setChosenRule}
+                           items={rules} title={'rule'} columns={4} viewPort={viewPort}/>
             <PortSelection chosenPort={chosenPort}
                            setChosenPort={setChosenPort}
                            chosenRule={chosenRule}/>

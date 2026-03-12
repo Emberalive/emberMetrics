@@ -4,7 +4,7 @@ import AdminNavigation from "./AdminNavigation.jsx";
 import FirewallManagement from "./firewallManagement/FirewallManagement.jsx";
 import LogDisplay from "./LogDisplay.jsx";
 
-export default function Admin({devices, handleNotification, hostIp, deviceType}) {
+export default function Admin({devices, handleNotification, hostIp, deviceType, viewPort}) {
     const [adminView, setAdminView] = useState('software');
     const [selectedDevice, setSelectedDevice] = useState({
         name: ""
@@ -59,7 +59,7 @@ export default function Admin({devices, handleNotification, hostIp, deviceType})
                                                                  handleLogs={handleLogs}
                                                                  setSelectedDevice={setSelectedDevice}
                                                                  installation={installation}
-                                                                 setInstallation={setInstallation}/>}
+                                                                 setInstallation={setInstallation} viewPort={viewPort}/>}
                 {adminView === 'firewall' && <FirewallManagement devices={devices} adminView={adminView}
                                                                  handleNotification={handleNotification}
                                                                  hostIp={hostIp}
@@ -68,7 +68,7 @@ export default function Admin({devices, handleNotification, hostIp, deviceType})
                                                                  setSelectedDevice={setSelectedDevice}
                                                                  handleLogs={handleLogs}
                                                                  installation={installation}
-                                                                 setInstallation={setInstallation}/>}
+                                                                 setInstallation={setInstallation} viewPort={viewPort}/>}
             </section>
         </div>
     )

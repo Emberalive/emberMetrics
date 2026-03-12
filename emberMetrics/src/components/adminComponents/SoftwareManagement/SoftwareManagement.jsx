@@ -4,7 +4,8 @@ import {useRef, useState} from "react";
 import PackageSelection from "./PackageSelection.jsx";
 import ItemSelection from "./ItemSelection.jsx";
 
-export default function SoftwareManagement({devices, handleNotification, hostIp, deviceType, selectedDevice, setSelectedDevice, handleLogs, installation}) {
+export default function SoftwareManagement({devices, handleNotification, hostIp, deviceType, selectedDevice,
+                                               setSelectedDevice, handleLogs, installation, viewPort}) {
     const [selectedManager, setSelectedManager] = useState(null);
     const [chosenPackage, setChosenPackage] = useState('');
     const [chosenOperation, setChosenOperation] = useState('');
@@ -63,13 +64,16 @@ export default function SoftwareManagement({devices, handleNotification, hostIp,
                 </header>
                 <ItemSelection selectedItem={chosenOperation}
                                setSelectedItem={setChosenOperation}
-                               items={softwareOperation} title={'operation'} />
+                               items={softwareOperation}
+                               title={'operation'} columns={3} viewPort={viewPort}/>
                 <ItemSelection selectedItem={selectedManager}
                                setSelectedItem={setSelectedManager}
-                               items={packageManagers} title={'package manager'} />
+                               items={packageManagers}
+                               title={'package manager'} columns={4} viewPort={viewPort}/>
                 <DeviceSelection devices={devices}
                                  selectedDevice={selectedDevice}
-                                 setSelectedDevice={setSelectedDevice} />
+                                 setSelectedDevice={setSelectedDevice}
+                                 viewPort={viewPort}/>
                 <PackageSelection setChosenPackage={setChosenPackage}  chosenPackage={chosenPackage}/>
                 <div style={{display: 'flex', justifyContent: 'space-between'}}>
                     <button className={'general-button success-button'} onClick={async () => {
