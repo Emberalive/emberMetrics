@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import './index.css'
+// import './index.css'
 import Header from "./components/Header";
 import Settings from "./components/Settings.jsx";
 import DeviceManagement from "./components/DeviceManagement.jsx";
@@ -347,23 +347,19 @@ export default function App() {
             //unexpectedly
 
             const fetchMetrics = async () => {
-                console.log('Fetching metrics');
+                console.info('Fetching metrics');
                 try {
                     const url = new URL(`http://${selectedDevice}:3000`)
                     url.searchParams.set("childLength", childProcessLength ? childProcessLength.toString() : "10");
 
                     const response = await fetch(url);
                     if (response.ok) {
-                        console.log('metrics response resolved true')
                         const resData = await response.json();
                         if (resData) {
-                            console.log('resData resolved true')
                             if (isMounted) setMetrics(resData)
                         } else {
-                            console.log('metrics not found')
                             clearInterval(interval)
                             setMetrics(null)
-                            console.error("[APP_METRICS] Null metrics");
                             isMounted = false;
                         }
                     } else {

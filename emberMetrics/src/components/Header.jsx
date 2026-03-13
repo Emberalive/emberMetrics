@@ -15,7 +15,7 @@ export default function Header (props) {
     let deviceButtonList
     if (props.devices){
         deviceButtonList = props.devices.map((device) => {
-            return(<button key={device.id} className={props.selectedDevice === device.ip ?"general-button disabled-button": "general-button"} onClick={() => {
+            return(<button key={device.id} className={props.selectedDevice === device.ip ?"general-button__selection general-button-selection__clicked disabled-button": "general-button__selection"} onClick={() => {
                 changeRemoteDevice(device.ip)
                 props.setMetrics(null)
             }} style={{

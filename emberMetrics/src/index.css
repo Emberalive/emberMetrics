@@ -17,6 +17,8 @@
     --accent: #2E2E2E; /* Dark text color */
     --text-primary: #2E2E2E; /* Main text */
     --text-secondary: #5E5E5E; /* Secondary text */
+    --success-75: #4CAF5075; /* Green */
+    --danger-75: #A4162375; /* Deep crimson */
     --success: #4CAF50; /* Green */
     --danger: #A41623; /* Deep crimson */
     --neutral: #E0E0E0; /* Borders/backgrounds */
@@ -31,7 +33,9 @@
     --dm-text-primary: #E5E7EB;
     --dm-text-secondary: #9CA3AF;
     --dm-success: #1B9AAA; /* Teal */
+    --dm-success-75: #1B9AAA75; /* Teal */
     --dm-danger: #A41623; /* Crimson */
+    --dm-danger-75: #A4162375; /* Crimson */
     --dm-neutral: #1E1E1E; /* Dark surfaces */
     --dm-border-color: #374151; /* Dark borders */
     --dm-highlight: #4B5563; /* Dark highlight */
@@ -251,22 +255,43 @@ p {
 
 .general-button {
     width: fit-content;
-    font-weight: bold;
-    font-size: var(--button-size);
-    border-radius: var(--border-radius);
-    border: none;
     outline: none;
-    background-color: var(--neutral);
-    border-top: 2px solid var(--tertiary);
-    border-left: 2px solid var(--tertiary);
+    border: 1px solid var(--secondary);
+    border-radius: 10px;
+    padding: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.general-button:hover {
+    background-color: var(--tertiary);
+}
+
+.general-button__selection {
+    width: fit-content;
+    outline: none;
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 15px;
+    font-size: 20px;
+    font-weight: bold;
     cursor: pointer;
 }
 
 .danger-button {
-    background-color: var(--danger);
+    border: 1px solid var(--danger-75);
 }
 
 .success-button {
+    border: 1px solid var(--success-75);
+}
+
+.danger-button:hover {
+    background-color: var(--danger);
+}
+
+.success-button:hover {
     background-color: var(--success);
 }
 
@@ -276,11 +301,11 @@ p {
     opacity: 0.65;
 }
 
-.general-button__clicked {
+.general-button-selection__clicked {
     background-color: var(--tertiary);
 }
 
-.general-button:hover {
+.general-button__selection:hover {
     background-color: var(--tertiary);
 }
 
@@ -658,11 +683,6 @@ section {
     transition: height 0.3s ease;
 }
 
-.settings-entry__button-container {
-    display: flex;
-    flex-direction: row;
-}
-
 .settings-entry__label {
     display: flex;
     align-items: center;
@@ -675,6 +695,9 @@ section {
 
 .settings-entry__value-container {
     display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
     gap: 1rem;
 }
 
@@ -2115,6 +2138,22 @@ section {
 
 .dark-mode .header > button:hover {
     background-color: var(--dm-highlight);
+}
+
+.dark-mode .danger-button {
+    border: 1px solid var(--dm-danger);
+}
+
+.dark-mode .success-button {
+    border: 1px solid var(--dm-success);
+}
+
+.dark-mode .danger-button:hover {
+    background-color: var(--dm-danger-75);
+}
+
+.dark-mode .success-button:hover {
+    background-color: var(--dm-success-75);
 }
 
 .dark-mode .p {

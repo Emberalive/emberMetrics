@@ -39,10 +39,10 @@ export default function MetricsSettings(props) {
                 <div className={'metrics-settings-entry'}>
                     <p className="settings-entry__label">Metrics view</p>
                     <div className={"settings-entry__button-container"} style={{ display: "flex", gap: '20px'}}>
-                        <button className={!props.isGraph ? "general-button general-button__clicked": "general-button"} onClick={ () => {
+                        <button className={!props.isGraph ? "general-button__selection general-button-selection__clicked": "general-button__selection"} onClick={ () => {
                             props.setIsGraph(false)
                         }}>Detailed</button>
-                        <button className={props.isGraph ? "general-button general-button__clicked" : "general-button"} onClick={ () => {
+                        <button className={props.isGraph ? "general-button__selection general-button-selection__clicked" : "general-button__selection"} onClick={ () => {
                             props.setIsGraph(true)
                         }}>Graphs</button>
                     </div>
