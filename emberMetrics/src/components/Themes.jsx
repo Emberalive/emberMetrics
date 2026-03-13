@@ -17,13 +17,23 @@ export default function Themes (props){
 
     const [themeClicked, setThemeClicked] = useState(null);
 
-    function changeTheme (theme) {
-        props.setLogoImage(theme.logo)
-        document.documentElement.style.setProperty("--secondary", theme.colour.secondary)
-        document.documentElement.style.setProperty("--tertiary", theme.colour.tertiary)
-        //for darkMode
-        document.documentElement.style.setProperty("--dm-tertiary", theme.colour.tertiary)
-        document.documentElement.style.setProperty("--dm-secondary", theme.colour.secondary)
+    function changeTheme(theme) {
+        const root = document.documentElement;
+
+        props.setLogoImage(theme.logo);
+
+        root.style.setProperty("--secondary", theme.colour.secondary);
+        root.style.setProperty("--tertiary", theme.colour.tertiary);
+
+        root.style.setProperty("--secondary-75", theme.colour.secondary75);
+        root.style.setProperty("--tertiary-75", theme.colour.tertiary75);
+
+        // dark mode
+        root.style.setProperty("--dm-secondary", theme.colour.secondary);
+        root.style.setProperty("--dm-tertiary", theme.colour.tertiary);
+
+        root.style.setProperty("--dm-secondary-75", theme.colour.secondary75);
+        root.style.setProperty("--dm-tertiary-75", theme.colour.tertiary75);
     }
 
 

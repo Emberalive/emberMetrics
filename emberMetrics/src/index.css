@@ -14,6 +14,8 @@
     --primary: #F8F9FA; /* Light background */
     --secondary: #FF8C42; /* Vibrant orange */
     --tertiary: #CC5803; /* Darker orange */
+    --secondary-75: #FF8C4275; /* Vibrant orange */
+    --tertiary-75: #CC580375; /* Darker orange */
     --accent: #2E2E2E; /* Dark text color */
     --text-primary: #2E2E2E; /* Main text */
     --text-secondary: #5E5E5E; /* Secondary text */
@@ -29,6 +31,8 @@
     --dm-primary: #101010; /* Dark background */
     --dm-secondary: #FF8C42; /* Vibrant orange */
     --dm-tertiary: #CC5803; /* Darker orange */
+    --dm-secondary-75: #FF8C4275; /* Vibrant orange */
+    --dm-tertiary-75: #CC580375; /* Darker orange */
     --dm-accent: #E5E7EB; /* Light text */
     --dm-text-primary: #E5E7EB;
     --dm-text-secondary: #9CA3AF;
@@ -265,13 +269,13 @@ p {
 }
 
 .general-button:hover {
-    background-color: var(--tertiary);
+    background-color: var(--tertiary-75);
 }
 
 .general-button__selection {
     width: fit-content;
     outline: none;
-    border: 1px solid var(--accent);
+    border: 1px solid var(--secondary);
     border-radius: 10px;
     padding: 15px;
     font-size: 20px;
@@ -301,12 +305,8 @@ p {
     opacity: 0.65;
 }
 
-.general-button-selection__clicked {
-    background-color: var(--tertiary);
-}
-
-.general-button__selection:hover {
-    background-color: var(--tertiary);
+.general-button__selection:hover, .general-button-selection__clicked {
+    background-color: var(--tertiary-75);
 }
 
 .metrics-settings-wrapper {
