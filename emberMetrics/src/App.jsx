@@ -396,18 +396,6 @@ export default function App() {
 
     const savedTheme = JSON.parse(localStorage.getItem("theme"));
 
-
-    // useEffect(() => {
-    //     if (savedTheme) {
-    //         document.documentElement.style.setProperty("--secondary", savedTheme.colour.secondary);
-    //         document.documentElement.style.setProperty("--tertiary", savedTheme.colour.tertiary);
-    //
-    //         document.documentElement.style.setProperty("--dm-tertiary", savedTheme.colour.tertiary)
-    //         document.documentElement.style.setProperty("--dm-secondary", savedTheme.colour.secondary)
-    //         setLogoImage(savedTheme.logo)
-    //     }
-    // }, [])
-
     useEffect(() => {
         if (savedTheme) {
             document.documentElement.style.setProperty("--secondary", savedTheme.colour.secondary);
@@ -475,7 +463,7 @@ export default function App() {
                 isMounted = false;
                 clearInterval(interval);
             };
-        }, [selectedDevice, isLoggedIn, authentication, metricInterval, activeView]);
+        }, [selectedDevice, isLoggedIn, authentication, metricInterval, activeView, childProcessLength]);
 
   return (
       <>

@@ -48,13 +48,10 @@ export default function Profile (props) {
             if (response.ok) {
                 const resData = await response.json()
                 if (resData.success) {
-                    console.info('[ App.jsx - patchUser ] setting the user data in state and sending notification')
-                    props.handleNotification('notice', 'Successfully updated user data')
-                    return {
-                        success: true,
-                        status: response.status,
-                        updatedUser: resData.updatedUser
-                    }
+                    props.setUser(resData.updatedUser)
+                    props.handleNotification('notice', 'User info successfully updated')
+                    setEditing(false);
+                    return
                 }
                 props.handleNotification('error', 'The request was incorrect')
             }

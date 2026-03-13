@@ -65,19 +65,19 @@ export default function ChildProcesses (props) {
             return (
                     <div className={'child-processes__row'} key={child.pid} title={child.name}>
                         <p className={'child-processes__row-item'} style={{textAlign: 'left'}}>
-                            {child.name}
-                        </p>
-                        <p className={'child-processes__row-item'} style={{textAlign: 'left'}}>
                             {child.pid}
                         </p>
+                        <p className={'child-processes__row-item'} style={{color: child.memory >= 70.00 ? 'var(--danger)' : child.memory > 40.00 ? 'orange' : '', textAlign: 'left'}}>
+                            {child.memory}
+                        </p>
                         <p className={'child-processes__row-item'} style={{textAlign: 'left'}}>
-                            {child.user}
+                            {child.name}
                         </p>
                         <p className={'child-processes__row-item'} style={{fontWeight: 'bold', color: child.cpu >= 70.00 ? 'var(--danger)' : child.cpu > 40.00 ? 'orange' : '', textAlign: 'right'}}>
                             {child.cpu.toFixed(2)}
                         </p>
-                        <p className={'child-processes__row-item'} style={{color: child.memory >= 70.00 ? 'var(--danger)' : child.memory > 40.00 ? 'orange' : '', textAlign: 'right'}}>
-                            {child.memory}
+                        <p className={'child-processes__row-item'} style={{textAlign: 'right'}}>
+                            {child.user}
                         </p>
                     </div>
             )
@@ -114,14 +114,14 @@ export default function ChildProcesses (props) {
                             <p className={'child-processes__row-item'} >
                                 {foundChild.pid}
                             </p>
-                            <p className={'child-processes__row-item'} style={{fontWeight: 'bold', color: foundChild.cpu >= 70.00 ? 'var(--danger)' : foundChild.cpu > 40.00 ? 'orange' : ''}}>
-                                {foundChild.cpu.toFixed(2)}
+                            <p className={'child-processes__row-item'} style={{color: foundChild.memory >= 70.00 ? 'var(--danger)' : foundChild.memory > 40.00 ? 'orange' : ''}}>
+                                {foundChild.memory}
                             </p>
                             <p className={'child-processes__row-item'}>
                                 {foundChild.name}
                             </p>
-                            <p className={'child-processes__row-item'} style={{color: foundChild.memory >= 70.00 ? 'var(--danger)' : foundChild.memory > 40.00 ? 'orange' : ''}}>
-                                {foundChild.memory}
+                            <p className={'child-processes__row-item'} style={{fontWeight: 'bold', color: foundChild.cpu >= 70.00 ? 'var(--danger)' : foundChild.cpu > 40.00 ? 'orange' : ''}}>
+                                {foundChild.cpu.toFixed(2)}
                             </p>
                             <p className={'child-processes__row-item'}>
                                 {foundChild.user}
@@ -135,19 +135,19 @@ export default function ChildProcesses (props) {
                 <div className="child-processes__table">
                     <div className={'child-processes__row-header'}>
                         <p className={' child-processes__header'} style={{textAlign: 'left'}}>
-                            Name
-                        </p>
-                        <p className={'child-processes__header'} style={{textAlign: 'left'}}>
                             Pid
                         </p>
                         <p className={'child-processes__header'} style={{textAlign: 'left'}}>
-                            User
+                            Mem%
+                        </p>
+                        <p className={'child-processes__header'} style={{textAlign: 'left'}}>
+                            Name
                         </p>
                         <p className={'child-processes__header'} style={{textAlign: 'right'}}>
                             CPU%
                         </p>
                         <p className={'child-processes__header child-processes__header-end'} style={{textAlign: 'right'}}>
-                            Mem%
+                            User
                         </p>
                     </div>
                     {childDataList}
