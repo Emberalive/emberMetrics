@@ -471,18 +471,19 @@ export default function App() {
 
           {(activeView === 'resources' || activeView === "fullScreen") &&
               <HoveringButtons isMetricSettings={isMetricSettings}
-                           setIsMetricSettings={setIsMetricSettings}
-                           activeView={activeView}
-                           setActiveView={setActiveView}
-                           isDarkMode={isDarkMode}
-                           metricInterval={metricInterval}
-                           themes={themes}
-                           childProcessLength={childProcessLength}
-                           setChildProcessLength={setChildProcessLength}
-                           isGraph={isGraph}
-                           setIsGraph={setIsGraph}
-                           setMetricInterval={setMetricInterval}
-                           handleNotification={handleNotification} />}
+                               setIsMetricSettings={setIsMetricSettings}
+                               activeView={activeView}
+                               setActiveView={setActiveView}
+                               isDarkMode={isDarkMode}
+                               metricInterval={metricInterval}
+                               themes={themes}
+                               childProcessLength={childProcessLength}
+                               setChildProcessLength={setChildProcessLength}
+                               isGraph={isGraph}
+                               setIsGraph={setIsGraph}
+                               setMetricInterval={setMetricInterval}
+                               handleNotification={handleNotification}
+                               setTimeMetrics={setTimeMetrics}/>}
 
           <Header metrics={metrics}
                    setIsDarkMode={setIsDarkMode}

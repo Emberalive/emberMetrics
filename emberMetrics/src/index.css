@@ -711,7 +711,6 @@ section {
     color: var(--accent);
     font-family: 'Inter', sans-serif;
     font-weight: 700;
-    text-align: right;
     padding: var(--element-padding);
 }
 
@@ -1206,6 +1205,7 @@ section {
     align-items: center;
     justify-content: space-between;
     margin-bottom: 10px;
+    width: calc(100% - var(--element-padding));
 }
 
 .child-processes__table__wrapper {

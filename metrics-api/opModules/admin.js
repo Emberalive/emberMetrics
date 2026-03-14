@@ -23,37 +23,82 @@ function killProcess(process) {
     }
 }
 
-function getManager(manager, operation) {
-    if (operation === 'install' || operation === 'remove') {
-        console.log(`[ Server - getManager ] running ${operation} pathway`)
-        const packageManagers = {
-            apt: { cmd: 'sudo', args: ['apt', operation, '-y'] },
-            yum: { cmd: 'sudo', args: ['yum', operation, '-y'] },
-            dnf: { cmd: 'sudo', args: ['dnf', operation, '-y'] },
-            pacman: { cmd: 'sudo', args: ['pacman', operation === 'install' ? '-S' : '-R', '--noconfirm'] },
-            zypper: { cmd: 'sudo', args: ['zypper', operation, '-y'] },
-            emerge: { cmd: 'sudo', args: operation === "install" ? ["emerge", "--quiet"] : ["emerge", "--unmerge", "--quiet"] },
-            flatpak: { cmd: 'sudo', args: ['flatpak', operation === 'installer' ? 'install' : 'uninstall', '-y', '--noninteractive'] }
-        }
-        return packageManagers[manager]
-    }
-    if (operation === 'check') {
-        // exit code is 0 if installed, and 1 if not installed
-        console.log('[ Server - getManager ] running check pathway')
+const managers = {
+    apt: {
+        install: { cmd: "sudo", args: ["apt", "install", "-y"] },
+        remove: { cmd: "sudo", args: ["apt", "remove", "-y"] },
+        check: { cmd: "sudo", args: ["dpkg", "-s"] },
+        search: { cmd: "sudo", args: ["apt", "search"] }
+    },
 
-        const checkCommands = {
-            apt: { cmd: "sudo", args: ["dpkg", "-s"] },
-            dnf: { cmd: "sudo", args: ["rpm", "-q"] },
-            yum: { cmd: "sudo", args: ["rpm", "-q"] },
-            pacman: { cmd: "sudo", args: ["pacman", "-Qi"] },
-            zypper: { cmd: "sudo", args: ["rpm", "-q"] },
-            emerge: { cmd: "sudo", args: ["qlist", "-I"] },
-            flatpak: { cmd: "sudo", args: ["flatpak", "info"] }
-        }
-        return checkCommands[manager]
+    dnf: {
+        install: { cmd: "sudo", args: ["dnf", "install", "-y"] },
+        remove: { cmd: "sudo", args: ["dnf", "remove", "-y"] },
+        check: { cmd: "sudo", args: ["rpm", "-q"] },
+        search: { cmd: "sudo", args: ["dnf", "search"] }
+    },
+
+    yum: {
+        install: { cmd: "sudo", args: ["yum", "install", "-y"] },
+        remove: { cmd: "sudo", args: ["yum", "remove", "-y"] },
+        check: { cmd: "sudo", args: ["rpm", "-q"] },
+        search: { cmd: "sudo", args: ["yum", "search"] }
+    },
+
+    pacman: {
+        install: { cmd: "sudo", args: ["pacman", "-S", "--noconfirm"] },
+        remove: { cmd: "sudo", args: ["pacman", "-R", "--noconfirm"] },
+        check: { cmd: "sudo", args: ["pacman", "-Qi"] },
+        search: { cmd: "sudo", args: ["pacman", "-Ss"] }
+    },
+
+    zypper: {
+        install: { cmd: "sudo", args: ["zypper", "install", "-y"] },
+        remove: { cmd: "sudo", args: ["zypper", "remove", "-y"] },
+        check: { cmd: "sudo", args: ["rpm", "-q"] },
+        search: { cmd: "sudo", args: ["zypper", "search"] }
+    },
+
+    emerge: {
+        install: { cmd: "sudo", args: ["emerge", "--quiet"] },
+        remove: { cmd: "sudo", args: ["emerge", "--unmerge", "--quiet"] },
+        check: { cmd: "sudo", args: ["qlist", "-I"] },
+        search: { cmd: "sudo", args: ["emerge", "--search"] }
+    },
+
+    flatpak: {
+        install: { cmd: "sudo", args: ["flatpak", "install", "-y", "--noninteractive"] },
+        remove: { cmd: "sudo", args: ["flatpak", "uninstall", "-y", "--noninteractive"] },
+        check: { cmd: "sudo", args: ["flatpak", "info"] },
+        search: { cmd: "sudo", args: ["flatpak", "search"] }
+    },
+
+    snap: {
+        install: { cmd: "sudo", args: ["snap", "install"] },
+        remove: { cmd: "sudo", args: ["snap", "remove"] },
+        check: { cmd: "sudo", args: ["snap", "list"] },
+        search: { cmd: "sudo", args: ["snap", "search"] },
     }
-    console.log(`[ Server - getManager ] operation is: ${operation}, expected \'install\', \'remove\', \'check\'`);
-    return {success: false}
+}
+
+function getManager(manager, operation) {
+    console.log(`[ Server - getManager ] manager: ${manager}, operation: ${operation }`)
+
+    const managerObj = managers[manager]
+
+    if (!managerObj) {
+        console.log(`[ Server - getManager ] unknown package manager: ${manager}`)
+        return { success: false }
+    }
+
+    const operationCmd = managerObj[operation]
+
+    if (!operationCmd) {
+        console.log(`[ Server - getManager ] unsupported operation '${operation}' for ${manager}`)
+        return { success: false }
+    }
+
+    return operationCmd
 }
 
  function runCommand (command, args) {

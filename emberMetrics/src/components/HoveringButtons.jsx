@@ -27,12 +27,13 @@ export default function HoveringButtons (props) {
                          src={props.isDarkMode ? HamburgerBlack : HamburgerWhite}></img>
                 </div>
                 <MetricsSettings metricInterval={props.metricInterval}
-                                                             handleNotification={props.handleNotification}
-                                                             setChildProcessLength={props.setChildProcessLength}
-                                                             childProcessLength={props.childProcessLength}
-                                                             setIsGraph={props.setIsGraph} isGraph={props.isGraph}
-                                                             isMetricSettings={props.isMetricSettings}
-                                                             setMetricInterval={props.setMetricInterval}/>
+                                 handleNotification={props.handleNotification}
+                                 setChildProcessLength={props.setChildProcessLength}
+                                 childProcessLength={props.childProcessLength}
+                                 setIsGraph={props.setIsGraph} isGraph={props.isGraph}
+                                 isMetricSettings={props.isMetricSettings}
+                                 setMetricInterval={props.setMetricInterval}
+                                 setTimeMetrics={props.setTimeMetrics}/>
         </div>
 
     )

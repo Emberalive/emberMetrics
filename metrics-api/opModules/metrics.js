@@ -1,5 +1,6 @@
 const os = require('os')
 const si = require('systeminformation')
+const {getDiskSize} = require("./utils");
 
 let metrics = {}
 let childLength = 0
@@ -211,7 +212,7 @@ async function getDiskInfo () {
                 type: disk.type ? disk.type : 'unknown',
                 vendor: disk.vendor ? disk.vendor : 'unknown',
                 device: disk.device ? disk.device : 'unknown',
-                size: (disk.size / (1024 ** 3)).toFixed(2).toString().length > 6 ? (disk.size / (1024 ** 4)).toFixed(2).toString() + 'TB': (disk.size / (1024 ** 3)).toFixed(2).toString() + 'GB',
+                size: getDiskSize(disk.size) ? getDiskSize(disk.size) : 'unknown',
                 interfaceType: disk.interfaceType ? disk.interfaceType : 'unknown',
             }
         })

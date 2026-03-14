@@ -18,16 +18,17 @@ export default function SoftwareManagement({devices, handleNotification, hostIp,
         {name: "zypper"},
         {name: "emerge"},
         {name: "flatpak"},
+        {name: "snap"}
     ];
 
     const softwareOperation = [
         {name: 'install'},
         {name: 'remove'},
         {name: 'check'},
+        {name: 'search'}
     ]
 
-    //These are all going to be used later on..... - Don't need to use them yet
-    async function installPackage(){
+    async function runOperation(){
         if (selectedManager === '' || selectedDevice.name === '' || chosenPackage === '') {
             handleNotification('error', 'Make sure all fields are selected')
             return
@@ -77,7 +78,7 @@ export default function SoftwareManagement({devices, handleNotification, hostIp,
                 <PackageSelection setChosenPackage={setChosenPackage}  chosenPackage={chosenPackage}/>
                 <div style={{display: 'flex', justifyContent: 'space-between'}}>
                     <button className={'general-button success-button'} onClick={async () => {
-                        await installPackage()
+                        await runOperation()
                     }}>Run Operation</button>
                     <button className={'general-button danger-button'} onClick={() => {
                         setSelectedDevice({name: ''})
