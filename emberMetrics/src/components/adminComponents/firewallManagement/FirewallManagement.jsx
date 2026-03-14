@@ -28,6 +28,7 @@ export default function FirewallManagement({ devices, selectedDevice, setSelecte
     ];
 
     async function setFireWallRule(args) {
+        resetFields()
         try {
             const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp : '127.0.0.1:3000/admin/fireWallRule'}`, {
                 method: 'POST',
@@ -85,9 +86,7 @@ export default function FirewallManagement({ devices, selectedDevice, setSelecte
                     await chooseParams()
                 }}>Create Rule</button>
                 <button className={'general-button danger-button'} onClick={() => {
-                    setSelectedDevice({name: ''})
-                    setChosenPort(0)
-                    setChosenRule('')
+                    resetFields()
                 }}>Reset</button>
             </div>
         </div>

@@ -28,12 +28,21 @@ export default function SoftwareManagement({devices, handleNotification, hostIp,
         {name: 'search'}
     ]
 
+    function resetFields () {
+        setSelectedDevice({
+            name: "",
+        })
+        setChosenPackage('');
+        setChosenOperation('')
+        setSelectedManager(null);
+    }
+
     async function runOperation(){
         if (selectedManager === '' || selectedDevice.name === '' || chosenPackage === '') {
             handleNotification('error', 'Make sure all fields are selected')
             return
         }
-
+        resetFields()
         try {
             const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp: '127.0.0.1'}:3000/admin/software`, {
                 method: 'POST',
@@ -81,9 +90,7 @@ export default function SoftwareManagement({devices, handleNotification, hostIp,
                         await runOperation()
                     }}>Run Operation</button>
                     <button className={'general-button danger-button'} onClick={() => {
-                        setSelectedDevice({name: ''})
-                        setChosenPackage('')
-                        setSelectedManager(null)
+                        resetFields()
                     }}>Reset</button>
                 </div>
             </div>
