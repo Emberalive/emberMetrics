@@ -1,7 +1,27 @@
 [
   {
-    "name": "localhost1",
+    "name": "localhost",
     "ip": "127.0.0.1",
     "id": "DgxI77r32HDNeBfh0sK8B"
+  },
+  {
+    "name": "Laptop",
+    "ip": "192.168.0.184",
+    "id": "tQMVV7uSEqai7GWCRwgjQ"
+  },
+  {
+    "name": "Ember",
+    "ip": "192.168.0.208",
+    "id": "qMChRs9eVqvJZLBUcSPRT"
+  },
+  {
+    "name": "EmberLocal",
+    "ip": "192.168.0.208",
+    "id": "EIgsAmY-1iT8rd4wzJvih"
+  },
+  {
+    "name": "my server",
+    "ip": "203.0.113.0",
+    "id": "VVdcnY99dJFBOlIz-OGAD"
   }
 ]

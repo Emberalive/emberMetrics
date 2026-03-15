@@ -1,10 +1,9 @@
 const os = require('os')
 const si = require('systeminformation')
-const fs = require('fs').promises;
-const filePath = './devices.json'
+const {getDiskSize} = require("./utils");
 
 let metrics = {}
-let childData = []
+let childLength = 0
 let deviceData
 let oldCpus = os.cpus()
 
@@ -110,21 +109,22 @@ async function getChildProcesses () {
         //this sorts the processes based on cpu usage
         childProcesses.sort((a, b) => b.cpu - a.cpu);
         if (childProcesses.length > 0) {
-            childData = childProcesses.splice(0, 10)
+            if (childLength === 0) {
+                return childProcesses.splice(0, 10)
+            } else {
+                if (typeof childLength === 'number') {
+                    return childProcesses.splice(0, childLength)
+                } else {
+                    return childProcesses.splice(0, 10)
+                }
+            }
+        } else {
+            return childProcesses.sort((a, b) => b.cpu - a.cpu);
         }
     } catch (e) {
         console.error(`There was an issue monitoring the child processes:\n ${e.message}`)
     }
 }
-
-//make child processes gathered every minute, as there is a lot of data to gather.
-;(async () => {
-    await getChildProcesses()
-
-    setInterval(() => {
-        getChildProcesses().catch(console.error)
-    }, 60000)
-})().catch(console.error)
 
 async function getCpuTemperature() {
     try {
@@ -212,7 +212,7 @@ async function getDiskInfo () {
                 type: disk.type ? disk.type : 'unknown',
                 vendor: disk.vendor ? disk.vendor : 'unknown',
                 device: disk.device ? disk.device : 'unknown',
-                size: (disk.size / (1024 ** 3)).toFixed(2).toString().length > 6 ? (disk.size / (1024 ** 4)).toFixed(2).toString() + 'TB': (disk.size / (1024 ** 3)).toFixed(2).toString() + 'GB',
+                size: getDiskSize(disk.size) ? getDiskSize(disk.size) : 'unknown',
                 interfaceType: disk.interfaceType ? disk.interfaceType : 'unknown',
             }
         })
@@ -245,7 +245,7 @@ const interval = setInterval(async () => {
             memoryUsage: await getMemory(),
             cpuUsage: await getCpu(),
             gpuData: await monitorGraphics(),
-            childProcesses: childData,
+            childProcesses: await getChildProcesses(),
             interfaces: await getInterfaceData(),
             disks: await getDiskInfo()
         }
@@ -258,4 +258,8 @@ function getMetrics () {
     return metrics
 }
 
-module.exports = {getMetrics};
+function setChildLength (length) {
+    childLength = length
+}
+
+module.exports = {getMetrics, setChildLength};

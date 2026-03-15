@@ -118,18 +118,18 @@ export default function CpuData (props) {
                                         stroke: '#888',
                                     },
                                     [`.${axisClasses.tickLabel}`]: {
-                                        fill: 'aliceblue',  // This was empty before — tick labels had no color!
-                                        fontSize: 11,
+                                        fill: 'var(--accent)',
+                                        fontSize: 'var(--font-size)',
                                     },
                                     [`.${axisClasses.label}`]: {
-                                        fill: 'aliceblue',
-                                        fontSize: 12,
+                                        fill: 'var(--accent)',
+                                        fontSize: 'var(--font-size)',
                                     },
                                 },
 
                                 [`.${legendClasses.label}`]: {
-                                    color: 'aliceblue',   // text color
-                                    fontSize: 14,
+                                    color: 'var(--accent)',
+                                    fontSize: 'var(--font-size)',
                                     fontWeight: 600,
                                 },
 
@@ -140,8 +140,8 @@ export default function CpuData (props) {
                                 },
 
                                 // ===== Container styling =====
-                                backgroundColor: '#121212',
-                                borderRadius: 8,
+                                backgroundColor: 'var(--primary)',
+                                borderRadius: 0,
                             })}
                         />
                     </div>
@@ -190,18 +190,18 @@ export default function CpuData (props) {
                                         stroke: '#888',
                                     },
                                     [`.${axisClasses.tickLabel}`]: {
-                                        fill: 'aliceblue',
-                                        fontSize: 12,
+                                        fill: 'var(--accent)',
+                                        fontSize: 'var(--font-size)',
                                     },
                                     [`.${axisClasses.label}`]: {
-                                        fill: 'aliceblue',
-                                        fontSize: 12,
+                                        fill: 'var(--accent)',
+                                        fontSize: 'var(--font-size)',
                                     },
                                 },
 
                                 [`.${legendClasses.label}`]: {
-                                    color: 'aliceblue',   // text color
-                                    fontSize: 14,
+                                    color: 'var(--accent)',
+                                    fontSize: 'var(--font-size)',
                                     fontWeight: 600,
                                 },
 
@@ -212,7 +212,7 @@ export default function CpuData (props) {
                                 },
 
                                 // ===== Container styling =====
-                                backgroundColor: '#121212',
+                                backgroundColor: 'var(--primary)',
                                 borderRadius: 8,
                             })}
                         />
@@ -227,12 +227,12 @@ export default function CpuData (props) {
             return (
                 <li
                     key={core.no}>
-                    <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                        <p>Core - {core.no}</p>
+                    <div className={'cpu-cores__item'}>
+                        <p style={{borderRight: `3px solid var(--border-color)`, minWidth: `75px`, maxWidth: '120px', paddingRight: '10px'}}>Core-{core.no}</p>
                         <p>{core.usage}%</p>
                     </div>
 
-                    <div style={{height:'2px', width: core.usage + '%', backgroundColor: core.usage >= 40 ? core.usage >=70 ? 'red' : 'orange' : 'var(--tertiary)'}}></div>
+                    <div className={'cpu-usage-bar'} style={{width: core.usage + '%', backgroundColor: core.usage >= 40 ? core.usage >=70 ? 'red' : 'orange' : 'var(--tertiary)'}}></div>
 
                 </li>
             );

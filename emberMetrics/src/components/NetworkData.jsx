@@ -50,7 +50,7 @@ export default function NetworkData(props) {
                         {
                             dataKey: 'transmitted',
                             label: 'Transmitted (b)',
-                            color: 'aliceblue'
+                            color: 'var(--accent)'
                         },
                         {
                             dataKey: 'received',
@@ -61,12 +61,6 @@ export default function NetworkData(props) {
                     grid={{ stroke: '#333', strokeWidth: 0.5, vertical: true, horizontal: true }}
                     height={400}
                     sx={(theme) => ({
-                        // ===== Line styling =====
-                        // [`.${lineElementClasses.root}`]: {
-                        //     stroke: 'var(--secondary)',
-                        //     strokeWidth: 3,
-                        // },
-
                         // ===== Point markers =====
                         [`.${markElementClasses.root}`]: {
                             strokeWidth: 2,
@@ -83,18 +77,18 @@ export default function NetworkData(props) {
                                 stroke: '#888',
                             },
                             [`.${axisClasses.tickLabel}`]: {
-                                fill: 'aliceblue',
-                                fontSize: 12,
+                                fill: 'var(--accent)',
+                                fontSize: 'var(--font-size)',
                             },
                             [`.${axisClasses.label}`]: {
-                                fill: 'aliceblue',
-                                fontSize: 12,
+                                fill: 'var(--accent)',
+                                fontSize: 'var(--font-size)',
                             },
                         },
 
                         [`.${legendClasses.label}`]: {
-                            color: 'aliceblue',   // text color
-                            fontSize: 14,
+                            color: 'var(--accent)',
+                            fontSize: 'var(--font-size)',
                             fontWeight: 600,
                         },
 
@@ -105,7 +99,7 @@ export default function NetworkData(props) {
                         },
 
                         // ===== Container styling =====
-                        backgroundColor: '#121212',
+                        backgroundColor: 'var(--primary)',
                         borderRadius: 8,
                     })}
                 />

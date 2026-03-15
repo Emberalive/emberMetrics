@@ -1,13 +1,14 @@
 const express = require('express')
 const app = express()
+const {getHostIp} = require('./opModules/utils')
 // functions for metrics gathering
-const {getMetrics} = require('./opModules/metrics')
+const {getMetrics, setChildLength} = require('./opModules/metrics')
 const cors = require('cors')
 const port = 3000
 
 const deviceRoutes = require('./routes/deviceRoutes')
 const userRoutes = require('./routes/userRoutes')
-
+const adminRoutes = require('./routes/adminRoutes')
 
 app.use(express.json())
 app.use(cors({
@@ -17,17 +18,24 @@ app.use(cors({
 
 app.use('/devices', deviceRoutes);
 app.use('/users', userRoutes);
+app.use('/admin', adminRoutes)
 
 //returns the metrics
 app.get('/', (req, res) => {
     const metrics = getMetrics();
-
+    const childLength = req.query.childLength
     if (!metrics || (typeof metrics === 'object' && Object.keys(metrics).length === 0)) {
         return res.status(500).json({ error: 'Metrics Data not available' });
+    }
+    const parsed = parseInt(childLength, 10)
+    if (!childLength) return res.status(500).json({ error: 'Invalid child length' });
+    if (typeof parsed === 'number') {
+        setChildLength(parsed);
     }
     res.status(200).json(metrics); // always send JSON
 });
 
-app.listen(port, () => {
+app.listen(port, async () => {
     console.log(`[Server] API Listening on port ${port}`)
+    await getHostIp()
 })

@@ -11,11 +11,11 @@ export default function Settings (props) {
                 </header>
                 <div className="settings-entry">
                     <p className="settings-entry__label">Display Mode: </p>
-                    <div className={"settings-entry__button-container"} style={{ display: "flex"}}>
-                        <button className={props.isDarkMode ? "general-button general-button__clicked": "general-button"} onClick={ () => {
+                    <div className={"settings-entry__value-container"} style={{ display: "flex"}}>
+                        <button className={props.isDarkMode ? "general-button__selection general-button-selection__clicked": "general-button__selection"} onClick={ () => {
                             props.setIsDarkMode(true);
                         }}>DarkMode</button>
-                        <button className={!props.isDarkMode ? "general-button general-button__clicked" : "general-button"} onClick={ () => {
+                        <button className={!props.isDarkMode ? "general-button__selection general-button-selection__clicked": "general-button__selection"} onClick={ () => {
                             props.setIsDarkMode(false);
                         }}>LightMode</button>
                     </div>
@@ -23,17 +23,17 @@ export default function Settings (props) {
                 <div className="settings-entry">
                     <p className="settings-entry__label">Font Size:</p>
                     <div className={'settings-entry__value-container'}>
-                        <button style={{fontSize: "10px", maxWidth: "100px", minWidth: "100px"}} id="font-small" className={props.fontClicked === "small" ? "general-button general-button__clicked": "general-button"} onClick={ () => {
+                        <button style={{fontSize: "10px"}} id="font-small" className={props.fontClicked === "small" ? "general-button-selection__clicked general-button-selection": "general-button__selection"} onClick={ () => {
                             props.setFontClicked("small")
                             props.changeFont("text",10)
                             props.changeFont("header", 20)
                         }}>Small</button>
-                        <button style={{fontSize: "20px", maxWidth: "100px", minWidth: "100px"}} id="font-medium" className={props.fontClicked === "medium" ? "general-button general-button__clicked": "general-button"} onClick={ () => {
+                        <button style={{fontSize: "20px"}} id="font-medium" className={props.fontClicked === "medium" ? "general-button__selection general-button-selection__clicked": "general-button__selection"} onClick={ () => {
                             props.setFontClicked("medium")
                             props.changeFont("text",20)
                             props.changeFont("header", 30)
                         }}>Medium</button>
-                        <button style={{fontSize: "30px", maxWidth: "100px", minWidth: "100px"}} id="font-large" className={props.fontClicked === "large" ? "general-button general-button__clicked": "general-button"} onClick={ () => {
+                        <button style={{fontSize: "30px"}} id="font-large" className={props.fontClicked === "large" ? "general-button__selection general-button-selection__clicked": "general-button__selection"} onClick={ () => {
                             if(props.windowWidth <= 900 ) {
                                 props.handleNotification('error', 'Screen is too small')
                                 return
@@ -42,22 +42,6 @@ export default function Settings (props) {
                             props.changeFont("text", 30)
                             props.changeFont("header", 40)
                         }}>Large</button>
-                    </div>
-                </div>
-                <div className={'settings-entry'}>
-                    <p className="settings-entry__label">Interval: </p>
-                    <div className={"settings-entry__value-container"}>
-                        <input type={'text'} value={props.metricInterval/1000} onChange={(e) => {
-                            const parsed = Number(e.target.value)
-
-                            if (!Number.isNaN(parsed)) {
-                                props.setmetricInterval(parsed * 1000)
-                            } else {
-                                props.setmetricInterval(1000)
-                                props.handleNotification('error', 'Please enter a valid number')
-                            }
-                        }}/>
-                        <p>Seconds</p>
                     </div>
                 </div>
                 <div className="theme-container__wrapper">

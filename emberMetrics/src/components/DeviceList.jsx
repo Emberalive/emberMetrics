@@ -12,41 +12,50 @@ export default function DeviceList (props) {
     }, [deleteDeviceData]);
 
     async function deleteDevice(device) {
-        try {
-            const deviceID = device.id;
+        const deviceID = device.id;
+        // Use latest user state to compute updated devices
+        const updatedDevices = props.user.devices.filter(d => d.id !== deviceID);
+        const userData = { ...props.user, devices: updatedDevices };
 
+        try {
             // DELETE device from server
             const response = await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/devices`, {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ deviceID }),
+                body: JSON.stringify({ deviceId: deviceID, user: userData, originalDevice: device }),
             });
 
-            if (!response.ok) {
-                props.handleNotification('error', 'Failed to delete device');
-                return;
+            if (response.ok) {
+                const resData = await response.json();
+                if (resData.success) {
+                    props.handleNotification('notice', 'updated device successfully');
+                    props.setUser(resData.updatedUser)
+                } else {
+                    props.handleNotification('error', 'deleted device failed');
+                }
+
             }
 
-            // Use latest user state to compute updated devices
-            const updatedDevices = props.user.devices.filter(d => d.id !== deviceID);
-            const userData = { ...props.user, devices: updatedDevices };
-
-            // PATCH user with updated devices
-            const patchResponse = await props.patchUser(userData);
-
-            if (patchResponse.success) {
-                // update user state after backend confirms
-                props.setUser(patchResponse.updatedUser);
-                props.handleNotification('notice', 'Successfully deleted device');
-            } else {
-                // rollback device if PATCH fails
-                await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/devices`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ device }),
-                });
-                props.handleNotification('error', 'Failed to update user; device restored');
-            }
+            // // Use latest user state to compute updated devices
+            // const updatedDevices = props.user.devices.filter(d => d.id !== deviceID);
+            // const userData = { ...props.user, devices: updatedDevices };
+            //
+            // // PATCH user with updated devices
+            // const patchResponse = await props.patchUser(userData);
+            //
+            // if (patchResponse.success) {
+            //     // update user state after backend confirms
+            //     props.setUser(patchResponse.updatedUser);
+            //     props.handleNotification('notice', 'Successfully deleted device');
+            // } else {
+            //     // rollback device if PATCH fails
+            //     await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/devices`, {
+            //         method: "POST",
+            //         headers: { "Content-Type": "application/json" },
+            //         body: JSON.stringify({ device }),
+            //     });
+            //     props.handleNotification('error', 'Failed to update user; device restored');
+            // }
 
         } catch (e) {
             console.error("[Client - deleteDevice] error:", e);
@@ -56,63 +65,39 @@ export default function DeviceList (props) {
 
     async function patchDevice(e) {
         e.preventDefault();
-            const originalDevice = props.user.devices.find(d => d.id === editDevice.id);
+        const originalDevice = props.user.devices.find(d => d.id === editDevice.id);
+
+        // Build new devices array using latest user state
+        const newDevices = props.user.devices.map(d =>
+            d.id === editDevice.id ? { ...d, ip: editDevice.ip, name: editDevice.name } : d
+        );
+        //build new user object with the new devices
+        const userData = { ...props.user, devices: newDevices };
 
         try {
             // PATCH the device on the server
             const response = await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/devices`, {
                 method: 'PATCH',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({device: editDevice}),
+                body: JSON.stringify({
+                    editedDevice: editDevice,
+                    user: userData,
+                    originalDevice: originalDevice,
+                }),
             });
 
-            if (!response.ok) {
-                props.handleNotification('error', 'Failed to edit device');
-                return;
-            }
-
-            const resData = await response.json();
-
-            if (!resData.success) {
-                props.handleNotification('error', 'Device update failed on server');
-                return;
-            }
-        } catch {
-            props.handleNotification('notice', 'Failed to update device');
-            return;
-        }
-            // Build new devices array using latest user state
-            const newDevices = props.user.devices.map(d =>
-                d.id === editDevice.id ? { ...d, ip: editDevice.ip, name: editDevice.name } : d
-            );
-            //build new user object with the new devices
-            const userData = { ...props.user, devices: newDevices };
-
-            //flag to see if the device rollback is needed
-            let userPatchSucceeded = false;
-
-            try {
-                // PATCH user with updated devices
-                const patchResponse = await props.patchUser(userData);
-
-                if (patchResponse?.success) {
-                    userPatchSucceeded = true;
-                    props.setUser(patchResponse.updatedUser);
-                    props.handleNotification('notice', 'Device has been updated');
+            if (response.ok) {
+                const resData = await response.json();
+                if (resData.success) {
+                    props.setUser(resData.updatedUser);
+                    props.handleNotification('notice', 'Successfully updated device');
+                } else {
+                    props.handleNotification('error', 'Failed to edit device');
                 }
-            } catch {
-                props.handleNotification('error', 'Failed to update device on the user object');
             }
-
-            if (!userPatchSucceeded) {
-                // rollback device PATCH if user PATCH fails
-                await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/devices`, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ device: originalDevice }),
-                });
-                props.handleNotification('error', 'Failed to update user; device rollback applied');
-            }
+        } catch (e) {
+            props.handleNotification('error', 'Error deleting device');
+        }
         setEditID(null);
     }
 
@@ -151,7 +136,7 @@ export default function DeviceList (props) {
                             {device.ip}
                         </p>
                         <div style={{display: 'flex', flexDirection: 'row', gap: '10px', alignSelf: 'flex-end'}}>
-                            <button className="general-button" style={{fontSize: "20px", backgroundColor: 'DarkRed'}} onClick={() => {
+                            <button className="general-button danger-button" onClick={() => {
                                 console.log('[Client - deleteDevice] setting deleteDevice data to show check screen')
                                 setDeleteDeviceData(device);
                             }}>Delete</button>

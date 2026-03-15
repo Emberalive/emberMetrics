@@ -71,18 +71,18 @@ export default function MemoryData(props) {
                                         stroke: '#888',
                                     },
                                     [`.${axisClasses.tickLabel}`]: {
-                                        fill: 'aliceblue',
-                                        fontSize: 12,
+                                        fill: 'var(--accent)',
+                                        fontSize: 'var(--font-size)',
                                     },
                                     [`.${axisClasses.label}`]: {
-                                        fill: 'aliceblue',
-                                        fontSize: 12,
+                                        fill: 'var(--accent)',
+                                        fontSize: 'var(--font-size)',
                                     },
                                 },
 
                                 [`.${legendClasses.label}`]: {
-                                    color: 'aliceblue',   // text color
-                                    fontSize: 14,
+                                    color: 'var(--accent)',
+                                    fontSize: 'var(--font-size)',
                                     fontWeight: 600,
                                 },
 
@@ -93,7 +93,7 @@ export default function MemoryData(props) {
                                 },
 
                                 // ===== Container styling =====
-                                backgroundColor: '#121212',
+                                backgroundColor: 'var(--primary)',
                                 borderRadius: 8,
                             })}
                         />

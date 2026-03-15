@@ -43,7 +43,7 @@ export default function DiskData (props) {
                         {
                             dataKey: 'rIO_sec',
                             label: 'Reads /s',
-                            color: 'aliceblue'
+                            color: 'var(--accent)',
                         },
                         {
                             dataKey: 'wIO_sec',
@@ -54,12 +54,6 @@ export default function DiskData (props) {
                     grid={{ stroke: '#333', strokeWidth: 0.5, vertical: true, horizontal: true }}
                     height={400}
                     sx={(theme) => ({
-                        // ===== Line styling =====
-                        // [`.${lineElementClasses.root}`]: {
-                        //     stroke: 'var(--secondary)',
-                        //     strokeWidth: 3,
-                        // },
-
                         // ===== Point markers =====
                         [`.${markElementClasses.root}`]: {
                             strokeWidth: 2,
@@ -76,18 +70,18 @@ export default function DiskData (props) {
                                 stroke: '#888',
                             },
                             [`.${axisClasses.tickLabel}`]: {
-                                fill: 'aliceblue',
-                                fontSize: 12,
+                                fill: 'var(--accent)',
+                                fontSize: 'var(--font-size)',
                             },
                             [`.${axisClasses.label}`]: {
-                                fill: 'aliceblue',
-                                fontSize: 12,
+                                fill: 'var(--accent)',
+                                fontSize: 'var(--font-size)'    ,
                             },
                         },
 
                         [`.${legendClasses.label}`]: {
-                            color: 'aliceblue',   // text color
-                            fontSize: 14,
+                            color: 'var(--accent)',
+                            fontSize: 'var(--font-size)',
                             fontWeight: 600,
                         },
 
@@ -98,7 +92,7 @@ export default function DiskData (props) {
                         },
 
                         // ===== Container styling =====
-                        backgroundColor: '#121212',
+                        backgroundColor: 'var(--primary)',
                         borderRadius: 8,
                     })}
                 />
@@ -106,17 +100,11 @@ export default function DiskData (props) {
         )
     }
 
-    // const graphDataArray = graphData.map((data, index) => {
-    //     return (
-    //
-    //     )
-    // })
-
-
     const diskList = disks.map((disk) => {
         return (
+            <>
                 <div className={disks.length < 2 ? 'disk-usage-item__single-item' : 'disk-container__item'} key={disk.name}>
-                    <p>{disk.name}</p>
+                    <p className={'disk-item__name'}>{disk.name}</p>
                     <div className={'disk-item__entry'}>
                         <label>Type: </label>
                         <p>{disk.type}</p>
@@ -138,6 +126,7 @@ export default function DiskData (props) {
                         <p>{disk.interfaceType}</p>
                     </div>
                 </div>
+            </>
         )
     })
     return (
