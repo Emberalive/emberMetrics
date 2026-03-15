@@ -44,7 +44,7 @@ export default function SoftwareManagement({devices, handleNotification, hostIp,
         }
         resetFields()
         try {
-            const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp: '127.0.0.1'}:3000/admin/software`, {
+            const response = await fetch(`https://metrics-api.emberalive.com/admin/software`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({

@@ -30,7 +30,7 @@ export default function Login (props) {
 
         try {
             const response = await fetch(
-                `http://${props.deviceType === 'remote-device' ? props.hostIp : 'localhost'}:3000${isRegister ? '/users' : '/users/login'}`,
+                `https://metrics-api.emberalive.com${isRegister ? '/users' : '/users/login'}`,
                 {
                     method: 'POST',
                     headers: {
