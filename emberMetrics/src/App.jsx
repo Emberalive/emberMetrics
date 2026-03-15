@@ -442,8 +442,7 @@ export default function App() {
             const fetchMetrics = async () => {
                 console.info('Fetching metrics');
                 try {
-                    const response = await fetch(`https://metrics-api.emberalive.com`);
-                    const url = new URL(`http://${selectedDevice}:3000`)
+                    const url = new URL(`https://metrics-api.emberalive.com`)
                     url.searchParams.set("childLength", childProcessLength ? childProcessLength.toString() : "10");
 
                     const response = await fetch(url);
