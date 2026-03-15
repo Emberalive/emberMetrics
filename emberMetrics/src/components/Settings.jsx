@@ -23,7 +23,7 @@ export default function Settings (props) {
                 <div className="settings-entry">
                     <p className="settings-entry__label">Font Size:</p>
                     <div className={'settings-entry__value-container'}>
-                        <button style={{fontSize: "10px"}} id="font-small" className={props.fontClicked === "small" ? "general-button-selection__clicked general-button-selection": "general-button__selection"} onClick={ () => {
+                        <button style={{fontSize: "10px"}} id="font-small" className={props.fontClicked === "small" ? "general-button-selection__clicked general-button__selection": "general-button__selection"} onClick={ () => {
                             props.setFontClicked("small")
                             props.changeFont("text",10)
                             props.changeFont("header", 20)
