@@ -1,7 +1,38 @@
 const express = require('express')
 const {getDevices, editDevice, addDevice, deleteDevice} = require("../opModules/device");
 const {updateUser} = require("../opModules/user");
+const { retryRollbackDeviceOps } = require("../opModules/utils");
 const router = express.Router()
+
+async function deviceTransaction({
+                                     deviceOperation,
+                                     rollbackOperation,
+                                     userOperation,
+                                     successLog,
+                                     rollbackLog
+                                 }) {
+
+    const deviceRes = await deviceOperation()
+
+    if (!deviceRes.success) {
+        return { success: false, stage: "device" }
+    }
+
+    const userRes = await userOperation()
+
+    if (userRes.success) {
+        console.log(successLog)
+        return userRes
+    }
+
+    const rollback = await retryRollbackDeviceOps(rollbackOperation, 8)
+
+    if (rollback.success) {
+        console.log(rollbackLog)
+    }
+
+    return { success: false, stage: "user" }
+}
 
 router.get('/', async (req, res) => {
     console.log("[Server - GET | devices] starting route access")
@@ -21,55 +52,6 @@ router.get('/', async (req, res) => {
         })
     }
 })
-
-
-async function retry(operation, attempts = 8) {
-    let result
-    let retry = 0
-
-    do {
-        try {
-            result = await operation()
-        } catch {
-            result = {success: false}
-        }
-
-        retry++
-    } while (!result.success && retry < attempts)
-
-    return result
-}
-
-
-async function deviceTransaction({
-     deviceOperation,
-     rollbackOperation,
-     userOperation,
-     successLog,
-     rollbackLog
- }) {
-
-    const deviceRes = await deviceOperation()
-
-    if (!deviceRes.success) {
-        return { success: false, stage: "device" }
-    }
-
-    const userRes = await userOperation()
-
-    if (userRes.success) {
-        console.log(successLog)
-        return userRes
-    }
-
-    const rollback = await retry(rollbackOperation, 8)
-
-    if (rollback.success) {
-        console.log(rollbackLog)
-    }
-
-    return { success: false, stage: "user" }
-}
 
 router.patch('/', async (req, res) => {
     console.log("[Server - PATCH | devices] starting route access")
@@ -167,7 +149,7 @@ router.delete('/', async (req, res) => {
                 console.log("[Server - DELETE | devices] updated user device successfully")
                 return res.status(200).json(patchUserRes)
             } else {
-                const attempt = await retry(() => addDevice(originalDevice), 8)
+                const attempt = await retryRollbackDeviceOps(() => addDevice(originalDevice), 8)
                 if (attempt.success === true) {
                     console.log(`[Server - DELETE | devices] device: ${originalDevice.name} rolledBack after unsuccessful user patch`)
                     return res.status(500).json({
