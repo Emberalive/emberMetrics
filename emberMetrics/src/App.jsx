@@ -442,7 +442,7 @@ export default function App() {
             const fetchMetrics = async () => {
                 console.info('Fetching metrics');
                 try {
-                    const url = new URL(`https://${selectedDevice === '127.0.0.1' || selectedDevice === 'localhost' ? `${selectedDevice}:3000` : 'metrics-api.emberalive.com'}`)
+                    const url = new URL(`https://metrics-api.emberalive.com`)
                     url.searchParams.set("childLength", childProcessLength ? childProcessLength.toString() : "10");
 
                     const response = await fetch(url);
