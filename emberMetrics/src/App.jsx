@@ -84,10 +84,9 @@ export default function App() {
         async function getPublicIP() {
             console.log('[ Client - getHostIp ] Getting the hosts Ip address')
             const res = await fetch("/hostIp");
-            const data = await res.json();
-            console.log('[ Client - getHostIp ] This is the host IP address', data);
-            localStorage.setItem("hostPublicIP", data);
-            setHostIP(data);
+            console.log('[ Client - getHostIp ] This is the host IP address', res);
+            localStorage.setItem("hostPublicIP", res);
+            setHostIP(res);
         }
         if (hostIp === "" && deviceType === 'remote-access') getPublicIP();
     }, [hostIp, deviceType, isLoggedIn]);
