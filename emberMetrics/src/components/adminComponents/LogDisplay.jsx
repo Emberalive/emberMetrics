@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 
-export default function LogDisplay({logs, setDisplayLogs, setLogs, logDisplayRef}) {
+export default function LogDisplay({logs, setDisplayLogs, setLogs, logDisplayRef, viewPort}) {
     let log
     const [isDragging, setIsDragging] = useState(false);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -28,21 +28,38 @@ export default function LogDisplay({logs, setDisplayLogs, setLogs, logDisplayRef
         logDisplayRef.current.addEventListener("mouseup", onMouseUp)
     }
 
+    if (viewPort >= 1000) {
+        return (
+            <div style={{height: '100%', width: '100%', zIndex: '100', position: 'absolute', left: 'var(--element-padding)', top: 'var(--element-padding)'}}  onMouseUp={() => onMouseUp()} onMouseMove={(e) => onMouseMove(e)} >
+                <section id="log-container" ref={logDisplayRef} >
+                    <header id={'log-mover'} onMouseDown={(e) => onMouseDown(e) }>
+                        <p className={'log-title'}>Logs</p>
+                        <p className={'log-close'} onClick={() => {
+                            setDisplayLogs(prevState => !prevState)
+                            setLogs([])
+                        }}>X</p>
+                    </header>
+                    <div className="log-container-item__wrapper">
+                        <p className={'log-container-item'}>{logs.join('\n')}</p>
+                    </div>
+                </section>
+            </div>
+        )
+    } else {
+        return (
+                <section id="log-container">
+                    <header id={'log-mover'}>
+                        <p className={'log-title'}>Logs</p>
+                        <p className={'log-close'} onClick={() => {
+                            setDisplayLogs(prevState => !prevState)
+                            setLogs([])
+                        }}>X</p>
+                    </header>
+                    <div className="log-container-item__wrapper">
+                        <p className={'log-container-item'}>{logs.join('\n')}</p>
+                    </div>
+                </section>
+        )
+    }
 
-    return (
-        <div style={{height: '100%', width: '100%', zIndex: '100', position: 'absolute', left: 'var(--element-padding)', top: 'var(--element-padding)'}}  onMouseUp={() => onMouseUp()} onMouseMove={(e) => onMouseMove(e)} >
-            <section id="log-container" ref={logDisplayRef} >
-                <header id={'log-mover'} onMouseDown={(e) => onMouseDown(e) }>
-                    <p className={'log-title'}>Logs</p>
-                    <p className={'log-close'} onClick={() => {
-                        setDisplayLogs(prevState => !prevState)
-                        setLogs([])
-                    }}>X</p>
-                </header>
-                <div className="log-container-item__wrapper">
-                    <p className={'log-container-item'}>{logs.join('\n')}</p>
-                </div>
-            </section>
-        </div>
-    )
 }

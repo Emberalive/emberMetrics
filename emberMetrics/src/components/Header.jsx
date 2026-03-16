@@ -39,7 +39,7 @@ export default function Header (props) {
             {((props.authentication === false && props.isLoggedIn === false) || props.isLoggedIn === true) &&
                 <>
                 <img src={props.logoImage} alt="ember metrics logo" />
-            {props.viewPort > 1100 && <h1>Ember Metrics</h1>}
+            {props.viewPort > 1100 && <h1 style={{textAlign: 'center'}}>Ember Metrics</h1>}
             <header className="header-details__wrapper">
                     <div className="header__details">
                         {(metrics && props.activeView === "resources") && <div className="header__device-name">
@@ -114,7 +114,7 @@ export default function Header (props) {
             </header>
                 </>
             }
-            {(props.authentication === true && props.isLoggedIn === false) && <h1>Welcome to Ember Metrics</h1>}
+            {(props.authentication === true && props.isLoggedIn === false) && <h1 style={{textAlign: 'center'}}>Welcome to Ember Metrics</h1>}
         </header>
             {((props.activeView === "resources" && props.devices) && props.isLoggedIn === true) &&
                 <>
