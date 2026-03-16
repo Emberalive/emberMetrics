@@ -1,22 +1,12 @@
 import {useEffect, useState} from "react";
 // import './index.css'
 import Header from "./components/Header";
-import DeviceData from "./components/DeviceData.jsx";
-import CpuData from "./components/CpuData.jsx";
-import MemoryData from "./components/MemoryData.jsx";
 import Settings from "./components/Settings.jsx";
-import ChildProcesses from "./components/ChildProcesses.jsx";
 import DeviceManagement from "./components/DeviceManagement.jsx";
 import Notification from "./components/Notification.jsx";
 import DeviceTypeSelection from "./components/DeviceTypeSelection.jsx";
-import NetworkData from "./components/NetworkData.jsx";
-import DiskData from "./components/DiskData.jsx";
 import Login from "./components/Login.jsx";
 import Profile from "./components/Profile.jsx";
-import CollapseWhite from "./assets/collapse-white.svg";
-import CollapseBlack from "./assets/collapse-black.svg";
-import ExpandWhite from "./assets/expand-white.svg";
-import ExpandBlack from "./assets/expand-black.svg";
 import Sparkr from "./assets/SVG 2.1 | Original Sparkr.svg";
 import Ocean from "./assets/SVG 2.1 | Ocean Blues.svg";
 import Forest from "./assets/SVG 2.1 | Forest Green.svg";
@@ -51,7 +41,14 @@ export default function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(!authentication);
     const [user, setUser] = useState(null);
     const [metricInterval, setMetricInterval] = useState(1000);
-    const [hostIp, setHostIP] = useState("metrics-api.emberalive.com");
+    const [hostIp, setHostIP] = useState(() => {
+        const hostPublicIP = localStorage.getItem('hostPublicIP')
+        if (hostPublicIP) {
+            return hostPublicIP
+        }else {
+            return ""
+        }
+    });
 
     if (!localStorage.getItem('childProcessLength')) {
         localStorage.setItem("childProcessLength", "10");
@@ -73,17 +70,17 @@ export default function App() {
 
     const [logoImage, setLogoImage] = useState(() => Sparkr)
 
-    // useEffect(() => {
-    //     async function getPublicIP() {
-    //         console.log('[ Client - getHostIp ] Getting the hosts Ip address')
-    //         const res = await fetch("/hostIp");
-    //         const data = await res.json();
-    //         console.log('[ Client - getHostIp ] This is the host IP address', data);
-    //         localStorage.setItem("hostPublicIP", data);
-    //         setHostIP();
-    //     }
-    //     if (hostIp === "" && deviceType === 'remote-access') getPublicIP();
-    // }, [hostIp, deviceType, isLoggedIn]);
+    useEffect(() => {
+        function getPublicIP() {
+            const host = window.location.hostname;
+            console.log(window.location.hostname);
+            if (host) {
+                setHostIP(host);
+                localStorage.setItem("hostPublicIP", host);
+            }
+        }
+        if (hostIp === "" && deviceType === 'remote-access') getPublicIP();
+    }, [hostIp, deviceType, isLoggedIn]);
 
     function changeFont (type, size) {
         switch (type) {
