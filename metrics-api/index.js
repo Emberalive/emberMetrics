@@ -36,9 +36,9 @@ app.get('/', (req, res) => {
 });
 
 app.get('/hostIp', (req, res) => {
-    console.log('[ Server - gettingHostIp ] starting end point')
-    const host = req.headers.host;
-    res.status(200).send(host);
+    res.status(200).send({
+        ip: getHostIp()
+    });
 })
 
 app.listen(port, async () => {
