@@ -51,14 +51,7 @@ export default function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(!authentication);
     const [user, setUser] = useState(null);
     const [metricInterval, setMetricInterval] = useState(1000);
-    const [hostIp, setHostIP] = useState(() => {
-        const hostPublicIP = localStorage.getItem('hostPublicIP')
-        if (hostPublicIP) {
-            return hostPublicIP
-        }else {
-            return ""
-        }
-    });
+    const [hostIp, setHostIP] = useState("metrics-api.emberalive.com");
 
     if (!localStorage.getItem('childProcessLength')) {
         localStorage.setItem("childProcessLength", "10");
@@ -80,17 +73,17 @@ export default function App() {
 
     const [logoImage, setLogoImage] = useState(() => Sparkr)
 
-    useEffect(() => {
-        async function getPublicIP() {
-            console.log('[ Client - getHostIp ] Getting the hosts Ip address')
-            const res = await fetch("/hostIp");
-            const data = await res.json();
-            console.log('[ Client - getHostIp ] This is the host IP address', data);
-            localStorage.setItem("hostPublicIP", data);
-            setHostIP();
-        }
-        if (hostIp === "" && deviceType === 'remote-access') getPublicIP();
-    }, [hostIp, deviceType, isLoggedIn]);
+    // useEffect(() => {
+    //     async function getPublicIP() {
+    //         console.log('[ Client - getHostIp ] Getting the hosts Ip address')
+    //         const res = await fetch("/hostIp");
+    //         const data = await res.json();
+    //         console.log('[ Client - getHostIp ] This is the host IP address', data);
+    //         localStorage.setItem("hostPublicIP", data);
+    //         setHostIP();
+    //     }
+    //     if (hostIp === "" && deviceType === 'remote-access') getPublicIP();
+    // }, [hostIp, deviceType, isLoggedIn]);
 
     function changeFont (type, size) {
         switch (type) {
