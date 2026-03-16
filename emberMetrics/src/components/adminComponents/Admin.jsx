@@ -49,8 +49,8 @@ export default function Admin({devices, handleNotification, hostIp, deviceType, 
                 <header className={'section-header'}>
                     <h1>Administration</h1>
                 </header>
-                {displayLogs && <LogDisplay setDisplayLogs={setDisplayLogs} logs={logs} setLogs={setLogs} logDisplayRef={logDisplayRef}/>}
                 <AdminNavigation adminView={adminView} setAdminView={setAdminView}/>
+                {displayLogs && <LogDisplay setDisplayLogs={setDisplayLogs} logs={logs} setLogs={setLogs} logDisplayRef={logDisplayRef} viewPort={viewPort} />}
                 {adminView === 'software' && <SoftwareManagement devices={devices} adminView={adminView}
                                                                  handleNotification={handleNotification}
                                                                  hostIp={hostIp}
