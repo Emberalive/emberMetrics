@@ -71,12 +71,13 @@ export default function App() {
     const [logoImage, setLogoImage] = useState(() => Sparkr)
 
     useEffect(() => {
-        async function getPublicIP() {
-            // const res = await fetch("http://api.ipify.org?format=json");
-            // const data = await res.json();
-            // localStorage.setItem("hostPublicIP", data.ip);
-            // setHostIP(data.ip);
+        function getPublicIP() {
+            const host = window.location.hostname;
             console.log(window.location.hostname);
+            if (host) {
+                setHostIP(host);
+                localStorage.setItem("hostPublicIP", host);
+            }
         }
         if (hostIp === "" && deviceType === 'remote-access') getPublicIP();
     }, [hostIp, deviceType, isLoggedIn]);
