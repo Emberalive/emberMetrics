@@ -19,7 +19,7 @@ router.post("/software", async (req, res) => {
 
     console.log(`[ Server - admin /software ] ThisIp: ${getThisIp()}, IP address from dent device: ${device.ip}`)
 
-    if (device.ip === 'localhost' || device.ip === '127.0.0.1' || device.ip === getThisIp()) {
+    if (device.ip === 'metrics-api.emberalive.com' || device.ip === getThisIp()) {
         console.log('[ Server - admin /software ] managing software locally')
 
         const result = runSoftwareOperation(packageName, packageManager, operation);
