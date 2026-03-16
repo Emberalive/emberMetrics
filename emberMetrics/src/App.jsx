@@ -83,9 +83,13 @@ export default function App() {
     useEffect(() => {
         async function getPublicIP() {
             console.log('[ Client - getHostIp ] Getting the hosts Ip address')
-            const res = await fetch("https://api.ipify.org?format=json");
-            const data = await res.json();
-            console.log('[ Client - getHostIp ] This is the host IP address', data.ip);
+            try {
+                const res = await fetch("https://api.ipify.org?format=json");
+                const data = await res.json();
+                console.log('[ Client - getHostIp ] This is the host IP address', data.ip);
+            } catch (e) {
+                console.log(e)
+            }
             localStorage.setItem("hostPublicIP", data.ip);
             setHostIP(data.ip);
         }
