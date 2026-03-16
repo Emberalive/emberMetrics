@@ -35,6 +35,12 @@ app.get('/', (req, res) => {
     res.status(200).json(metrics); // always send JSON
 });
 
+app.get('/hostIp', (req, res) => {
+    console.log('[ Server - gettingHostIp ] starting end point')
+    const host = req.headers.host;
+    res.send({host});
+})
+
 app.listen(port, async () => {
     console.log(`[Server] API Listening on port ${port}`)
     await getHostIp()
