@@ -30,7 +30,7 @@ export default function AddDevice(props) {
         }
         try {
             // requesting to create a device to the main device.json
-            const response = await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/devices`, {
+            const response = await fetch(`https://metrics-api.emberalive,com/devices`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

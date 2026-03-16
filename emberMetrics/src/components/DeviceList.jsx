@@ -19,7 +19,7 @@ export default function DeviceList (props) {
 
         try {
             // DELETE device from server
-            const response = await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/devices`, {
+            const response = await fetch(`https://metrics-api.emberalive.com/devices`, {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ deviceId: deviceID, user: userData, originalDevice: device }),
