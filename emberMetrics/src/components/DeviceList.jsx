@@ -76,7 +76,7 @@ export default function DeviceList (props) {
 
         try {
             // PATCH the device on the server
-            const response = await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/devices`, {
+            const response = await fetch(`https://metrics-api.emberalive.com/devices`, {
                 method: 'PATCH',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
