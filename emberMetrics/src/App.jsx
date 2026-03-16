@@ -72,10 +72,11 @@ export default function App() {
 
     useEffect(() => {
         async function getPublicIP() {
-            const res = await fetch("http://api.ipify.org?format=json");
-            const data = await res.json();
-            localStorage.setItem("hostPublicIP", data.ip);
-            setHostIP(data.ip);
+            // const res = await fetch("http://api.ipify.org?format=json");
+            // const data = await res.json();
+            // localStorage.setItem("hostPublicIP", data.ip);
+            // setHostIP(data.ip);
+            console.log(window.location.hostname);
         }
         if (hostIp === "" && deviceType === 'remote-access') getPublicIP();
     }, [hostIp, deviceType, isLoggedIn]);
