@@ -17,7 +17,7 @@ router.post("/software", async (req, res) => {
     //package sanitization
     if (!PACKAGE_REGEX.test(packageName) || !PACKAGE_REGEX.test(packageName)) return res.status(400).send({success: false})
 
-    console.log(`[ Server - admin /software ] ThisIp: ${getThisIp()}, IP address from dent device: ${device.ip}`)
+    console.log(`[ Server - admin /software ] ThisIp: ${getThisIp()}, IP address from dent device: ${device.ip}\nDevice isHost?: ${device.isHost}`)
 
     if (device.ip === 'metrics-api.emberalive.com' || device.ip === getThisIp() || device.isHost) {
         console.log('[ Server - admin /software ] managing software locally')
