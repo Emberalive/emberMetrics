@@ -100,19 +100,22 @@ export default function App() {
         if (isLoggedIn && user) {
             const userDevices = user.devices;
             if (deviceType === "remote-access") {
-                const localhost = userDevices.find((device) => device.name === 'localhost' || device.ip === '127.0.0.1')
+                const localhost = userDevices.find((device) => device.name === "localhost" || device.ip === "127.0.0.1")
                 if (localhost) {
                     const updatedDevices = userDevices.map((device) => {
                         if (device.name === "localhost" && device.ip === "127.0.0.1") {
                             return {
-                                name: 'host-device',
+                                name: 'Host-Device',
                                 ip: hostIp,
                                 isHost: true,
                             };
                         }
                         return device;
                     })
-                    setDevices(updatedDevices);
+                    setUser(prev => ({
+                        ...prev,
+                        devices: updatedDevices,
+                    }));
                     setSelectedDevice(updatedDevices[0].ip);
                 } else {
                     handleNotification('error', 'could not find localhost device')
@@ -122,7 +125,7 @@ export default function App() {
                 setSelectedDevice(userDevices[0].ip);
             }
         }
-    }, [user, isLoggedIn, deviceType, hostIp, authentication])
+    }, [isLoggedIn, deviceType, hostIp, authentication])
 
     useEffect(() => {
         async function getInitialDevices () {
@@ -146,13 +149,15 @@ export default function App() {
                         }
 
                         if (hostIp) {
-                            filteredDevices.push({
+                            filteredDevices.unshift({
                                 name: "Host-Device",
                                 ip: hostIp,
+                                isHost: true,
                             });
                         }
 
                         setDevices(filteredDevices);
+                        setSelectedDevice(filteredDevices[0].ip);
                         return;
                     }
                     setDevices(newDevices);
@@ -500,6 +505,7 @@ export default function App() {
                   isGraph={isGraph}
                   setIsGraph={setIsGraph}
                   devices={devices}
+                  user={user}
                   setSelectedDevice={setSelectedDevice}
                   handleNotification={handleNotification}
                   setMetrics={setMetrics}
@@ -560,6 +566,7 @@ export default function App() {
                                                                            setActiveView={setActiveView}/>}
               {activeView === 'admin' && <Admin handleNotification={handleNotification}
                                                 devices={devices} hostIp={hostIp}
+                                                user={user} authentication={authentication}
                                                 deviceType={deviceType} viewPort={viewPort}/>}
           </main>
       </>

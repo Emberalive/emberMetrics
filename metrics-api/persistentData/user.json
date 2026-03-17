@@ -8,7 +8,8 @@
       {
         "name": "localhost",
         "ip": "127.0.0.1",
-        "id": "DgxI77r32HDNeBfh0sK8B"
+        "id": "DgxI77r32HDNeBfh0sK8B",
+        "isHost": true
       }
     ]
   },
@@ -21,7 +22,8 @@
       {
         "name": "localhost",
         "ip": "127.0.0.1",
-        "id": "DgxI77r32HDNeBfh0sK8B"
+        "id": "DgxI77r32HDNeBfh0sK8B",
+        "isHost": true
       },
       {
         "name": "Laptop",
@@ -35,18 +37,5 @@
       }
     ],
     "password": "$2b$10$vZ1Q2I1D83zOf9nMgbyk7eFJXdCXZTlhuShtU9TntftS1kDYvXnOS"
-  },
-  {
-    "username": "Neve",
-    "password": "$2b$10$Kwcs3tlpCbNrlrTijWlQ5.TBWYn9jGFNI3mBzhDzwiykRKsHwZ22y",
-    "role": "user",
-    "id": "s8Bh4gpXt0crTpRRM_VZR",
-    "devices": [
-      {
-        "name": "localhost",
-        "ip": "127.0.0.1",
-        "id": "DgxI77r32HDNeBfh0sK8B"
-      }
-    ]
   }
 ]

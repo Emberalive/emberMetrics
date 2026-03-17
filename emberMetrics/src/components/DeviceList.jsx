@@ -14,8 +14,8 @@ export default function DeviceList (props) {
     async function deleteDevice(device) {
         const deviceID = device.id;
         // Use latest user state to compute updated devices
-        const updatedDevices = props.user.devices.filter(d => d.id !== deviceID);
-        const userData = { ...props.user, devices: updatedDevices };
+        const updatedDevices = devices.filter(d => d.id !== deviceID);
+        const userData = props.authentication? { ...props.user, devices: updatedDevices } : null
 
         try {
             // DELETE device from server
@@ -27,36 +27,19 @@ export default function DeviceList (props) {
 
             if (response.ok) {
                 const resData = await response.json();
-                if (resData.success) {
+                if (resData.success && userData !== null) {
+                    //if authentication is true (users exist) do this
                     props.handleNotification('notice', 'updated device successfully');
                     props.setUser(resData.updatedUser)
-                } else {
-                    props.handleNotification('error', 'deleted device failed');
+                    return
+                } else if (resData.success && userData === null) {
+                    //if no authentication (no user data) do this
+                    props.handleNotification('notice', 'updated device successfully');
+                    props.setDevices(updatedDevices)
+                    return
                 }
-
             }
-
-            // // Use latest user state to compute updated devices
-            // const updatedDevices = props.user.devices.filter(d => d.id !== deviceID);
-            // const userData = { ...props.user, devices: updatedDevices };
-            //
-            // // PATCH user with updated devices
-            // const patchResponse = await props.patchUser(userData);
-            //
-            // if (patchResponse.success) {
-            //     // update user state after backend confirms
-            //     props.setUser(patchResponse.updatedUser);
-            //     props.handleNotification('notice', 'Successfully deleted device');
-            // } else {
-            //     // rollback device if PATCH fails
-            //     await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/devices`, {
-            //         method: "POST",
-            //         headers: { "Content-Type": "application/json" },
-            //         body: JSON.stringify({ device }),
-            //     });
-            //     props.handleNotification('error', 'Failed to update user; device restored');
-            // }
-
+            props.handleNotification('error', 'deleted device failed');
         } catch (e) {
             console.error("[Client - deleteDevice] error:", e);
             props.handleNotification('error', 'Error deleting device');
@@ -65,14 +48,16 @@ export default function DeviceList (props) {
 
     async function patchDevice(e) {
         e.preventDefault();
-        const originalDevice = props.user.devices.find(d => d.id === editDevice.id);
+        if (props.checkReservedDeviceProperties(editDevice)) return
 
+        const originalDevice = devices.find(d => d.id === editDevice.id);
         // Build new devices array using latest user state
-        const newDevices = props.user.devices.map(d =>
+        const newDevices = devices.map(d =>
             d.id === editDevice.id ? { ...d, ip: editDevice.ip, name: editDevice.name } : d
         );
+
         //build new user object with the new devices
-        const userData = { ...props.user, devices: newDevices };
+        const userData = props.authentication? { ...props.user, devices: newDevices } : null;
 
         try {
             // PATCH the device on the server
@@ -88,17 +73,24 @@ export default function DeviceList (props) {
 
             if (response.ok) {
                 const resData = await response.json();
-                if (resData.success) {
-                    props.setUser(resData.updatedUser);
-                    props.handleNotification('notice', 'Successfully updated device');
-                } else {
-                    props.handleNotification('error', 'Failed to edit device');
+                if (resData.success && userData !== null) {
+                    //if authentication is true (users exist) do this
+                    props.handleNotification('notice', 'updated device successfully');
+                    props.setUser(resData.updatedUser)
+                    return
+                } else if (resData.success && userData === null) {
+                    //if no authentication (no user data) do this
+                    props.handleNotification('notice', 'updated device successfully');
+                    props.setDevices(newDevices)
+                    return
                 }
             }
+            props.handleNotification('error', 'Editing device failed');
         } catch (e) {
             props.handleNotification('error', 'Error deleting device');
+        } finally {
+            setEditID(null);
         }
-        setEditID(null);
     }
 
     if (devices) {
@@ -120,11 +112,11 @@ export default function DeviceList (props) {
                         </div>
 
                         <div className={"edit-device__form-buttons"}>
-                            <button className="general-button danger-button" style={{fontSize: "20px", alignSelf: "flex-end"}} onClick={(e) => {
+                            <button className="general-button danger-button" type={'button'} style={{fontSize: "20px", alignSelf: "flex-end"}} onClick={(e) => {
                                 e.preventDefault()
                                 setEditID(null)
                             }}>Cancel</button>
-                            <button className="general-button success-button" style={{fontSize: "20px", alignSelf: "flex-end"}}>Save</button>
+                            <button className="general-button success-button" type={'submit'} style={{fontSize: "20px", alignSelf: "flex-end"}}>Save</button>
                         </div>
                     </form>
             )
@@ -135,15 +127,18 @@ export default function DeviceList (props) {
                         <p className="device-container__ipAddr">
                             {device.ip}
                         </p>
-                        <div style={{display: 'flex', flexDirection: 'row', gap: '10px', alignSelf: 'flex-end'}}>
+                        {(device.name.toLocaleLowerCase() !== "localhost" && device.name.toLocaleLowerCase() !== "host-device") &&<div style={{display: 'flex', flexDirection: 'row', gap: '10px', alignSelf: 'flex-end'}}>
                             <button className="general-button danger-button" onClick={() => {
                                 console.log('[Client - deleteDevice] setting deleteDevice data to show check screen')
                                 setDeleteDeviceData(device);
-                            }}>Delete</button>
-                            <button className="general-button success-button" style={{fontSize: "20px"}} onClick={() => {
-                                setEditID(device);
-                            }}>Edit</button>
-                        </div>
+                            }}>Delete
+                            </button>
+                            <button className="general-button success-button" style={{fontSize: "20px"}}
+                                    onClick={() => {
+                                        setEditID(device);
+                                    }}>Edit
+                            </button>
+                        </div>}
                     </div>
                 )
             }
@@ -180,7 +175,7 @@ export default function DeviceList (props) {
                 </section>
             </div>}
             <div className="device-list__container">
-                {props.devices.length === 0 && <p style={{fontSize: "10px", fontWeight: "700", textAlign: "center"}}>You have no remote devices registered.</p>}
+                {devices.length === 0 && <p style={{fontSize: "10px", fontWeight: "700", textAlign: "center"}}>You have no remote devices registered.</p>}
                 {devicesList}
             </div>
         </>

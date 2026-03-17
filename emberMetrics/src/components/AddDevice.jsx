@@ -24,10 +24,12 @@ export default function AddDevice(props) {
             id: nanoid()
         }
 
-        const userData = {
+        if (props.checkReservedDeviceProperties(newDevice)) return
+
+        const userData = props.authentication ? {
             ...props.user,
             devices: [...props.user.devices, newDevice]
-        }
+        } : null
         try {
             // requesting to create a device to the main device.json
             const response = await fetch(`https://metrics-api.emberalive.com/devices`, {
@@ -42,15 +44,20 @@ export default function AddDevice(props) {
             })
 
             if (response.ok) {
-                const resData = await response.json()
-                if (resData.success) {
+                const resData = await response.json();
+                if (resData.success && userData !== null) {
+                    //if authentication is true (users exist) do this
+                    props.handleNotification('notice', 'updated device successfully');
                     props.setUser(resData.updatedUser)
-                    props.handleNotification("success", "Successfully added new device: ", newDevice.name)
-                } else {
-                    props.handleNotification("error", "device was not created, server error")
+                    return
+                } else if (resData.success && userData === null) {
+                    //if no authentication (no user data) do this
+                    props.handleNotification('notice', 'updated device successfully');
+                    props.setDevices(prev => [...prev, newDevice]);
+                    return
                 }
             }
-
+            props.handleNotification("error", "Adding device failed")
         } catch (e) {
             props.handleNotification("error", "device was not created, server error")
         } finally {

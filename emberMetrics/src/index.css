@@ -2066,7 +2066,7 @@ section {
     height: fit-content;
 }
 
-@media (max-width: 10000px) {
+@media (max-width: 1000px) {
     #log-container {
         width: 100%;
         height: 100%;

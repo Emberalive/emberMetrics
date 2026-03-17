@@ -4,7 +4,15 @@ import AdminNavigation from "./AdminNavigation.jsx";
 import FirewallManagement from "./firewallManagement/FirewallManagement.jsx";
 import LogDisplay from "./LogDisplay.jsx";
 
-export default function Admin({devices, handleNotification, hostIp, deviceType, viewPort}) {
+export default function Admin({user, authentication, devices, handleNotification, hostIp, deviceType, viewPort}) {
+    let deviceList
+
+    if (user && authentication) {
+        deviceList = user.devices
+    } else if (devices) {
+        deviceList = devices
+    }
+
     const [adminView, setAdminView] = useState('software');
     const [selectedDevice, setSelectedDevice] = useState({
         name: ""
@@ -51,7 +59,7 @@ export default function Admin({devices, handleNotification, hostIp, deviceType, 
                 </header>
                 <AdminNavigation adminView={adminView} setAdminView={setAdminView}/>
                 {displayLogs && <LogDisplay setDisplayLogs={setDisplayLogs} logs={logs} setLogs={setLogs} logDisplayRef={logDisplayRef} viewPort={viewPort} />}
-                {adminView === 'software' && <SoftwareManagement devices={devices} adminView={adminView}
+                {adminView === 'software' && <SoftwareManagement devices={deviceList} adminView={adminView}
                                                                  handleNotification={handleNotification}
                                                                  hostIp={hostIp}
                                                                  deviceType={deviceType}
@@ -60,7 +68,7 @@ export default function Admin({devices, handleNotification, hostIp, deviceType, 
                                                                  setSelectedDevice={setSelectedDevice}
                                                                  installation={installation}
                                                                  setInstallation={setInstallation} viewPort={viewPort}/>}
-                {adminView === 'firewall' && <FirewallManagement devices={devices} adminView={adminView}
+                {adminView === 'firewall' && <FirewallManagement devices={deviceList} adminView={adminView}
                                                                  handleNotification={handleNotification}
                                                                  hostIp={hostIp}
                                                                  deviceType={deviceType}

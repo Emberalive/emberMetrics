@@ -4,13 +4,51 @@ const {updateUser} = require("../opModules/user");
 const { retryRollbackDeviceOps } = require("../opModules/utils");
 const router = express.Router()
 
+router.get('/', async (req, res) => {
+    console.log("[Server - GET | devices] starting route access")
+    try {
+        const devices = await getDevices()
+        if (!devices) {
+            console.log("[Server - GET | devices] no devices stored on API")
+            res.status(500).json('Devices Data not available')
+        } else {
+            console.log("[Server - GET | devices] devices sent to client")
+            res.status(200).json(devices)
+        }
+    } catch (e) {
+        console.log("[Server - GET | devices] failed")
+        res.status(500).send({
+            success: false,
+        })
+    }
+})
+
+
+async function retry(operation, attempts = 8) {
+    let result
+    let retry = 0
+
+    do {
+        try {
+            result = await operation()
+        } catch {
+            result = {success: false}
+        }
+
+        retry++
+    } while (!result.success && retry < attempts)
+
+    return result
+}
+
+
 async function deviceTransaction({
-                                     deviceOperation,
-                                     rollbackOperation,
-                                     userOperation,
-                                     successLog,
-                                     rollbackLog
-                                 }) {
+     deviceOperation,
+     rollbackOperation,
+     userOperation,
+     successLog,
+     rollbackLog
+ }) {
 
     const deviceRes = await deviceOperation()
 
@@ -18,7 +56,14 @@ async function deviceTransaction({
         return { success: false, stage: "device" }
     }
 
-    const userRes = await userOperation()
+    let userRes
+
+    if (userOperation === 'none') {
+        console.log("[Server - deviceTransaction | devices ] Client does not use Users - bypassing user operation")
+        userRes = {success: true}
+    } else {
+        userRes = await userOperation()
+    }
 
     if (userRes.success) {
         console.log(successLog)
@@ -56,7 +101,7 @@ router.get('/', async (req, res) => {
 router.patch('/', async (req, res) => {
     console.log("[Server - PATCH | devices] starting route access")
     const {editedDevice, user, originalDevice} = req.body
-    if (!editedDevice || !user || !originalDevice) {
+    if (!editedDevice || !originalDevice) {
         console.log("[Server - PATCH | devices] missing required request body fields")
         return res.status(400).send({success: false})
     }
@@ -64,10 +109,10 @@ router.patch('/', async (req, res) => {
     try {
         const result = await deviceTransaction({
             deviceOperation: () => editDevice(editedDevice),
-            userOperation: () =>  updateUser(user.username, user),
+            userOperation: user !== null ? () => updateUser(user.username, user) : 'none',
             rollbackOperation: () => editDevice(originalDevice),
-            rollbackLog: `[Server - PATCH | devices] device: ${originalDevice.name} rolledBack after unsuccessful user`,
-            successLog: `[Server - PATCH | devices] device edit and user updated successfully`
+            rollbackLog: `[Server - PATCH | devices] Device: ${originalDevice.name} rolledBack after unsuccessful user operation`,
+            successLog: `[Server - PATCH | devices] Device edit and user updated successfully`
         })
 
         if (result.success) {
@@ -84,7 +129,7 @@ router.patch('/', async (req, res) => {
 router.post('/', async (req, res) => {
     console.log("[Server - POST | devices] starting route access")
     const {device, user} = req.body
-    if (!device || !user) {
+    if (!device) {
         console.log("[Server - POST | devices] please specify deviceId")
         return res.status(400).send({success: false})
     }
@@ -92,9 +137,9 @@ router.post('/', async (req, res) => {
     try {
         const result = await deviceTransaction({
             deviceOperation: () => addDevice(device),
-            userOperation: () => updateUser(user.username, user),
+            userOperation: user !== null ? () => updateUser(user.username, user): 'none',
             rollbackOperation: () => deleteDevice(device.id),
-            rollbackLog: `[Server - PATCH | devices] rolledBack device: ${device.id}`,
+            rollbackLog: `[Server - PATCH | devices] Device: ${device.id} rolledBack after unsuccessful user operation`,
             successLog: `[Server - POST | devices] created device successfully`
         })
 
@@ -112,7 +157,7 @@ router.post('/', async (req, res) => {
 router.delete('/', async (req, res) => {
     console.log("[Server - DELETE | devices] starting route access")
     const {deviceId, user, originalDevice} = req.body
-    if (!deviceId || !user || !originalDevice) {
+    if (!deviceId || !originalDevice) {
         console.log("[Server - DELETE | devices] please specify deviceId")
         return res.status(400).send({
             success: false,
@@ -122,10 +167,10 @@ router.delete('/', async (req, res) => {
     try {
         const result = await deviceTransaction({
             deviceOperation: () => deleteDevice(deviceId),
-            userOperation: () => updateUser(user.username, user),
+            userOperation: user !== null ? () => updateUser(user.username, user) : 'none',
             rollbackOperation: () => addDevice(originalDevice),
-            rollbackLog: `[Server - DELETE | devices] deleted device: ${deviceId} successfully`,
-            successLog: `[Server - DELETE | devices] deleted device: ${deviceId} successfully`
+            rollbackLog: `[Server - DELETE | devices] Device: ${deviceId} rolledBack after unsuccessful user operation`,
+            successLog: `[Server - DELETE | devices] Deleted device: ${deviceId} successfully`
         })
 
         if (result.success) {
@@ -133,36 +178,6 @@ router.delete('/', async (req, res) => {
         }
 
         return res.status(500).send({success: false})
-    } catch (e) {
-        console.log('[Server - DELETE | devices] internal error:', e)
-        res.status(500).send({success: false})
-    }
-
-
-
-    try {
-        const deleteDeviceRes = await deleteDevice(deviceId)
-        if (deleteDeviceRes.success) {
-            console.log("[Server - DELETE | devices] deleted device successfully")
-            const patchUserRes = await updateUser(user.username, user)
-            if (patchUserRes.success === true) {
-                console.log("[Server - DELETE | devices] updated user device successfully")
-                return res.status(200).json(patchUserRes)
-            } else {
-                const attempt = await retryRollbackDeviceOps(() => addDevice(originalDevice), 8)
-                if (attempt.success === true) {
-                    console.log(`[Server - DELETE | devices] device: ${originalDevice.name} rolledBack after unsuccessful user patch`)
-                    return res.status(500).json({
-                        success: false,
-                    })
-                }
-            }
-        } else {
-            console.log('[Server - DELETE | devices] device could not be deleted')
-            return res.status(500).json({
-                success: false,
-            })
-        }
     } catch (e) {
         console.log('[Server - DELETE | devices] internal error:', e)
         res.status(500).send({success: false})
