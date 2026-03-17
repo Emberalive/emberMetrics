@@ -32,7 +32,7 @@ export default function App() {
 //<<-----------------------------Only edit this!!!!!----------------------------------------->>
     // This is a quick fix to allow the user to make the app have or not have authentication
     //change the value of authentication to false if you don't want a user system
-    const authentication = false
+    const authentication = true
 //<<-------------------------^^^^^Only edit this^^^^^---------------------------------------->>
 
     //Nothing below here should be touched, you will most likely break the application!!!

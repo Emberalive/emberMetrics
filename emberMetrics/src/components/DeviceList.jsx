@@ -50,9 +50,9 @@ export default function DeviceList (props) {
         e.preventDefault();
         if (props.checkReservedDeviceProperties(editDevice)) return
 
-        const originalDevice = props.user.devices.find(d => d.id === editDevice.id);
+        const originalDevice = devices.find(d => d.id === editDevice.id);
         // Build new devices array using latest user state
-        const newDevices = props.user.devices.map(d =>
+        const newDevices = devices.map(d =>
             d.id === editDevice.id ? { ...d, ip: editDevice.ip, name: editDevice.name } : d
         );
 
@@ -88,8 +88,9 @@ export default function DeviceList (props) {
             props.handleNotification('error', 'Editing device failed');
         } catch (e) {
             props.handleNotification('error', 'Error deleting device');
+        } finally {
+            setEditID(null);
         }
-        setEditID(null);
     }
 
     if (devices) {
