@@ -116,13 +116,13 @@ export default function App() {
                         ...prev,
                         devices: updatedDevices,
                     }));
-                    setSelectedDevice(updatedDevices[0].ip);
+                    setSelectedDevice(updatedDevices[0]);
                 } else {
                     handleNotification('error', 'could not find localhost device')
                 }
             } else {
                 setDevices(userDevices);
-                setSelectedDevice(userDevices[0].ip);
+                setSelectedDevice(userDevices[0]);
             }
         }
     }, [isLoggedIn, deviceType, hostIp, authentication])
@@ -157,11 +157,11 @@ export default function App() {
                         }
 
                         setDevices(filteredDevices);
-                        setSelectedDevice(filteredDevices[0].ip);
+                        setSelectedDevice(filteredDevices[0]);
                         return;
                     }
                     setDevices(newDevices);
-                    setSelectedDevice(newDevices[0].ip);
+                    setSelectedDevice(newDevices[0]);
                 } else {
                     setDevices([])
                 }
@@ -425,7 +425,8 @@ export default function App() {
             document.documentElement.classList.add("dark-mode");
         } else {
             document.documentElement.classList.remove("dark-mode");
-        }    }, [isDarkMode])
+        }
+    }, [isDarkMode])
 
         useEffect(() => {
             if (authentication && !isLoggedIn) return;
@@ -440,22 +441,29 @@ export default function App() {
             const fetchMetrics = async () => {
                 console.info('Fetching metrics');
                 try {
-                    const url = new URL(`http://${selectedDevice}:3000`)
-                    url.searchParams.set("childLength", childProcessLength ? childProcessLength.toString() : "10");
-
-                    const response = await fetch(url);
+                    const response = await fetch(`http://${hostIp}:3000`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json",
+                        },
+                        body: JSON.stringify({
+                            device: selectedDevice,
+                            childLength: childProcessLength ? childProcessLength.toString() : "10"
+                        })
+                    });
                     if (response.ok) {
                         const resData = await response.json();
-                        if (resData) {
-                            if (isMounted) setMetrics(resData)
-                        } else {
-                            clearInterval(interval)
-                            setMetrics(null)
-                            isMounted = false;
+                        if (resData.success) {
+                            if (isMounted) setMetrics(resData.metrics)
+                            return
                         }
-                    } else {
-                        console.log("[APP_METRICS] Fetch error");
                     }
+                    //instantly stops the interval, no fetches after initial failed fetch
+                    clearInterval(interval)
+                    setMetrics(null)
+                    isMounted = false;
+                    handleNotification('error', `Failed to fetch metrics for: ${selectedDevice.name}`);
                 } catch (err) {
                     clearInterval(interval);
                     console.error("[APP_METRICS] Error fetching metrics:", err.message);
@@ -463,7 +471,6 @@ export default function App() {
                     setMetrics(null)
                 }
             };
-
             fetchMetrics(); // optional: fetch immediately
             interval = setInterval(fetchMetrics, metricInterval);
 

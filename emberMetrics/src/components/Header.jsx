@@ -10,10 +10,10 @@ export default function Header (props) {
     }
 
 
-    function changeRemoteDevice(ip) {
-        props.setSelectedDevice(ip)
-        console.log("[APP_METRICS] Change remote device: ", ip)
-        props.handleNotification("notice", `changed Remote Device to:\n ${ip}`)
+    function changeRemoteDevice(device) {
+        props.setSelectedDevice(device)
+        console.log("[APP_METRICS] Change remote device: ", device.name)
+        props.handleNotification("notice", `changed Remote Device to:\n ${device.name}`)
         props.setMetrics(null)
         props.setTimeMetrics([])
     }
@@ -21,8 +21,8 @@ export default function Header (props) {
     let deviceButtonList
     if (devices) {
         deviceButtonList = devices.map((device) => {
-            return(<button key={device.id} className={props.selectedDevice === device.ip ?"general-button__selection general-button-selection__clicked disabled-button": "general-button__selection"} onClick={() => {
-                changeRemoteDevice(device.ip)
+            return(<button key={device.id} className={props.selectedDevice === device ?"general-button__selection general-button-selection__clicked disabled-button": "general-button__selection"} onClick={() => {
+                changeRemoteDevice(device)
                 props.setMetrics(null)
             }} style={{
                 minWidth: "fit-content",
