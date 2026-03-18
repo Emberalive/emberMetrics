@@ -279,9 +279,9 @@ app.use(cors({
 app.use('/admin', adminRoutes)
 
 //returns the metrics
-app.get('/', (req, res) => {
+app.post('/', (req, res) => {
     const metrics = getMetrics();
-    const childLength = req.query.childLength
+    const childLength = req.body.childLength
     if (!metrics || (typeof metrics === 'object' && Object.keys(metrics).length === 0)) {
         return res.status(500).json({ error: 'Metrics Data not available' });
     }
