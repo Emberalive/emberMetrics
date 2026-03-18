@@ -28,7 +28,7 @@ export default function AddDevice(props) {
 
         const userData = props.authentication ? {
             ...props.user,
-            devices: [...props.user.devices, newDevice]
+            devices: [...props.devices, newDevice]
         } : null
         try {
             // requesting to create a device to the main device.json
@@ -49,6 +49,7 @@ export default function AddDevice(props) {
                     //if authentication is true (users exist) do this
                     props.handleNotification('notice', 'updated device successfully');
                     props.setUser(resData.updatedUser)
+                    props.setDevices(resData.updatedUser.devices)
                     return
                 } else if (resData.success && userData === null) {
                     //if no authentication (no user data) do this

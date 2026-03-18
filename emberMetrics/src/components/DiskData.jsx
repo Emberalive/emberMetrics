@@ -103,7 +103,7 @@ export default function DiskData (props) {
     const diskList = disks.map((disk) => {
         return (
             <>
-                <div className={disks.length < 2 ? 'disk-usage-item__single-item' : 'disk-container__item'} key={disk.name}>
+                <div className={'disk-container__item'} key={disk.name}>
                     <p className={'disk-item__name'}>{disk.name}</p>
                     <div className={'disk-item__entry'}>
                         <label>Type: </label>
@@ -134,7 +134,7 @@ export default function DiskData (props) {
             <header className="section-header">
                 <h1>Disk Data</h1>
             </header>
-            <div className={disks.length < 2 ? 'disk-container__single-disk' : 'disk-container' }>
+            <div className={'disk-container'} style={disks.length === 1 ? {gridTemplateColumns: 'repeat(1, auto)'} : null}>
                 {diskList}
             </div>
             <header className="section-header">

@@ -10,7 +10,7 @@ export default function Profile (props) {
 
     let allowedDevicesList
     if (props.user.devices) {
-        const allowedDevices = props.user.devices
+        const allowedDevices = props.devices
 
         allowedDevicesList = allowedDevices.map(device => {
             return (

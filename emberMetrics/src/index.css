@@ -1511,82 +1511,41 @@ section {
 }
 
 /* Disk Themes */
-.disk-container__single-disk {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.disk-container__item {
-    display: grid;
-    grid-template-columns: repeat(2, auto);
-    margin-bottom: 10px;
-}
-
-.disk-usage-item__single-item {
+.disk-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    width: 100%;
-    border-bottom: 1px solid var(--border-color);
-    margin-bottom: 10px;
-    gap: 10px;
 }
 
 .disk-item__name {
-    grid-column-start: 1;
-    grid-column-end: 3;
-    width: calc(100% - var(--element-padding));
     color: var(--tertiary);
+    width: calc(100% - (var(--element-padding) * 2));
+    height: calc(var(--font-size) * (1.2 * 2));
     font-weight: 700;
     font-size: var(--font-size);
-    /*min-height: calc(var(--font-size) * 3);*/
     border-bottom: 1px solid var(--border-color);
     border-top: 1px solid var(--border-color);
     padding: 10px 0 10px 10px;
     margin: 0 0 var(--element-padding) 0;
-    text-wrap: wrap;
-}
-
-.disk-usage-item__single-item > .disk-item__entry {
-    display: flex;
-    padding: 10px;
-    flex-direction: row;
-    border: 1px solid var(--border-color);
-    gap: 10px;
-    margin: 0 10px 10px 0;
-    border-radius: var(--border-radius);
+    overflow-x: clip;
 }
 
 .disk-item__entry {
-    border: 1px solid var(--border-color);
     display: flex;
     flex-direction: row;
+    align-items: center;
     gap: 10px;
-    margin: 0 10px 10px 0;
     border-radius: var(--border-radius);
-    padding: 10px;
 }
 
+@media (max-width: 500px) {
 
-@media (max-width: 600px) {
-    .disk-usage-item {
+    .disk-container {
         grid-template-columns: repeat(1, 1fr);
     }
-}
-@media (max-width: 500px) {
-    .disk-usage-item__single-item > .disk-item__entry {
-        display: flex;
-        padding: 10px;
-        border: 1px solid var(--border-color);
-        gap: 10px;
-        margin: 0 10px 10px 0;
-        border-radius: var(--border-radius);
-    }
 
-    .disk-usage-item__single-item > .disk-item__entry {
-        flex-direction: column;
-    }
+    /*.disk-item__entry {*/
+    /*    flex-direction: column;*/
+    /*}*/
 
     .disk-usage-item__single-item {
         gap: 0;
@@ -1709,11 +1668,6 @@ section {
     color: var(--secondary);
     border-bottom: solid 2px var(--secondary);
     cursor: pointer;
-}
-
-.disk-container {
-    display: grid;
-
 }
 
 /*Profile Themes*/

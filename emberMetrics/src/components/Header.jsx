@@ -2,12 +2,7 @@ import {createRef} from "react";
 
 export default function Header (props) {
     const metrics = props.metrics
-    let devices
-    if (props.user && props.authentication) {
-        devices = props.user.devices
-    } else if (props.devices) {
-        devices = props.devices
-    }
+    const devices = props.devices
 
 
     function changeRemoteDevice(device) {

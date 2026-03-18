@@ -25,6 +25,7 @@ export default function DeviceManagement (props) {
                         <h1>Device Management</h1>
                     </header>
                     <AddDevice handleNotification={props.handleNotification}
+                               devices={props.devices}
                                checkReservedDeviceProperties={checkReservedDeviceProperties}
                                authentication={props.authentication}
                                deviceType={props.deviceType}

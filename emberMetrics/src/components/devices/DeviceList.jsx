@@ -3,7 +3,7 @@ import {useEffect} from "react";
 
 export default function DeviceList (props) {
     let devicesList;
-    const devices = props.authentication ? props.user.devices : props.devices;
+    const devices = props.devices;
     const [editDevice, setEditID] = useState(null);
     const [deleteDeviceData, setDeleteDeviceData] = useState(null);
 
@@ -14,7 +14,7 @@ export default function DeviceList (props) {
     async function deleteDevice(device) {
         const deviceID = device.id;
         // Use latest user state to compute updated devices
-        const updatedDevices = devices.filter(d => d.id !== deviceID);
+        const updatedDevices = props.user.devices.filter(d => d.id !== deviceID);
         const userData = props.authentication? { ...props.user, devices: updatedDevices } : null
 
         try {
@@ -31,6 +31,7 @@ export default function DeviceList (props) {
                     //if authentication is true (users exist) do this
                     props.handleNotification('notice', 'updated device successfully');
                     props.setUser(resData.updatedUser)
+                    props.setDevices(resData.updatedUser.devices)
                     return
                 } else if (resData.success && userData === null) {
                     //if no authentication (no user data) do this
@@ -52,7 +53,7 @@ export default function DeviceList (props) {
 
         const originalDevice = devices.find(d => d.id === editDevice.id);
         // Build new devices array using latest user state
-        const newDevices = devices.map(d =>
+        const newDevices = props.user.devices.map(d =>
             d.id === editDevice.id ? { ...d, ip: editDevice.ip, name: editDevice.name } : d
         );
 
@@ -77,6 +78,7 @@ export default function DeviceList (props) {
                     //if authentication is true (users exist) do this
                     props.handleNotification('notice', 'updated device successfully');
                     props.setUser(resData.updatedUser)
+                    props.setDevices(resData.updatedUser.devices)
                     return
                 } else if (resData.success && userData === null) {
                     //if no authentication (no user data) do this

@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 // import './index.css'
 import Header from "./components/Header";
 import Settings from "./components/Settings.jsx";
-import DeviceManagement from "./components/DeviceManagement.jsx";
+import DeviceManagement from "./components/devices/DeviceManagement.jsx";
 import Notification from "./components/Notification.jsx";
 import DeviceTypeSelection from "./components/DeviceTypeSelection.jsx";
 import Login from "./components/Login.jsx";
@@ -107,25 +107,22 @@ export default function App() {
                             return {
                                 name: 'Host-Device',
                                 ip: hostIp,
-                                isHost: true,
                             };
                         }
                         return device;
                     })
-                    setUser(prev => ({
-                        ...prev,
-                        devices: updatedDevices,
-                    }));
+                    console.log('updatedDevices', JSON.stringify(updatedDevices, null, 2));
+                    setDevices(updatedDevices);
                     setSelectedDevice(updatedDevices[0]);
                 } else {
                     handleNotification('error', 'could not find localhost device')
                 }
             } else {
-                setDevices(userDevices);
-                setSelectedDevice(userDevices[0]);
+                setDevices(user.devices)
+                setSelectedDevice(user.devices[0]);
             }
         }
-    }, [isLoggedIn, deviceType, hostIp, authentication])
+    }, [user, isLoggedIn, deviceType, hostIp, authentication, devices])
 
     useEffect(() => {
         async function getInitialDevices () {
@@ -155,7 +152,6 @@ export default function App() {
                                 isHost: true,
                             });
                         }
-
                         setDevices(filteredDevices);
                         setSelectedDevice(filteredDevices[0]);
                         return;
@@ -563,7 +559,7 @@ export default function App() {
                                                                  user={user}
                                                                  authentication={authentication}/>}
               </>}
-              {activeView === 'profile' && <Profile user={user} handleNotification={handleNotification} setUser={setUser}/>}
+              {activeView === 'profile' && <Profile user={user} handleNotification={handleNotification} setUser={setUser} devices={devices}/>}
               {activeView === 'login' && <Login handleNotification={handleNotification}
                                                                            hostIp={hostIp}
                                                                            setIsLoggedIn={setIsLoggedIn}

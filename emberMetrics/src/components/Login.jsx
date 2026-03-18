@@ -21,7 +21,8 @@ export default function Login (props) {
                 {
                     name: "localhost1",
                     ip: "127.0.0.1",
-                    id: "DgxI77r32HDNeBfh0sK8B"
+                    id: "DgxI77r32HDNeBfh0sK8B",
+                    isHost: true,
                 }
             ]
         }
