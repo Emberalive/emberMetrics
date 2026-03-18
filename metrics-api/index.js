@@ -3,6 +3,7 @@ const app = express()
 const {getHostIp} = require('./opModules/utils')
 // functions for metrics gathering
 const {getMetrics, setChildLength} = require('./opModules/metrics')
+const {findDevice} = require('./opModules/device')
 const cors = require('cors')
 const port = 3000
 
@@ -44,6 +45,13 @@ app.post('/', async (req, res) => {
             }); // always send JSON
         }
     }
+
+    const found = await findDevice(device.id)
+    if (!found.success) {
+        console.log('[ Server - /getMetrics ] Device does not exist')
+        return res.status(404).send({success: false})
+    }
+
     try {
         const response = await fetch(`http://${device.ip}:3000`, {
             method: 'POST',
@@ -68,21 +76,6 @@ app.post('/', async (req, res) => {
         res.status(500).send({success: false})
     }
 })
-
-//returns the metrics
-app.get('/', (req, res) => {
-    const metrics = getMetrics();
-    const childLength = req.query.childLength
-    if (!metrics || (typeof metrics !== 'object' && Object.keys(metrics).length === 0)) {
-        return res.status(500).json({ error: 'Metrics Data not available' });
-    }
-    const parsed = parseInt(childLength, 10)
-    if (!childLength) return res.status(500).json({ error: 'Invalid child length' });
-    if (typeof parsed === 'number') {
-        setChildLength(parsed);
-    }
-    res.status(200).json(metrics); // always send JSON
-});
 
 app.listen(port, async () => {
     console.log(`[Server] API Listening on port ${port}`)

@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const { addFireWallRule, runSoftwareOperation } = require('../opModules/admin')
 const { getThisIp, checkDeviceStructure, generateLogs, returnReads } = require('../opModules/utils')
+const {findDevice} = require("../opModules/device");
 
 //run a command on the machine
 router.post("/software", async (req, res) => {
@@ -33,6 +34,12 @@ router.post("/software", async (req, res) => {
         return
     }
     console.log(`[ Server - admin /software ] Installing on remote-device: ${device.name}`)
+
+    const found = await findDevice(device.id)
+    if (!found.success) {
+        console.log('[ Server - admin /software ] Device does not exist')
+        return res.status(404).send({success: false})
+    }
 
     try {
         console.log(`[ Server - admin /software ] running operation: ${operation} \n                             on remote-device: ${device.name}`)
@@ -98,6 +105,12 @@ router.post("/fireWallRule", async (req, res) => {
         const subProcess = result.process;
         generateLogs(subProcess, res)
         return
+    }
+
+    const found = await findDevice(device.id)
+    if (!found.success) {
+        console.log('[ Server - admin /firewall ] device does not exist')
+        return res.status(404).send({success: false})
     }
 
     console.log(`[ Server - admin /firewall ] creating rule on device: ${device.name}`)
