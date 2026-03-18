@@ -33,11 +33,6 @@
         "name": "EmberLocal",
         "ip": "192.168.0.208",
         "id": "EIgsAmY-1iT8rd4wzJvih"
-      },
-      {
-        "name": "My Server",
-        "ip": "203.0.113.0",
-        "id": "LHKqAcny3Sj-vmzfq6D5g"
       }
     ],
     "password": "$2b$10$vZ1Q2I1D83zOf9nMgbyk7eFJXdCXZTlhuShtU9TntftS1kDYvXnOS"
