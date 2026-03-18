@@ -283,12 +283,16 @@ app.post('/', (req, res) => {
     const metrics = getMetrics();
     const childLength = req.body.childLength
     if (!metrics || (typeof metrics === 'object' && Object.keys(metrics).length === 0)) {
+        console.log('[ Server - /getMetrics ] failed to get metrics')
         return res.status(500).json({ error: 'Metrics Data not available' });
     }
     const parsed = parseInt(childLength, 10)
     if (!childLength) return res.status(500).json({ error: 'Invalid child length' });
     if (typeof parsed === 'number') {
         setChildLength(parsed);
+    } else {
+        console.log('[ Server - /getMetrics ] no childLength available')
+        return res.status(500).json({ error: 'Invalid child length' });
     }
     res.status(200).json(metrics); // always send JSON
 });
