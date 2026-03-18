@@ -23,9 +23,9 @@ import Arctic from "./assets/SVG 2.1 | Arctic Cyan.svg";
 import Copper from "./assets/SVG 2.1 | Copper Flame.svg";
 import Emerald from "./assets/SVG 2.1 | Emerald Depths.svg";
 import Violet from "./assets/SVG 2.1 | Violet Storm.svg";
-import HoveringButtons from "./components/HoveringButtons.jsx";
-import Metrics from "./components/Metrics.jsx";
-import Admin from "./components/adminComponents/Admin.jsx";
+import HoveringButtons from "./components/metrics/HoveringButtons.jsx";
+import Metrics from "./components/metrics/Metrics.jsx";
+import Admin from "./components/admin/Admin.jsx";
 
 
 export default function App() {
@@ -559,7 +559,7 @@ export default function App() {
                                                                  user={user}
                                                                  authentication={authentication}/>}
               </>}
-              {activeView === 'profile' && <Profile user={user} handleNotification={handleNotification} setUser={setUser} devices={devices}/>}
+              {activeView === 'profile' && <Profile user={user} handleNotification={handleNotification} setUser={setUser} devices={devices} hostIp={hostIp}/>}
               {activeView === 'login' && <Login handleNotification={handleNotification}
                                                                            hostIp={hostIp}
                                                                            setIsLoggedIn={setIsLoggedIn}

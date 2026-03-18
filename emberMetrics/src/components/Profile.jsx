@@ -1,8 +1,41 @@
 import {useEffect, useState} from 'react'
+import UserManagement from "./UserManagement.jsx";
+import SubNav from "./SubNav.jsx";
 
 export default function Profile (props) {
+    // Only used for admins
+    const [allUsers, setAllUsers] = useState([]);
+
+    useEffect(() => {
+        if (props.user.role !== "admin") return;
+        getAllUsers();
+    }, []);
+
+    async function getAllUsers() {
+        try {
+            const response = await fetch(`http://${props.hostIp}:3000/users`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            })
+            if (response.ok) {
+                const resData = await response.json()
+                if (resData.success) {
+                    setAllUsers(resData.users)
+                    console.log(JSON.stringify(resData.users))
+                }
+            }
+        } catch (e) {
+            props.handleNotification('notice', `could not get the user list for the admin: ${props.user.name}`)
+        }
+    }
+
     const [isEditing, setEditing] = useState(false);
     const [editUser, setEditUser] = useState(props.user);
+
+    const profileNavList = ['Profile', 'User Management'];
+    const [profileView, setProfileView] = useState('Profile');
 
     useEffect(() => {
         setEditUser(props.user)
@@ -72,62 +105,65 @@ export default function Profile (props) {
     return (
         <div className="profile-container__wrapper">
             <section className={'profile'}>
-                <div className="profile-container">
+                <SubNav  subView={profileView} setSubView={setProfileView} subNavList={profileNavList}/>
+                {profileView === "Profile" && <div className="profile-container">
                     <header className="section-header">
                         <h1>Profile - {props.user.username}</h1>
                     </header>
-                        {isEditing ?
-                            <div className="profile-item__container">
-                                <label>Name</label>
-                                <input type={'text'} value={editUser.username} onChange={(e) => {
-                                    setEditUser({ ...editUser, username: e.target.value })
-                                }}/>
-                            </div>
-                            :
-                            <div className="profile-item__container">
-                                <h1>Name</h1>
-                                <p className={'profile-item-container__text'}>{props.user.username}</p>
-                            </div>
-                        }
-                        {isEditing ?
-                            <div className="profile-item__container">
-                                <label>Email</label>
-                                <input type={'text'} value={editUser.email} onChange={(e) => {
-                                    setEditUser({ ...editUser, email: e.target.value })
-                                }}/>
-                            </div>
-                            :
-                            <div className="profile-item__container">
-                                <h1>Email</h1>
-                                <p className={'profile-item-container__text'}>{props.user.email}</p>
-                            </div>
-                        }
-                        {isEditing ?
-                            <div className="profile-item__container">
-                                <label>Bio</label>
-                                <textarea className={'profile-item-container__bio__edit'} style={{borderBottom: '1px solid var(--secondary)'}} onChange={(e) => {
-                                    setEditUser({ ...editUser, bio: e.target.value })
-                                }}>{editUser.bio}</textarea>
+                    {isEditing ?
+                        <div className="profile-item__container">
+                            <label>Name</label>
+                            <input type={'text'} value={editUser.username} onChange={(e) => {
+                                setEditUser({...editUser, username: e.target.value})
+                            }}/>
+                        </div>
+                        :
+                        <div className="profile-item__container">
+                            <h1>Name</h1>
+                            <p className={'profile-item-container__text'}>{props.user.username}</p>
+                        </div>
+                    }
+                    {isEditing ?
+                        <div className="profile-item__container">
+                            <label>Email</label>
+                            <input type={'text'} value={editUser.email} onChange={(e) => {
+                                setEditUser({...editUser, email: e.target.value})
+                            }}/>
+                        </div>
+                        :
+                        <div className="profile-item__container">
+                            <h1>Email</h1>
+                            <p className={'profile-item-container__text'}>{props.user.email}</p>
+                        </div>
+                    }
+                    {isEditing ?
+                        <div className="profile-item__container">
+                            <label>Bio</label>
+                            <textarea className={'profile-item-container__bio__edit'}
+                                      style={{borderBottom: '1px solid var(--secondary)'}} onChange={(e) => {
+                                setEditUser({...editUser, bio: e.target.value})
+                            }}>{editUser.bio}</textarea>
 
-                            </div>
-                            :
-                            <div className="profile-item__container">
-                                <h1>Bio</h1>
-                                <p className={'profile-item-container__bio'}>{props.user.bio}</p>
-                            </div>
-                        }
+                        </div>
+                        :
+                        <div className="profile-item__container">
+                            <h1>Bio</h1>
+                            <p className={'profile-item-container__bio'}>{props.user.bio}</p>
+                        </div>
+                    }
                     <div className="profile-button__container">
                         {isEditing ?
                             <>
                                 <button className={'general-button danger-button'} onClick={() => {
                                     setEditing(prevState => !prevState);
                                     resetEditUser()
-                                }}>cancel</button>
+                                }}>cancel
+                                </button>
 
-                                <button className={'general-button success-button'} onClick={async() => {
+                                <button className={'general-button success-button'} onClick={async () => {
                                     const response = await patchUser(editUser)
                                     if (!response.success) {
-                                        switch(response.status) {
+                                        switch (response.status) {
                                             case 404:
                                                 resetEditUser()
                                                 props.handleNotification('error', 'Your user does not exist')
@@ -146,26 +182,29 @@ export default function Profile (props) {
                                         }
                                     }
                                     setEditing(prevState => !prevState)
-                                }}>Save</button>
+                                }}>Save
+                                </button>
 
                             </>
                             :
                             <>
                                 <button type={'button'} className={'general-button success-button'} onClick={() => {
                                     setEditing(prevState => !prevState);
-                                }}>Edit</button>
+                                }}>Edit
+                                </button>
                             </>
                         }
                     </div>
                     <header className="section-header">
                         <h1>Allowed Devices</h1>
                     </header>
-                        {allowedDevicesList &&
-                            <div className="profile-devices__container">
-                                    {allowedDevicesList}
-                            </div>
-                        }
-                </div>
+                    {allowedDevicesList &&
+                        <div className="profile-devices__container">
+                            {allowedDevicesList}
+                        </div>
+                    }
+                </div>}
+                {profileView === "User Management" && <UserManagement users={allUsers}/>}
         </section>
     </div>
 )

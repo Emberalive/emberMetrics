@@ -1,19 +1,15 @@
 import {useRef, useState} from "react";
 import SoftwareManagement from "./SoftwareManagement/SoftwareManagement.jsx";
-import AdminNavigation from "./AdminNavigation.jsx";
+import SubNav from "../SubNav.jsx";
 import FirewallManagement from "./firewallManagement/FirewallManagement.jsx";
 import LogDisplay from "./LogDisplay.jsx";
 
-export default function Admin({user, authentication, devices, handleNotification, hostIp, deviceType, viewPort}) {
-    let deviceList
+export default function Admin({devices, handleNotification, hostIp, deviceType, viewPort}) {
+    const deviceList = devices
 
-    if (user && authentication) {
-        deviceList = user.devices
-    } else if (devices) {
-        deviceList = devices
-    }
+    const adminNavList = ['Software', 'Firewall'];
 
-    const [adminView, setAdminView] = useState('software');
+    const [adminView, setAdminView] = useState('Software');
     const [selectedDevice, setSelectedDevice] = useState({
         name: ""
     });
@@ -57,9 +53,9 @@ export default function Admin({user, authentication, devices, handleNotification
                 <header className={'section-header'}>
                     <h1>Administration</h1>
                 </header>
-                <AdminNavigation adminView={adminView} setAdminView={setAdminView}/>
+                <SubNav subView={adminView} setSubView={setAdminView} subNavList={adminNavList}/>
                 {displayLogs && <LogDisplay setDisplayLogs={setDisplayLogs} logs={logs} setLogs={setLogs} logDisplayRef={logDisplayRef} viewPort={viewPort} />}
-                {adminView === 'software' && <SoftwareManagement devices={deviceList} adminView={adminView}
+                {adminView === 'Software' && <SoftwareManagement devices={deviceList} adminView={adminView}
                                                                  handleNotification={handleNotification}
                                                                  hostIp={hostIp}
                                                                  deviceType={deviceType}
@@ -68,7 +64,7 @@ export default function Admin({user, authentication, devices, handleNotification
                                                                  setSelectedDevice={setSelectedDevice}
                                                                  installation={installation}
                                                                  setInstallation={setInstallation} viewPort={viewPort}/>}
-                {adminView === 'firewall' && <FirewallManagement devices={deviceList} adminView={adminView}
+                {adminView === 'Firewall' && <FirewallManagement devices={deviceList} adminView={adminView}
                                                                  handleNotification={handleNotification}
                                                                  hostIp={hostIp}
                                                                  deviceType={deviceType}

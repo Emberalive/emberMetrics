@@ -1,9 +1,9 @@
-import CollapseWhite from "../assets/collapse-white.svg";
-import CollapseBlack from "../assets/collapse-black.svg";
-import ExpandWhite from "../assets/expand-white.svg";
-import ExpandBlack from "../assets/expand-black.svg";
-import HamburgerBlack from "../assets/hamburger-menu-black.svg";
-import HamburgerWhite from "../assets/hamburger-menu-white.svg";
+import CollapseWhite from "../../assets/collapse-white.svg";
+import CollapseBlack from "../../assets/collapse-black.svg";
+import ExpandWhite from "../../assets/expand-white.svg";
+import ExpandBlack from "../../assets/expand-black.svg";
+import HamburgerBlack from "../../assets/hamburger-menu-black.svg";
+import HamburgerWhite from "../../assets/hamburger-menu-white.svg";
 import MetricsSettings from "./MetricsSettings.jsx";
 
 export default function HoveringButtons (props) {
