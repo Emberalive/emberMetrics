@@ -258,4 +258,4 @@ async function checkPassword(password, hashedPassword) {
 }
 
 
-module.exports = {createUser, deleteUser, authenticateUser, updateUser}
+module.exports = {createUser, deleteUser, authenticateUser, updateUser, readUsers}

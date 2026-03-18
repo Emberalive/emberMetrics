@@ -1,6 +1,18 @@
 const express = require('express')
-const {createUser, deleteUser, authenticateUser, updateUser} = require('../opModules/user')
+const {createUser, deleteUser, authenticateUser, updateUser, readUsers} = require('../opModules/user')
 const router = express.Router()
+
+router.get('/', async (req, res) => {
+    console.log("[ Server - GET /users ] Getting all users for an admin")
+    const users = await readUsers()
+    if (Array.isArray(users)) {
+        return res.status(200).json({
+            users: users,
+            success: true
+        })
+    }
+    return res.status(404).json({ success: false })
+})
 
 //login the user in
 router.post('/login', async(req, res) => {

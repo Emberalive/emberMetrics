@@ -18,14 +18,15 @@
     "email": "email",
     "bio": "This is my bio and i need to add some large text to see what is happening, when there is a lot of text, I need some more text, how about some more",
     "id": "HXm1Ynv_kjER73gM4Ftqr",
+    "role": "admin",
     "devices": [
       {
-        "name": "Host-Device",
-        "ip": "localhost",
+        "name": "localhost",
+        "ip": "127.0.0.1",
         "isHost": true
       },
       {
-        "name": "Laptop",
+        "name": "LaptopLocal",
         "ip": "192.168.0.184",
         "id": "tQMVV7uSEqai7GWCRwgjQ"
       },
