@@ -284,17 +284,20 @@ app.post('/', (req, res) => {
     const childLength = req.body.childLength
     if (!metrics || (typeof metrics === 'object' && Object.keys(metrics).length === 0)) {
         console.log('[ Server - /getMetrics ] failed to get metrics')
-        return res.status(500).json({ reason: 'Metrics Data not available' });
+        return res.status(500).json({ reason: 'Metrics Data not available', success: false });
     }
     const parsed = parseInt(childLength, 10)
-    if (!childLength) return res.status(500).json({ reason: 'Invalid child length' });
+    if (!childLength) return res.status(500).json({ reason: 'Invalid child length', success: false });
     if (typeof parsed === 'number') {
         setChildLength(parsed);
     } else {
         console.log('[ Server - /getMetrics ] no childLength available')
-        return res.status(500).json({ reason: 'Invalid child length' });
+        return res.status(500).json({ reason: 'Invalid child length', success: false });
     }
-    res.status(200).json(metrics); // always send JSON
+    res.status(200).json({
+        success: true,
+        metrics: metrics,
+    }); // always send JSON
 });
 
 app.listen(port, async () => {
