@@ -5,10 +5,12 @@ import SubNav from "./SubNav.jsx";
 export default function Profile (props) {
     // Only used for admins
     const [allUsers, setAllUsers] = useState([]);
+    const [allDevices, setAllDevices] = useState([]);
 
     useEffect(() => {
         if (props.user.role !== "admin") return;
         getAllUsers();
+        getALlDevices();
     }, []);
 
     async function getAllUsers() {
@@ -23,11 +25,32 @@ export default function Profile (props) {
                 const resData = await response.json()
                 if (resData.success) {
                     setAllUsers(resData.users)
-                    console.log(JSON.stringify(resData.users))
                 }
             }
         } catch (e) {
             props.handleNotification('notice', `could not get the user list for the admin: ${props.user.name}`)
+        }
+    }
+
+    async function getALlDevices () {
+        try {
+            const response = await fetch(`http://${props.hostIp}:3000/devices`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            })
+            if (response.ok) {
+                const resData = await response.json()
+                if (resData.success) {
+                    setAllDevices(resData.devices)
+                } else {
+                    props.handleNotification('error', `Could not get all the devices for the admin ${props.user.name}`);
+                }
+            }
+
+        } catch (e) {
+            props.handleNotification('error', `Could not get all the devices for the admin ${props.user.name}`);
         }
     }
 
@@ -204,7 +227,7 @@ export default function Profile (props) {
                         </div>
                     }
                 </div>}
-                {profileView === "User Management" && <UserManagement users={allUsers}/>}
+                {profileView === "User Management" && <UserManagement users={allUsers} allDevices={allDevices}/>}
         </section>
     </div>
 )

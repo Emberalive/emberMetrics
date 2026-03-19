@@ -133,7 +133,10 @@ export default function App() {
 
                 if (response.ok) {
                     const resData = await response.json();
-                    const resData_devices = resData.devices
+                    let resData_devices
+                    if (resData.success) {
+                        resData_devices = resData.devices
+                    }
                     const newDevices = [...resData_devices];
                     if (deviceType === "") return
                     if (deviceType === "remote-access") {
