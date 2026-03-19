@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
         const devices = await getDevices()
         if (!devices) {
             console.log("[Server - GET | devices] no devices stored on API")
-            res.status(500).json('Devices Data not available')
+            res.status(500).json({success: false})
         } else {
             console.log("[Server - GET | devices] devices sent to client")
             res.status(200).json(devices)
