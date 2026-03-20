@@ -5,8 +5,8 @@ import Settings from "./components/settings/Settings.jsx";
 import DeviceManagement from "./components/devices/DeviceManagement.jsx";
 import Notification from "./components/settings/Notification.jsx";
 import DeviceTypeSelection from "./components/onboarding/DeviceTypeSelection.jsx";
-import Login from "./components/user/Login.jsx";
-import Profile from "./components/user/Profile.jsx";
+import Login from "./components/user-auth/Login.jsx";
+import Profile from "./components/user-auth/Profile.jsx";
 import Sparkr from "./assets/SVG 2.1 | Original Sparkr.svg";
 import Ocean from "./assets/SVG 2.1 | Ocean Blues.svg";
 import Forest from "./assets/SVG 2.1 | Forest Green.svg";
@@ -30,8 +30,8 @@ import Admin from "./components/admin/Admin.jsx";
 
 export default function App() {
 //<<-----------------------------Only edit this!!!!!----------------------------------------->>
-    // This is a quick fix to allow the user to make the app have or not have authentication
-    //change the value of authentication to false if you don't want a user system
+    // This is a quick fix to allow the user-auth to make the app have or not have authentication
+    //change the value of authentication to false if you don't want a user-auth system
     const authentication = true
 //<<-------------------------^^^^^Only edit this^^^^^---------------------------------------->>
 

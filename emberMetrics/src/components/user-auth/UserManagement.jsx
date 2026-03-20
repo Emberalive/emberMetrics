@@ -1,14 +1,19 @@
 import {useState} from "react";
+import Select from 'react-select'
 
 export default function UserManagement({users, allDevices}) {
     let userList =[]
     const [editUserDevices, setEditUserDevices] = useState(false)
+    const [selectedAddDevice, setSelectedAddDevice] = useState({})
 
     if (Array.isArray(users)) {
         userList = users.map((user) => {
-            const userDeviceIds = new Set(user.devices.map(d => d.id));
-            const userSpecificDeviceOptions = allDevices.filter(globalDevice => !userDeviceIds.has(globalDevice.id));            const allDeviceOptions = userSpecificDeviceOptions.map((device) => {
-                return <option key={device.id} value={device.id}>{device.name}</option>
+            const userSpecificDeviceOptions = allDevices.filter(globalDevice => !user.devices.some(device => device.id === globalDevice.id));
+            const allDeviceOptions = userSpecificDeviceOptions.map((device) => {
+                return {
+                    value: device,
+                    label: device.name
+                }
             })
 
             const userDevices = user.devices.map((device) => {
@@ -41,16 +46,63 @@ export default function UserManagement({users, allDevices}) {
                             <div className={'user-container-item__details__devices'}>
                             <h3>Allowed Devices</h3>
                             {userDevices}
-                                <select>
-                                    {allDeviceOptions}
-                                </select>
+                            <div className={'user-container-item__details__devices-select'}>
+                                <h3>New Device</h3>
+
+                                <Select options={allDeviceOptions} styles={{
+                                    container: (base) => ({
+                                        ...base,
+                                        width: '100%'
+                                    }),
+                                    singleValue: (base) => ({
+                                        ...base,
+                                        color: 'var(--accent)',
+                                        fontFamily: "'Inter', sans-serif"
+                                    }),
+                                    dropdownIndicator: (base) => ({
+                                        ...base,
+                                        '&:hover': {
+                                            color: 'var(--secondary)',
+                                        }
+                                    }),
+                                    control: (base) => ({
+                                        ...base,
+                                        backgroundColor: 'var(--neutral)',
+                                        border: 'none',
+                                        alignSelf: 'center',
+                                    }),
+                                    option: (base, state) => ({
+                                        ...base,
+                                        backgroundColor: state.isFocused ? 'var(--secondary-75)' : 'var(--neutral)',
+                                        color: 'var(--accent)',
+                                    }),
+                                    menu: (base) => ({
+                                        ...base,
+                                        backgroundColor: 'var(--neutral)',
+                                        borderRadius: '0 0 10px 10px',
+                                        padding: '5px',
+                                        borderBottom: '1px solid var(--tertiary)',
+                                    })
+                                }} onChange={(selectedOption) => {
+                                    console.log(selectedOption)
+                                    setSelectedAddDevice(selectedOption.value)
+                                }}     noOptionsMessage={() => 'No more devices to give access'}/>
+                                {(editUserDevices === user.id && selectedAddDevice !== {}) &&
+                                    <>
+                                        <div key={selectedAddDevice.id} className={'user-container-item__details__entry'}>
+                                            <label>{selectedAddDevice.name}</label>
+                                            <p>{selectedAddDevice.ip}</p>
+                                        </div>
+                                    </>
+                                }
+                            </div>
                             <div className={'user-container-item__details__devices-controls'}>
                                 <button className={'general-button success-button'} onClick={() => {
                                     console.log('[ Client - UserManagement ] adding device')
                                 }}>Add
                                 </button>
                                 <button className={'general-button danger-button'} onClick={() => {
-                                    console.log('[ Client - UserManagement ] canceling user management')
+                                    console.log('[ Client - UserManagement ] canceling user-auth management')
                                     setEditUserDevices(null)
                                 }}>Cancel
                                 </button>

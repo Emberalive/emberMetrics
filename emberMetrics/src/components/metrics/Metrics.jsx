@@ -23,6 +23,8 @@ export default function Metrics({metrics, isGraph, timeMetrics, metricInterval, 
                                     <DeviceData metrics={metrics}
                                                 metricInterval={metricInterval}
                                                 isDarkMode={isDarkMode}/>
+                                    <ChildProcesses metrics={metrics}
+                                                    isDarkMode={isDarkMode}/>
                                 </>:
                                 <>
                                     <ChildProcesses metrics={metrics} handleNotification={handleNotification}/>
@@ -48,8 +50,6 @@ export default function Metrics({metrics, isGraph, timeMetrics, metricInterval, 
                                              randomColour={randomColour}
                                              metricInterval={metricInterval}
                                              isDarkMode={isDarkMode}/>
-                                    <ChildProcesses metrics={metrics}
-                                                    isDarkMode={isDarkMode}/>
                                     <DiskData metrics={metrics}
                                               isGraph={isGraph}
                                               timeMetrics={timeMetrics}

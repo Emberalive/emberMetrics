@@ -43,7 +43,7 @@ export default function DiskData (props) {
                         {
                             dataKey: 'rIO_sec',
                             label: 'Reads /s',
-                            color: 'var(--accent)',
+                            color: 'var(--tertiary)',
                         },
                         {
                             dataKey: 'wIO_sec',

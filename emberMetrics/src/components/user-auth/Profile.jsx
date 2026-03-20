@@ -189,7 +189,7 @@ export default function Profile (props) {
                                         switch (response.status) {
                                             case 404:
                                                 resetEditUser()
-                                                props.handleNotification('error', 'Your user does not exist')
+                                                props.handleNotification('error', 'Your user-auth does not exist')
                                                 break
                                             case 409:
                                                 resetEditUser()

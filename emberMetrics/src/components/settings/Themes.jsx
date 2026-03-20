@@ -36,9 +36,6 @@ export default function Themes (props){
         root.style.setProperty("--dm-tertiary-75", theme.colour.tertiary75);
     }
 
-
-
-
     const themeList = props.themes.map(theme => {
         return (
             <div key={theme.name} className={"theme_wrapper"} onClick={() => {
@@ -49,9 +46,7 @@ export default function Themes (props){
                 <div className={(themeClicked === theme) || (storedTheme && JSON.parse(storedTheme).name === theme.name) ? "theme-container theme_wrapper_clicked" : "theme-container"}>
                     <div className={"theme"} style={{
                         backgroundColor: theme.colour.tertiary,
-
                     }}>
-
                     </div>
                 </div>
                 <p style={{
@@ -69,11 +64,11 @@ export default function Themes (props){
                 {themeList}
             </div>
             {themeClicked && <div className="theme-form__buttons">
-                <button className={"theme_save"} type={"button"} onClick={() => {
+                <button className={"success-button general-button"} type={"button"} onClick={() => {
                     localStorage.setItem("theme", JSON.stringify(themeClicked));
                     setThemeClicked(null);
                 }}>Save Theme</button>
-                <button className={"theme_cancel"} type={"button"} onClick={() => {
+                <button className={"danger-button general-button"} type={"button"} onClick={() => {
                     console.log("cancelling theme selection")
                     setThemeClicked(null);
                     if (storedTheme) {
@@ -84,7 +79,6 @@ export default function Themes (props){
                     }
                 }}>Cancel</button>
             </div>}
-
         </form>
     )
 }

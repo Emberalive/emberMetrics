@@ -52,7 +52,7 @@ export default function AddDevice(props) {
                     props.setDevices(resData.updatedUser.devices)
                     return
                 } else if (resData.success && userData === null) {
-                    //if no authentication (no user data) do this
+                    //if no authentication (no user-auth data) do this
                     props.handleNotification('notice', 'updated device successfully');
                     props.setDevices(prev => [...prev, newDevice]);
                     return

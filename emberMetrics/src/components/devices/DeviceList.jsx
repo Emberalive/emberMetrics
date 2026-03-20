@@ -13,7 +13,7 @@ export default function DeviceList (props) {
 
     async function deleteDevice(device) {
         const deviceID = device.id;
-        // Use latest user state to compute updated devices
+        // Use latest user-auth state to compute updated devices
         const updatedDevices = props.user.devices.filter(d => d.id !== deviceID);
         const userData = props.authentication? { ...props.user, devices: updatedDevices } : null
 
@@ -34,7 +34,7 @@ export default function DeviceList (props) {
                     props.setDevices(resData.updatedUser.devices)
                     return
                 } else if (resData.success && userData === null) {
-                    //if no authentication (no user data) do this
+                    //if no authentication (no user-auth data) do this
                     props.handleNotification('notice', 'updated device successfully');
                     props.setDevices(updatedDevices)
                     return
@@ -52,12 +52,12 @@ export default function DeviceList (props) {
         if (props.checkReservedDeviceProperties(editDevice)) return
 
         const originalDevice = devices.find(d => d.id === editDevice.id);
-        // Build new devices array using latest user state
+        // Build new devices array using latest user-auth state
         const newDevices = props.user.devices.map(d =>
             d.id === editDevice.id ? { ...d, ip: editDevice.ip, name: editDevice.name } : d
         );
 
-        //build new user object with the new devices
+        //build new user-auth object with the new devices
         const userData = props.authentication? { ...props.user, devices: newDevices } : null;
 
         try {
@@ -81,7 +81,7 @@ export default function DeviceList (props) {
                     props.setDevices(resData.updatedUser.devices)
                     return
                 } else if (resData.success && userData === null) {
-                    //if no authentication (no user data) do this
+                    //if no authentication (no user-auth data) do this
                     props.handleNotification('notice', 'updated device successfully');
                     props.setDevices(newDevices)
                     return
