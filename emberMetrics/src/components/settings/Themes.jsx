@@ -1,14 +1,14 @@
 import {useState} from "react";
-import Sparkr from "../assets/SVG 2.1 | Original Sparkr.svg";
-import Berry from "../assets/SVG 2.1 | Berry red.svg";
-import Forest  from "../assets/SVG 2.1 | Forest Green.svg";
-import Lavander from "../assets/SVG 2.1 | Lavander Mist.svg";
-import Minty from "../assets/SVG 2.1 | Minty Fresh.svg";
-import Sunrise from "../assets/SVG 2.1 | orange sunrise.svg";
-import Royal   from "../assets/SVG 2.1 | Royal Purple.svg";
-import Teal from "../assets/SVG 2.1 | Teal Lagoon.svg";
-import Ocean from "../assets/SVG 2.1 | Ocean Blues.svg";
-import Magenta from "../assets/SVG 2.1 | Sunset Magenta.svg";
+import Sparkr from "../../assets/SVG 2.1 | Original Sparkr.svg";
+import Berry from "../../assets/SVG 2.1 | Berry red.svg";
+import Forest  from "../../assets/SVG 2.1 | Forest Green.svg";
+import Lavander from "../../assets/SVG 2.1 | Lavander Mist.svg";
+import Minty from "../../assets/SVG 2.1 | Minty Fresh.svg";
+import Sunrise from "../../assets/SVG 2.1 | orange sunrise.svg";
+import Royal   from "../../assets/SVG 2.1 | Royal Purple.svg";
+import Teal from "../../assets/SVG 2.1 | Teal Lagoon.svg";
+import Ocean from "../../assets/SVG 2.1 | Ocean Blues.svg";
+import Magenta from "../../assets/SVG 2.1 | Sunset Magenta.svg";
 
 export default function Themes (props){
 

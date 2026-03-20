@@ -1,6 +1,6 @@
 import {useRef, useState} from "react";
 import SoftwareManagement from "./SoftwareManagement/SoftwareManagement.jsx";
-import SubNav from "../SubNav.jsx";
+import SubNav from "../shared/SubNav.jsx";
 import FirewallManagement from "./firewallManagement/FirewallManagement.jsx";
 import LogDisplay from "./LogDisplay.jsx";
 

@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react'
 import UserManagement from "./UserManagement.jsx";
-import SubNav from "./SubNav.jsx";
+import SubNav from "../shared/SubNav.jsx";
 
 export default function Profile (props) {
     // Only used for admins

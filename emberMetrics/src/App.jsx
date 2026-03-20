@@ -1,12 +1,12 @@
 import {useEffect, useState} from "react";
 // import './index.css'
-import Header from "./components/Header";
-import Settings from "./components/Settings.jsx";
+import Header from "./components/shared/Header.jsx";
+import Settings from "./components/settings/Settings.jsx";
 import DeviceManagement from "./components/devices/DeviceManagement.jsx";
-import Notification from "./components/Notification.jsx";
-import DeviceTypeSelection from "./components/DeviceTypeSelection.jsx";
-import Login from "./components/Login.jsx";
-import Profile from "./components/Profile.jsx";
+import Notification from "./components/settings/Notification.jsx";
+import DeviceTypeSelection from "./components/onboarding/DeviceTypeSelection.jsx";
+import Login from "./components/user/Login.jsx";
+import Profile from "./components/user/Profile.jsx";
 import Sparkr from "./assets/SVG 2.1 | Original Sparkr.svg";
 import Ocean from "./assets/SVG 2.1 | Ocean Blues.svg";
 import Forest from "./assets/SVG 2.1 | Forest Green.svg";
