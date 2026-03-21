@@ -136,6 +136,7 @@ async function writeUser(newUsers) {
         await fs.writeFile(tmpfilePath, JSON.stringify(newUsers, null, 2), 'utf8')
 
         await fs.rename(tmpfilePath, storedFilePath)
+        console.log('[Server - writeUser] Successfully updated user list')
         return {success: true}
     } catch (e) {
         console.error('[Server - writeUser] Internal error: ', e)
@@ -153,6 +154,7 @@ async function readUsers() {
             console.error('[Server - readUsers] Expected array, got:', JSON.stringify(rawUsers));
             return []
         }
+        console.log('[ Server - readUsers] Retrieved user list')
 
         return JSON.parse(rawUsers);
     } catch (e) {
@@ -258,4 +260,4 @@ async function checkPassword(password, hashedPassword) {
 }
 
 
-module.exports = {createUser, deleteUser, authenticateUser, updateUser, readUsers}
+module.exports = {createUser, deleteUser, authenticateUser, updateUser, readUsers, writeUser}

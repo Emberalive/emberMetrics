@@ -1,5 +1,7 @@
 const express = require('express')
-const {createUser, deleteUser, authenticateUser, updateUser, readUsers} = require('../opModules/user')
+const {createUser, deleteUser, authenticateUser, updateUser, readUsers, writeUser} = require('../opModules/user')
+const {checkDeviceStructure} = require("../opModules/utils");
+const {findDevice} = require("../opModules/device");
 const router = express.Router()
 
 router.get('/', async (req, res) => {
@@ -146,6 +148,57 @@ router.delete('/', async (req, res) => {
                 success: false,
             })
         }
+    }
+})
+
+
+async function deviceAdminHandler (editUser, device, admin, failLog, res) {
+    try {
+        if (admin.role !== 'admin') return res.status(500).send({success: false})
+
+        if (!editUser || !admin) return res.status(400).send({success: false})
+        if (!checkDeviceStructure(device)) res.status(400).send({success: false})
+
+        const found = await findDevice(device.id)
+        if (!found) return res.status(404).send({success: false})
+
+        const userList = await readUsers()
+        const updatedUsers = userList.map((u) => {
+            if (u.id === editUser.id) {
+                return editUser
+            }
+            return u
+        })
+        return await writeUser(updatedUsers)
+    } catch (e) {
+        console.log(`${failLog}\nERROR: ${JSON.stringify(e)}`)
+    }
+}
+
+
+router.post('/removeDevice', async (req, res) => {
+    console.log('[ Server - DELETE /users/removeDevice ] starting route access')
+    const {editUser, device, admin} = req.body
+
+    const response = await deviceAdminHandler(editUser, device, admin,`[Server - POST /users/removeDevice] Revoke access of ${device.name} from the  user: ${editUser.username} failed`, res)
+    if (response.success) {
+        console.log(`[ Server - POST /users/removeDevice ] User: ${editUser.username} has been revoked of access from device: ${device.name}`)
+        res.status(200).send({success: true})
+    } else {
+        res.status(500).send({success: false})
+    }
+})
+
+router.post('/addDevice', async (req, res) => {
+    console.log('[ Server - DELETE /users/addDevice ] starting route access')
+    const {editUser, device, admin} = req.body
+
+    const response = await deviceAdminHandler(editUser, device, admin,`[ Server - POST /users/addDevice ] Failed to give access of device: ${device.name} for user: ${editUser.username}`, res)
+    if (response.success) {
+        console.log(`[ Server - POST /users/addDevice ] Added ${device.name} to ${editUser.username}'s allowed devices`)
+        res.status(200).send({success: true})
+    } else {
+        res.status(500).send({success: false})
     }
 })
 

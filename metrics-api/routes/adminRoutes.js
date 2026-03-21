@@ -42,7 +42,7 @@ router.post("/software", async (req, res) => {
     }
 
     try {
-        console.log(`[ Server - admin /software ] running operation: ${operation} \n                             on remote-device: ${device.name}`)
+        console.log(`[ Server - admin /software ] running operation: ${operation} - On remote-device: ${device.name}`)
         const response = await fetch(`http://${device.ip}:3000/admin/software`, {
             method: 'POST',
             headers: {

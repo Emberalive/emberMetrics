@@ -23,7 +23,8 @@
       {
         "name": "localhost",
         "ip": "127.0.0.1",
-        "isHost": true
+        "isHost": true,
+        "id": "DgxI77r32HDNeBfh0sK8B"
       },
       {
         "name": "LaptopLocal",
@@ -37,5 +38,18 @@
       }
     ],
     "password": "$2b$10$vZ1Q2I1D83zOf9nMgbyk7eFJXdCXZTlhuShtU9TntftS1kDYvXnOS"
+  },
+  {
+    "username": "user",
+    "password": "$2b$10$LM2KAepFCn09TWyyC69RReKgg4k7nVA3LMsWezX5paNIdzQPz83pO",
+    "role": "user",
+    "id": "331Z_FFxLU7bPL2j5QxNT",
+    "devices": [
+      {
+        "name": "localhost",
+        "ip": "127.0.0.1",
+        "id": "DgxI77r32HDNeBfh0sK8B"
+      }
+    ]
   }
 ]

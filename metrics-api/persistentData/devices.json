@@ -14,5 +14,10 @@
     "name": "EmberLocal",
     "ip": "192.168.0.208",
     "id": "EIgsAmY-1iT8rd4wzJvih"
+  },
+  {
+    "name": "My Server",
+    "ip": "203.0.113.0",
+    "id": "JJBkYaR56xNR6bpwtEdLc"
   }
 ]
