@@ -227,7 +227,12 @@ export default function Profile (props) {
                         </div>
                     }
                 </div>}
-                {profileView === "User Management" && <UserManagement users={allUsers} allDevices={allDevices}/>}
+                {profileView === "User Management" && <UserManagement users={allUsers} allDevices={allDevices}
+                                                                      handleNotification={props.handleNotification}
+                                                                      deviceType={props.deviceType}
+                                                                      hostIp={props.hostIp}
+                                                                      user={props.user}
+                                                                      setUsers={setAllUsers}/>}
         </section>
     </div>
 )

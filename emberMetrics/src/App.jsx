@@ -7,6 +7,9 @@ import Notification from "./components/settings/Notification.jsx";
 import DeviceTypeSelection from "./components/onboarding/DeviceTypeSelection.jsx";
 import Login from "./components/user-auth/Login.jsx";
 import Profile from "./components/user-auth/Profile.jsx";
+import HoveringButtons from "./components/metrics/HoveringButtons.jsx";
+import Metrics from "./components/metrics/Metrics.jsx";
+import Admin from "./components/admin/Admin.jsx"
 import Sparkr from "./assets/SVG 2.1 | Original Sparkr.svg";
 import Ocean from "./assets/SVG 2.1 | Ocean Blues.svg";
 import Forest from "./assets/SVG 2.1 | Forest Green.svg";
@@ -23,10 +26,6 @@ import Arctic from "./assets/SVG 2.1 | Arctic Cyan.svg";
 import Copper from "./assets/SVG 2.1 | Copper Flame.svg";
 import Emerald from "./assets/SVG 2.1 | Emerald Depths.svg";
 import Violet from "./assets/SVG 2.1 | Violet Storm.svg";
-import HoveringButtons from "./components/metrics/HoveringButtons.jsx";
-import Metrics from "./components/metrics/Metrics.jsx";
-import Admin from "./components/admin/Admin.jsx";
-
 
 export default function App() {
 //<<-----------------------------Only edit this!!!!!----------------------------------------->>
@@ -390,7 +389,7 @@ export default function App() {
         setNotification({type: type, message: message})
         setTimeout(() => {
             setNotification("")
-        }, 2000)
+        }, 3500)
     }
 
     useEffect(() => {

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {useEffect} from "react";
+import YouSure from "../shared/YouSure.jsx";
 
 export default function DeviceList (props) {
     let devicesList;
@@ -175,6 +176,7 @@ export default function DeviceList (props) {
                         }}>No</button>
                     </div>
                 </section>
+                <YouSure message={'Do you want to delete'} messageHighlight={deleteDeviceData.name} confirmFunction={() => deleteDevice(deleteDeviceData)} cancelFunction={() => setDeleteDeviceData(null)}/>
             </div>}
             <div className="device-list__container">
                 {devices.length === 0 && <p style={{fontSize: "10px", fontWeight: "700", textAlign: "center"}}>You have no remote devices registered.</p>}

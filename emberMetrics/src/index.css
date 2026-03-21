@@ -1863,7 +1863,7 @@ section {
 
 .users-container__item {
     display: grid;
-    grid-template-columns: 0.3fr 1fr;
+    grid-template-columns: 0.2fr 1fr;
     width: 100%;
 }
 
@@ -1902,17 +1902,15 @@ section {
 }
 
 .user-container-item__name > p {
+    width: 90px;
+    margin: 0 5px;
     text-align: center;
-    height: fit-content;
-    margin-top: 20px;
     border-radius: var(--border-radius);
     padding: var(--element-padding);
-    font-size: 40px;
+    font-size: 20px;
     font-weight: bold;
     color: var(--secondary);
-    display: flex;
     background-color: var(--neutral);
-    transform : rotate(270deg);
 }
 
 .user-container-item__details {
@@ -1987,11 +1985,29 @@ section {
     max-width: 20%;
     text-align: center;
     margin: 0 12px 0 0;
-    padding: 10px;
     font-weight: bold;
 }
 
+.user-container-item__details__entry > .general-button {
+    font-size: 16px;
+    padding: 10px 15px 10px 15px;
+}
 
+@media (max-width: 550px) {
+    .user-container-item__details__entry {
+        flex-direction: column;
+        width: calc(100% - var(--element-padding));
+        gap: 15px;
+    }
+    .user-container-item__details__entry > label, .user-container-item__details__entry > p {
+        width: calc(100% - (var(--element-padding) * 2));
+        max-width: none;
+        margin: 0;
+    }
+    .user-container-item__details__devices {
+        width: calc(100% - var(--element-padding));
+    }
+}
 
 /*Admin themes*/
 .admin__wrapper {
