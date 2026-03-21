@@ -27,6 +27,7 @@ export default function Metrics({metrics, isGraph, timeMetrics, metricInterval, 
                                                     isDarkMode={isDarkMode}/>
                                 </>:
                                 <>
+                                    <DeviceData metrics={metrics}/>
                                     <ChildProcesses metrics={metrics} handleNotification={handleNotification}/>
                                     <DiskData metrics={metrics}/>
                                 </>
@@ -66,7 +67,6 @@ export default function Metrics({metrics, isGraph, timeMetrics, metricInterval, 
                                     <NetworkData metrics={metrics}
                                                  isGraph={isGraph}
                                                  timeMetrics={timeMetrics}/>
-                                    <DeviceData metrics={metrics}/>
                                 </>
                             }
                         </div>

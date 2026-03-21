@@ -1,13 +1,65 @@
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import SoftwareManagement from "./SoftwareManagement/SoftwareManagement.jsx";
 import SubNav from "../shared/SubNav.jsx";
 import FirewallManagement from "./firewallManagement/FirewallManagement.jsx";
 import LogDisplay from "./LogDisplay.jsx";
+import UserManagement from "../user-auth/UserManagement.jsx";
 
-export default function Admin({devices, handleNotification, hostIp, deviceType, viewPort}) {
+export default function Admin({devices, handleNotification, hostIp, deviceType, viewPort, user}) {
     const deviceList = devices
+    const [allUsers, setAllUsers] = useState([]);
+    const [allDevices, setAllDevices] = useState([]);
 
-    const adminNavList = ['Software', 'Firewall'];
+    useEffect(() => {
+        if (user.role !== "admin") return;
+        getAllUsers();
+        getALlDevices();
+    }, []);
+
+    async function getAllUsers() {
+        try {
+            const response = await fetch(`http://${hostIp}:3000/users`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            })
+            if (response.ok) {
+                const resData = await response.json()
+                if (resData.success) {
+                    setAllUsers(resData.users)
+                }
+            }
+        } catch (e) {
+            handleNotification('notice', `could not get the user list for the admin: ${user.username}`)
+        }
+    }
+
+    async function getALlDevices () {
+        try {
+            const response = await fetch(`http://${hostIp}:3000/devices`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            })
+            if (response.ok) {
+                const resData = await response.json()
+                if (resData.success) {
+                    setAllDevices(resData.devices)
+                } else {
+                    handleNotification('error', `Could not get all the devices for the admin ${user.username}`);
+                }
+            }
+
+        } catch (e) {
+            handleNotification('error', `Could not get all the devices for the admin ${user.username}`);
+        }
+    }
+
+    const adminNavList = user.role === 'admin' ?
+        ['Software', 'Firewall', 'User Management']
+        : ['Software', 'Firewall']
 
     const [adminView, setAdminView] = useState('Software');
     const [selectedDevice, setSelectedDevice] = useState({
@@ -73,6 +125,12 @@ export default function Admin({devices, handleNotification, hostIp, deviceType, 
                                                                  handleLogs={handleLogs}
                                                                  installation={installation}
                                                                  setInstallation={setInstallation} viewPort={viewPort}/>}
+                {(user.role === "admin" && adminView === "User Management") && <UserManagement users={allUsers} allDevices={allDevices}
+                                                                      handleNotification={handleNotification}
+                                                                      deviceType={deviceType}
+                                                                      hostIp={hostIp}
+                                                                      user={user}
+                                                                      setUsers={setAllUsers}/>}
             </section>
         </div>
     )

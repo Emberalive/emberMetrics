@@ -428,7 +428,7 @@ export default function App() {
 
         useEffect(() => {
             if (authentication && !isLoggedIn) return;
-            if (!isLoggedIn || activeView !== 'resources') return;
+            if (!isLoggedIn || (activeView !== 'resources' && activeView !== 'fullScreen')) return;
             if (!selectedDevice) return;
 
             let isMounted = true;
@@ -538,6 +538,9 @@ export default function App() {
                              isDarkMode={isDarkMode}/>
 
                   {activeView === "settings" && <Settings setActiveView={setActiveView}
+                                                          devices={devices}
+                                                          user={user}
+                                                          setUser={setUser}
                                                           setIsDarkMode={setIsDarkMode}
                                                           isDarkMode={isDarkMode}
                                                           fontClicked={fontClicked}

@@ -111,15 +111,19 @@ export default function MemoryData(props) {
                 :
                 <section className="memory-info">
                     <div className="memory-info__content">
-                        <div>
-                            <p className={'memory-info__content-title'} >Memory used</p>
-                            <p>{memoryUsage.usage}%</p>
-                        </div>
-                        <div>
-                            <p className={'memory-info__content-title'}>Memory Available</p>
-                            <p>{memoryUsage.available}%</p>
+                        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: '30px', alignItems: 'center'}}>
+                            <p className={'memory-info__content-title'} >Memory used:</p>
+                            <p className={'memory-info__content-value'}>{memoryUsage.usage}%</p>
                         </div>
                         <div className={'memory-bar'} style={{width: 'calc('+ memoryUsage.usage + '% + var(--element-padding))', backgroundColor: memoryUsage.usage >= 40 ? memoryUsage.usage >=70 ? 'red' : 'orange' : 'var(--tertiary)'}}>
+                        </div>
+                    </div>
+                    <div className="memory-info__content">
+                        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: '30px', alignItems: 'center'}}>
+                            <p className={'memory-info__content-title'} >Memory available:</p>
+                            <p className={'memory-info__content-value'}>{memoryUsage.available}%</p>
+                        </div>
+                        <div className={'memory-bar'} style={{marginLeft: 'auto', width: 'calc('+ memoryUsage.available + '% + var(--element-padding))', backgroundColor: memoryUsage.available <= 70 ? memoryUsage.available <= 40 ? 'red' : 'orange' : 'var(--tertiary)'}}>
                         </div>
                     </div>
                 </section>

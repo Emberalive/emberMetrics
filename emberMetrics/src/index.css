@@ -622,27 +622,35 @@ section {
 
 /* Memory Info Styles */
 .memory-info {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
     width: 100%;
 }
 
 .memory-info__content {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     background-color: var(--neutral);
+    border-radius: var(--border-radius);
+    overflow: hidden;
 }
 
 .memory-bar {
-    height: 3px;
+    height: 6px;
     grid-column: 1 / -1;
 }
 
-.memory-info__content > div >  p {
-    font-size: var(--font-size);
-    text-align: center;
-    margin: 0;
-}
 .memory-info__content-title {
     font-weight: 700;
+}
+
+.memory-info__content-value {
+    font-size: var(--font-size);
+    font-weight: bold;
+    color: var(--secondary);
 }
 
 /*settings*/

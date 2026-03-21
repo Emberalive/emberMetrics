@@ -19,7 +19,7 @@ export default function MetricsSettings(props) {
                 <div className={'metrics-settings-entry'}>
                     <p className="settings-entry__label">Interval: </p>
                     <div className={"settings-entry__value-container"}>
-                        <input type={'number'} value={props.metricInterval/1000} onChange={(e) => {
+                        <input type={'number'} value={props.metricInterval/1000} onFocus={(e) => e.target.select()} onChange={(e) => {
                             const parsed = parseFloat(e.target.value) * 1000
                             handleInputs(parsed, props.setMetricInterval, 1000)
                             props.setTimeMetrics([])
@@ -30,7 +30,7 @@ export default function MetricsSettings(props) {
                 <div className={'metrics-settings-entry'}>
                     <p className="settings-entry__label">Processes No: </p>
                     <div className={"settings-entry__value-container"}>
-                        <input type={'number'} value={props.childProcessLength} onChange={(e) => {
+                        <input type={'number'} value={props.childProcessLength} onFocus={(e) => e.target.select()} onChange={(e) => {
                             const length = Number(e.target.value)
                             handleInputs(length, props.setChildProcessLength, 10)
                         }}/>

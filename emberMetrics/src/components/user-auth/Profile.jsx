@@ -4,61 +4,8 @@ import SubNav from "../shared/SubNav.jsx";
 
 export default function Profile (props) {
     // Only used for admins
-    const [allUsers, setAllUsers] = useState([]);
-    const [allDevices, setAllDevices] = useState([]);
-
-    useEffect(() => {
-        if (props.user.role !== "admin") return;
-        getAllUsers();
-        getALlDevices();
-    }, []);
-
-    async function getAllUsers() {
-        try {
-            const response = await fetch(`http://${props.hostIp}:3000/users`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                }
-            })
-            if (response.ok) {
-                const resData = await response.json()
-                if (resData.success) {
-                    setAllUsers(resData.users)
-                }
-            }
-        } catch (e) {
-            props.handleNotification('notice', `could not get the user list for the admin: ${props.user.name}`)
-        }
-    }
-
-    async function getALlDevices () {
-        try {
-            const response = await fetch(`http://${props.hostIp}:3000/devices`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                }
-            })
-            if (response.ok) {
-                const resData = await response.json()
-                if (resData.success) {
-                    setAllDevices(resData.devices)
-                } else {
-                    props.handleNotification('error', `Could not get all the devices for the admin ${props.user.name}`);
-                }
-            }
-
-        } catch (e) {
-            props.handleNotification('error', `Could not get all the devices for the admin ${props.user.name}`);
-        }
-    }
-
     const [isEditing, setEditing] = useState(false);
     const [editUser, setEditUser] = useState(props.user);
-
-    const profileNavList = ['Profile', 'User Management'];
-    const [profileView, setProfileView] = useState('Profile');
 
     useEffect(() => {
         setEditUser(props.user)
@@ -127,9 +74,8 @@ export default function Profile (props) {
 
     return (
         <div className="profile-container__wrapper">
-            <section className={'profile'}>
-                <SubNav  subView={profileView} setSubView={setProfileView} subNavList={profileNavList}/>
-                {profileView === "Profile" && <div className="profile-container">
+            <div className={'profile'}>
+                <div className="profile-container">
                     <header className="section-header">
                         <h1>Profile - {props.user.username}</h1>
                     </header>
@@ -226,14 +172,8 @@ export default function Profile (props) {
                             {allowedDevicesList}
                         </div>
                     }
-                </div>}
-                {profileView === "User Management" && <UserManagement users={allUsers} allDevices={allDevices}
-                                                                      handleNotification={props.handleNotification}
-                                                                      deviceType={props.deviceType}
-                                                                      hostIp={props.hostIp}
-                                                                      user={props.user}
-                                                                      setUsers={setAllUsers}/>}
-        </section>
+                </div>
+        </div>
     </div>
 )
 }
