@@ -1,12 +1,12 @@
 const express = require('express')
 const router = express.Router()
 const { addFireWallRule, runSoftwareOperation } = require('../opModules/admin')
-const { getThisIp, checkDeviceStructure, generateLogs, returnReads } = require('../opModules/utils')
+const {checkDeviceStructure, generateLogs, returnReads } = require('../opModules/utils')
 const {findDevice} = require("../opModules/device");
 
 //run a command on the machine
 router.post("/software", async (req, res) => {
-    console.log('[ Server - admin /software ] Enpoint started')
+    console.log('[ Server - admin /software ] Endpoint started')
     const {packageName, packageManager, device, operation} = req.body;
     const PACKAGE_REGEX = /^[a-zA-Z0-9.+:-]+$/;
 

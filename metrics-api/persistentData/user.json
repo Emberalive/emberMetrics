@@ -15,7 +15,7 @@
   },
   {
     "username": "Ember",
-    "email": "email",
+    "email": "samueltsutcliffe@gmail.com",
     "bio": "This is my bio and i need to add some large text to see what is happening, when there is a lot of text, I need some more text, how about some more",
     "id": "HXm1Ynv_kjER73gM4Ftqr",
     "role": "admin",
@@ -46,9 +46,15 @@
     "id": "331Z_FFxLU7bPL2j5QxNT",
     "devices": [
       {
+        "name": "EmberLocal",
+        "ip": "192.168.0.208",
+        "id": "EIgsAmY-1iT8rd4wzJvih"
+      },
+      {
         "name": "localhost",
         "ip": "127.0.0.1",
-        "id": "DgxI77r32HDNeBfh0sK8B"
+        "id": "DgxI77r32HDNeBfh0sK8B",
+        "isHost": true
       }
     ]
   }
