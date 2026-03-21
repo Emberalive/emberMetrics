@@ -2036,6 +2036,10 @@ section {
     }
 }
 
+.admin-item {
+    width: inherit;
+}
+
 .admin-navigation {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -2046,7 +2050,7 @@ section {
     align-items: center;
 }
 
-.admin-navigation__link:nth-child(1) {
+.admin-navigation__link:nth-child(3) {
     grid-column-start: 1;
     grid-column-end: 3;
 }

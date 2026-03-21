@@ -68,7 +68,7 @@ export default function SoftwareManagement({devices, handleNotification, hostIp,
     }
 
     return (
-            <div className={installation ? "software-management disabled-element" : "software-management"}>
+            <div className={installation ? "admin-item disabled-element" : "admin-item"}>
                 <header className={'section-header'}>
                     <h1>Software Management</h1>
                 </header>

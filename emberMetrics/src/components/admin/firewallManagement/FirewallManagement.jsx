@@ -69,7 +69,7 @@ export default function FirewallManagement({ devices, selectedDevice, setSelecte
     }
 
     return (
-        <div className={installation? "firewall-management disabled-element" : "firewall-management"}>
+        <div className={installation? "admin-item disabled-element" : "admin-item"}>
             <header className={'section-header'}>
                 <h1>Firewall Management</h1>
             </header>
