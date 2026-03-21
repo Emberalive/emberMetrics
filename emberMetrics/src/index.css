@@ -165,15 +165,11 @@ option {
     transition: background-color 0.3s ease-in-out;
 }
 
-.header-navigation__links__end {
-    border: 1px solid var(--secondary);
-    border-radius: var(--border-radius);
-    text-align: center;
-    font-size: 25px;
-    cursor: pointer;
-    font-weight: 700;
-    padding: 0;
-    transition: background-color 0.3s ease-in-out;
+@media (min-width: 600px) {
+    .header-navigation__links:first-child {
+        grid-column-start: 1;
+        grid-column-end: 4;
+    }
 }
 
 @media (max-width: 600px) {
@@ -2048,6 +2044,11 @@ section {
     width: calc(80% - var(--element-padding));
     gap: 20px;
     align-items: center;
+}
+
+.admin-navigation__link:nth-child(1) {
+    grid-column-start: 1;
+    grid-column-end: 3;
 }
 
 @media (max-width: 500px) {
