@@ -439,7 +439,7 @@ export default function App() {
             const fetchMetrics = async () => {
                 console.info('Fetching metrics');
                 try {
-                    const response = await fetch(`http://${hostIp}:3000`, {
+                    const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp : 'localhost'}:3000`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -447,7 +447,8 @@ export default function App() {
                         },
                         body: JSON.stringify({
                             device: selectedDevice,
-                            childLength: childProcessLength ? childProcessLength.toString() : "10"
+                            childLength: childProcessLength ? childProcessLength.toString() : "10",
+                            user: user
                         })
                     });
                     if (response.ok) {

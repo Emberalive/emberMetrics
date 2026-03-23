@@ -6,7 +6,7 @@ import ItemSelection from "../SoftwareManagement/ItemSelection.jsx";
 
 export default function FirewallManagement({ devices, selectedDevice, setSelectedDevice,
                                                handleNotification, deviceType,
-                                               hostIp, handleLogs, installation, viewPort}) {
+                                               hostIp, handleLogs, installation, viewPort, user}) {
     const [chosenPort, setChosenPort] = useState(0)
     const [chosenRule, setChosenRule] = useState('')
 
@@ -62,6 +62,7 @@ export default function FirewallManagement({ devices, selectedDevice, setSelecte
             await setFireWallRule({
                 device: selectedDevice,
                 rule: chosenRule,
+                user: user,
         });
             return
         }

@@ -7,6 +7,18 @@ const storedFilePath = path.join(__dirname, `../persistentData/user.json`);
 const tmpfilePath = storedFilePath + ".tmp"
 
 
+async function checkDevicePerm (userID, deviceID) {
+    console.log("[ Server - /users/checkDevicePerms ] checking device permissions");
+    if (!userID) return false
+    const userData = (await getUser(userID)).user
+    if (!userData || userData.active) return false
+    const userDevices = userData.devices
+    console.log(`[ Server - /users/checkDevicePerm ] current allowed devices: ${JSON.stringify(userDevices)}`);
+    const allowed = userDevices.findIndex(device => device.id === deviceID)
+    console.log("[ Server - /users/checkDevicePerm ] is the device allowed?: ", allowed !== -1)
+    return allowed !== -1;
+}
+
 async function createUser(username, password, role) {
     try {
         const currentUsers = await readUsers()
@@ -168,7 +180,10 @@ async function readUsers() {
 async function getUser(username) {
     try {
         const users = await readUsers()
-        const user = users.find((user) => user.username === username)
+        let user = users.find((user) => user.username === username)
+        if (!user) {
+            user = users.find((user) => user.id === username)
+        }
         console.log('[Server - getUser] user found: ', user)
         return {
             success: true,
@@ -260,4 +275,4 @@ async function checkPassword(password, hashedPassword) {
 }
 
 
-module.exports = {createUser, deleteUser, authenticateUser, updateUser, readUsers, writeUser}
+module.exports = {createUser, deleteUser, authenticateUser, updateUser, readUsers, writeUser, checkDevicePerm}

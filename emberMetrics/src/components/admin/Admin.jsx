@@ -115,7 +115,8 @@ export default function Admin({devices, handleNotification, hostIp, deviceType, 
                                                                  handleLogs={handleLogs}
                                                                  setSelectedDevice={setSelectedDevice}
                                                                  installation={installation}
-                                                                 setInstallation={setInstallation} viewPort={viewPort}/>}
+                                                                 setInstallation={setInstallation}
+                                                                 viewPort={viewPort} user={user}/>}
                 {adminView === 'Firewall' && <FirewallManagement devices={deviceList} adminView={adminView}
                                                                  handleNotification={handleNotification}
                                                                  hostIp={hostIp}
@@ -124,7 +125,8 @@ export default function Admin({devices, handleNotification, hostIp, deviceType, 
                                                                  setSelectedDevice={setSelectedDevice}
                                                                  handleLogs={handleLogs}
                                                                  installation={installation}
-                                                                 setInstallation={setInstallation} viewPort={viewPort}/>}
+                                                                 setInstallation={setInstallation}
+                                                                 viewPort={viewPort} user={user}/>}
                 {(user.role === "admin" && adminView === "User Management") && <UserManagement users={allUsers} allDevices={allDevices}
                                                                       handleNotification={handleNotification}
                                                                       deviceType={deviceType}

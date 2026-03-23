@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import { useState } from "react";
 
 export default function Login (props) {
 
@@ -12,7 +12,8 @@ export default function Login (props) {
             username: username.value,
             password: password.value,
             bio: '',
-            email: ''
+            email: '',
+            active: true
         };
         if (isRegister) {
             user.confirmPassword = confirmPassword.value;

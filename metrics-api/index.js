@@ -10,6 +10,7 @@ const port = 3000
 const deviceRoutes = require('./routes/deviceRoutes')
 const userRoutes = require('./routes/userRoutes')
 const adminRoutes = require('./routes/adminRoutes')
+const {checkDevicePerm} = require("./opModules/user");
 
 app.use(express.json())
 app.use(cors({
@@ -22,10 +23,18 @@ app.use('/users', userRoutes);
 app.use('/admin', adminRoutes)
 
 app.post('/', async (req, res) => {
-    const {device, childLength} = req.body
+    const {device, childLength, user} = req.body
     if (!device || !childLength) {
         console.log('[ Server - /getMetrics ] no device or childLength sent')
         return res.status(400).send({success: false})
+    }
+
+    if (user) {
+        const allowed = checkDevicePerm(user.id, device.id)
+        if (!allowed) {
+            console.log('[ Server - /getMetrics ] User is not allowed ot access this device')
+            return res.status(401).send({success: false})
+        }
     }
 
     const parsed = parseInt(childLength, 10)

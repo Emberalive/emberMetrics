@@ -1,6 +1,6 @@
 const express = require('express')
 const {getDevices, editDevice, addDevice, deleteDevice} = require("../opModules/device");
-const {updateUser} = require("../opModules/user");
+const {updateUser, checkDevicePerm} = require("../opModules/user");
 const router = express.Router()
 
 router.get('/', async (req, res) => {
@@ -86,6 +86,17 @@ router.patch('/', async (req, res) => {
         return res.status(400).send({success: false})
     }
 
+    console.log("[Server - PATCH | devices] user exists - checking device permissions")
+    const allowed = await checkDevicePerm(user.id, originalDevice.id)
+    if (!allowed) {
+        console.log('[ Server - PATCH | devices] User is not allowed to access this device')
+        return res.status(401).send({success: false})
+    }
+
+    if (user) {
+
+    }
+
     try {
         const result = await deviceTransaction({
             deviceOperation: () => editDevice(editedDevice),
@@ -142,6 +153,14 @@ router.delete('/', async (req, res) => {
         return res.status(400).send({
             success: false,
         })
+    }
+
+    if (user) {
+        const allowed = checkDevicePerm(user.id, deviceId)
+        if (!allowed) {
+            console.log("[Server - DELETE | devices] user is not allowed ot access this device")
+            return res.status(401).send({success: false})
+        }
     }
 
     try {

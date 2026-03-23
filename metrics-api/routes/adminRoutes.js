@@ -3,14 +3,23 @@ const router = express.Router()
 const { addFireWallRule, runSoftwareOperation } = require('../opModules/admin')
 const {checkDeviceStructure, generateLogs, returnReads } = require('../opModules/utils')
 const {findDevice} = require("../opModules/device");
+const {checkDevicePerm} = require("../opModules/user");
 
 //run a command on the machine
 router.post("/software", async (req, res) => {
     console.log('[ Server - admin /software ] Endpoint started')
-    const {packageName, packageManager, device, operation} = req.body;
+    const {packageName, packageManager, device, operation, user} = req.body;
     const PACKAGE_REGEX = /^[a-zA-Z0-9.+:-]+$/;
 
     console.log('[ Server - admin /software ] doing sanitation checks')
+
+    if (user) {
+        const allowed = checkDevicePerm(user.id, device.id)
+        if (!allowed) {
+            console.log('[ Server - admin /software ] User is not allowed to access this device')
+            return res.status(401).send({success: false})
+        }
+    }
 
     if (!device || !checkDeviceStructure(device)) return res.status(400).send({success: false})
 
@@ -74,7 +83,15 @@ router.post("/fireWallRule", async (req, res) => {
     const allowedRules = [
         'allow','deny', 'default allow incoming', 'default deny incoming', 'default allow outgoing', 'default deny outgoing'
     ]
-    const {chosenPort, rule, device} = req.body;
+    const {chosenPort, rule, device, user} = req.body;
+
+    if (user) {
+        const allowed = checkDevicePerm(user.id, device.id)
+        if (!allowed) {
+            console.log('[ Server - admin /firewall ] User is not allowed to access this device')
+            return res.status(401).send({success: false})
+        }
+    }
 
     console.log('[ Server - admin /firewall ] doing sanitation checks')
     if (!device || !checkDeviceStructure(device)) return res.status(400).send({success: false})

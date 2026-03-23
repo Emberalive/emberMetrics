@@ -4,6 +4,7 @@
     "password": "$2b$10$EHQi6dNMCxeiIo5VnuyWVO37XRwcuduFRFKvk3p.HJn6mi5DsJddS",
     "id": "jrG2rAwqUnemUVoWiA0Eo",
     "role": "admin",
+    "active": true,
     "devices": [
       {
         "name": "localhost",
@@ -15,10 +16,12 @@
   },
   {
     "username": "Ember",
+    "password": "$2b$10$vZ1Q2I1D83zOf9nMgbyk7eFJXdCXZTlhuShtU9TntftS1kDYvXnOS",
     "email": "samueltsutcliffe@gmail.com",
     "bio": "This is my bio and i need to add some large text to see what is happening, when there is a lot of text, I need some more text, how about some more",
     "id": "HXm1Ynv_kjER73gM4Ftqr",
     "role": "admin",
+    "active": true,
     "devices": [
       {
         "name": "localhost",
@@ -27,7 +30,7 @@
         "id": "DgxI77r32HDNeBfh0sK8B"
       },
       {
-        "name": "LaptopLocal",
+        "name": "LaptopLocal1",
         "ip": "192.168.0.184",
         "id": "tQMVV7uSEqai7GWCRwgjQ"
       },
@@ -36,14 +39,14 @@
         "ip": "192.168.0.208",
         "id": "EIgsAmY-1iT8rd4wzJvih"
       }
-    ],
-    "password": "$2b$10$vZ1Q2I1D83zOf9nMgbyk7eFJXdCXZTlhuShtU9TntftS1kDYvXnOS"
+    ]
   },
   {
     "username": "user",
     "password": "$2b$10$LM2KAepFCn09TWyyC69RReKgg4k7nVA3LMsWezX5paNIdzQPz83pO",
     "role": "user",
     "id": "331Z_FFxLU7bPL2j5QxNT",
+    "active": true,
     "devices": [
       {
         "name": "EmberLocal",

@@ -5,7 +5,7 @@ import PackageSelection from "./PackageSelection.jsx";
 import ItemSelection from "./ItemSelection.jsx";
 
 export default function SoftwareManagement({devices, handleNotification, hostIp, deviceType, selectedDevice,
-                                               setSelectedDevice, handleLogs, installation, viewPort}) {
+                                               setSelectedDevice, handleLogs, installation, viewPort, user}) {
     const [selectedManager, setSelectedManager] = useState(null);
     const [chosenPackage, setChosenPackage] = useState('');
     const [chosenOperation, setChosenOperation] = useState('');
@@ -52,6 +52,7 @@ export default function SoftwareManagement({devices, handleNotification, hostIp,
                     device: selectedDevice,
                     packageManager: selectedManager,
                     operation: chosenOperation,
+                    user: user
                 })
             })
 
