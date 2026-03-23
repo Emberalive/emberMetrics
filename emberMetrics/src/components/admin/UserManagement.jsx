@@ -11,11 +11,6 @@ export default function UserManagement({users, allDevices, handleNotification, d
     const [selectedDeleteDevice, setSelectedDeleteDevice] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
 
-
-    useEffect(() => {
-        console.log(`AddDevice: ${selectedAddDevice} \nDeleteDevice: ${selectedDeleteDevice}`);
-    }, [selectedAddDevice, selectedAddDevice])
-
     async function handleUserDevice(action) {
         const isAdd = action === 'add';
         const selectedDevice = isAdd ? selectedAddDevice : selectedDeleteDevice;
@@ -156,7 +151,6 @@ export default function UserManagement({users, allDevices, handleNotification, d
                                         borderBottom: '1px solid var(--tertiary)',
                                     })
                                 }} onChange={(selectedOption) => {
-                                    console.log(selectedOption)
                                     setSelectedAddDevice(selectedOption.value)
                                 }}     noOptionsMessage={() => 'No more devices to give access'}/>
                                 {(editUserDevices.id === user.id && selectedAddDevice !== false) &&
@@ -170,12 +164,10 @@ export default function UserManagement({users, allDevices, handleNotification, d
                             </div>
                             <div className={'user-container-item__details__devices-controls'}>
                                 <button className={'general-button success-button'} onClick={async () => {
-                                    console.log('[ Client - UserManagement ] adding device')
                                     await handleUserDevice('add');
                                 }}>Add
                                 </button>
                                 <button className={'general-button danger-button'} onClick={() => {
-                                    console.log('[ Client - UserManagement ] canceling user-auth management')
                                     setEditUserDevices({
                                         id: ''
                                     })

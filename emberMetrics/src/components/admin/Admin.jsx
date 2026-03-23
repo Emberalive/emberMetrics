@@ -3,15 +3,17 @@ import SoftwareManagement from "./SoftwareManagement/SoftwareManagement.jsx";
 import SubNav from "../shared/SubNav.jsx";
 import FirewallManagement from "./firewallManagement/FirewallManagement.jsx";
 import LogDisplay from "./LogDisplay.jsx";
-import UserManagement from "../user-auth/UserManagement.jsx";
+import UserManagement from "./UserManagement.jsx";
 
-export default function Admin({devices, handleNotification, hostIp, deviceType, viewPort, user}) {
+export default function Admin({devices, handleNotification,
+                              hostIp, deviceType, viewPort,
+                              user, authentication}) {
     const deviceList = devices
     const [allUsers, setAllUsers] = useState([]);
     const [allDevices, setAllDevices] = useState([]);
 
     useEffect(() => {
-        if (user.role !== "admin") return;
+        if (user?  user.role !== "admin" : false) return;
         getAllUsers();
         getALlDevices();
     }, []);
@@ -57,8 +59,9 @@ export default function Admin({devices, handleNotification, hostIp, deviceType, 
         }
     }
 
-    const adminNavList = user.role === 'admin' ?
+    const adminNavList = user? user.role === 'admin' ?
         ['Software', 'Firewall', 'User Management']
+        : ['Software', 'Firewall']
         : ['Software', 'Firewall']
 
     const [adminView, setAdminView] = useState('Software');
@@ -86,8 +89,6 @@ export default function Admin({devices, handleNotification, hostIp, deviceType, 
 
                 if(value) {
                     const chunk = decoder.decode(value, {stream: true});
-
-                    console.log("[ Client - Admin /handleLogs] chunk: ", chunk)
                     setLogs(prevLogs => [...prevLogs, chunk]);
                 }
             }
@@ -127,12 +128,17 @@ export default function Admin({devices, handleNotification, hostIp, deviceType, 
                                                                  installation={installation}
                                                                  setInstallation={setInstallation}
                                                                  viewPort={viewPort} user={user}/>}
-                {(user.role === "admin" && adminView === "User Management") && <UserManagement users={allUsers} allDevices={allDevices}
-                                                                      handleNotification={handleNotification}
-                                                                      deviceType={deviceType}
-                                                                      hostIp={hostIp}
-                                                                      user={user}
-                                                                      setUsers={setAllUsers}/>}
+                {user &&
+                    <>
+                        {(user.role === "admin" && adminView === "User Management" && authentication) &&
+                        <UserManagement users={allUsers} allDevices={allDevices}
+                                        handleNotification={handleNotification}
+                                        deviceType={deviceType}
+                                        hostIp={hostIp}
+                                        user={user}
+                                        setUsers={setAllUsers}/>}
+                </>
+                }
             </section>
         </div>
     )

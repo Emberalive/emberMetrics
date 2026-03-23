@@ -14,10 +14,10 @@ router.post("/software", async (req, res) => {
     console.log('[ Server - admin /software ] doing sanitation checks')
 
     if (user) {
-        const allowed = checkDevicePerm(user.id, device.id)
+        const allowed = await checkDevicePerm(user.id, device.id)
         if (!allowed) {
             console.log('[ Server - admin /software ] User is not allowed to access this device')
-            return res.status(401).send({success: false})
+            return res.status(403).send({success: false})
         }
     }
 
@@ -86,10 +86,10 @@ router.post("/fireWallRule", async (req, res) => {
     const {chosenPort, rule, device, user} = req.body;
 
     if (user) {
-        const allowed = checkDevicePerm(user.id, device.id)
+        const allowed = await checkDevicePerm(user.id, device.id)
         if (!allowed) {
             console.log('[ Server - admin /firewall ] User is not allowed to access this device')
-            return res.status(401).send({success: false})
+            return res.status(403).send({success: false})
         }
     }
 

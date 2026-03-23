@@ -28,13 +28,19 @@ export default function DeviceList (props) {
 
             if (response.ok) {
                 const resData = await response.json();
-                if (resData.success && userData !== null) {
+                if (!resData.success) {
+                    if (response.status === 403) {
+                        props.handleNotification('error', 'You do not have permission to access this device.');
+                    }
+                    return;
+                }
+                if (userData !== null) {
                     //if authentication is true (users exist) do this
                     props.handleNotification('notice', 'updated device successfully');
                     props.setUser(resData.updatedUser)
                     props.setDevices(resData.updatedUser.devices)
                     return
-                } else if (resData.success && userData === null) {
+                } else {
                     //if no authentication (no user-auth data) do this
                     props.handleNotification('notice', 'updated device successfully');
                     props.setDevices(updatedDevices)
@@ -75,20 +81,23 @@ export default function DeviceList (props) {
 
             if (response.ok) {
                 const resData = await response.json();
-                if (resData.success && userData !== null) {
+                if (userData !== null) {
                     //if authentication is true (users exist) do this
                     props.handleNotification('notice', 'updated device successfully');
                     props.setUser(resData.updatedUser)
                     props.setDevices(resData.updatedUser.devices)
-                    return
-                } else if (resData.success && userData === null) {
+                } else {
                     //if no authentication (no user-auth data) do this
                     props.handleNotification('notice', 'updated device successfully');
                     props.setDevices(newDevices)
-                    return
+                }
+            } else {
+                if (response.status === 403) {
+                    props.handleNotification('error', 'You do not have permission to access this device.');
+                } else {
+                    props.handleNotification('error', 'Editing device failed');
                 }
             }
-            props.handleNotification('error', 'Editing device failed');
         } catch (e) {
             props.handleNotification('error', 'Error deleting device');
         } finally {

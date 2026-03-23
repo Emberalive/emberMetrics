@@ -11,8 +11,10 @@ export default function SubNav({subView, setSubView, subNavList}) {
     })
 
     return (
-        <div className="admin-navigation">
-            {navList}
-        </div>
+        <>
+            {subNavList.length !== 0 && <div className="admin-navigation">
+                {navList}
+            </div>}
+        </>
     )
 }

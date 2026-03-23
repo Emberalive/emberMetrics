@@ -641,6 +641,8 @@ section {
 
 .memory-info__content-title {
     font-weight: 700;
+    font-size: 22px;
+    text-align: center;
 }
 
 .memory-info__content-value {
@@ -1090,18 +1092,27 @@ section {
 
 /*notification*/
 .notification {
-    z-index: 150;
-    position: fixed;
-    top: 50px;
-    left: 15px;
-    opacity: 0;
+    max-height: 100px;
+    height: 75px;
     width: 0;
     border-radius: 5px;
     text-align: center;
     color: aliceblue;
-    transition: width 0.3s;
+    transition: width 0.3s ease-in-out;
     background-color: var(--tertiary);
+    overflow: hidden;
     border-right: 3px solid var(--secondary);
+}
+
+.notification-container {
+    position: fixed;
+    top: 50px;
+    left: 15px;
+    z-index: 150;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow: hidden;
 }
 
 .notification > .title {
@@ -1110,19 +1121,19 @@ section {
     font-weight: bold;
 }
 
-.notification > p {
+.notification > p:last-child {
     margin: 0;
+    padding: 0 5px 5px 5px;
 }
 
 .notification__active {
-
-    max-height: 70px;
-    opacity: 1;
+    height: fit-content;
     display: block;
-    height: 1000px;
-    min-height: 50px;
+    min-height: 75px;
     width: 300px;
     padding: 5px;
+    max-height: 75px;
+    transition: width 0.3s ease-in-out;
 }
 
 /*Device type selection*/
@@ -1927,7 +1938,8 @@ section {
 }
 
 .user-container-item__details > div > h3 {
-    width: 100%;
+    width: 80%;
+    max-width: 600px;
     text-align: center;
     border-bottom: 1px solid var(--border-color);
     margin: 0;

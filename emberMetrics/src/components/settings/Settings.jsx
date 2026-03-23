@@ -5,7 +5,7 @@ import Profile from "../user-auth/Profile.jsx";
 
 export default function Settings (props) {
     const [settingsView, setSettingsView] = useState('Settings');
-    const settingsNav = ['Settings', 'Profile']
+    const settingsNav = props.user ? ['Settings', 'Profile'] : []
 
     return (
         <div className="settings-wrapper">

@@ -42,6 +42,9 @@ export default function FirewallManagement({ devices, selectedDevice, setSelecte
                 const installed = await handleLogs(response)
                 if (installed) handleNotification('notice', `Set the rule: ${chosenRule} ${(chosenRule === "allow" || chosenRule === "deny" ? `- ${chosenPort}`: '')} on the machine: ${selectedDevice.name}`);
                 return
+            } else if (response.status === 403) {
+                handleNotification('error', 'You dont have permission to access this device')
+                return
             }
             handleNotification('error', `fireWall rule failed.`);
         } catch (e) {
@@ -56,6 +59,7 @@ export default function FirewallManagement({ devices, selectedDevice, setSelecte
                 device: selectedDevice,
                 rule: chosenRule,
                 chosenPort: chosenPort,
+                user: user,
             });
             return
         } else if (chosenRule && chosenPort && selectedDevice) {

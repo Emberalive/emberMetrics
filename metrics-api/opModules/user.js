@@ -10,10 +10,10 @@ const tmpfilePath = storedFilePath + ".tmp"
 async function checkDevicePerm (userID, deviceID) {
     console.log("[ Server - /users/checkDevicePerms ] checking device permissions");
     if (!userID) return false
-    const userData = (await getUser(userID)).user
-    if (!userData || userData.active) return false
-    const userDevices = userData.devices
-    console.log(`[ Server - /users/checkDevicePerm ] current allowed devices: ${JSON.stringify(userDevices)}`);
+    const userData = (await getUser(userID))
+    if (!userData.success || !userData.user.active) return false
+    const userDevices = userData.user.devices
+    console.log(`[ Server - /users/checkDevicePerm ] current allowed devices: ${JSON.stringify(userDevices, null, 2)}`);
     const allowed = userDevices.findIndex(device => device.id === deviceID)
     console.log("[ Server - /users/checkDevicePerm ] is the device allowed?: ", allowed !== -1)
     return allowed !== -1;

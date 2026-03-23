@@ -168,12 +168,6 @@ export default function CpuData (props) {
                             grid={{ stroke: '#333', strokeWidth: 0.5, vertical: true, horizontal: true }}
                             height={600}
                             sx={(theme) => ({
-                                // ===== Line styling =====
-                                // [`.${lineElementClasses.root}`]: {
-                                //     stroke: 'var(--secondary)',
-                                //     strokeWidth: 3,
-                                // },
-
                                 // ===== Point markers =====
                                 [`.${markElementClasses.root}`]: {
                                     strokeWidth: 1,
@@ -253,7 +247,7 @@ export default function CpuData (props) {
                 { props.isGraph ?
                     <>
                         <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--neutral)', borderTop: '1px solid var(--neutral)', padding: '10px'}}>
-                            <p>Graph Type</p>
+                            <p style={{fontSize: '25px', fontWeight: 'bold', margin: '0'}}>Graph Type:</p>
                             <button className={'general-button'} onClick={() => {
                                 setIsChaosGraph(prevState => !prevState);
                                 setGraphData([])

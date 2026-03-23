@@ -26,6 +26,7 @@ import Arctic from "./assets/SVG 2.1 | Arctic Cyan.svg";
 import Copper from "./assets/SVG 2.1 | Copper Flame.svg";
 import Emerald from "./assets/SVG 2.1 | Emerald Depths.svg";
 import Violet from "./assets/SVG 2.1 | Violet Storm.svg";
+import {nanoid} from "nanoid";
 
 export default function App() {
 //<<-----------------------------Only edit this!!!!!----------------------------------------->>
@@ -89,7 +90,7 @@ export default function App() {
         }
     }
 
-    const [notification, setNotification] = useState("");
+    const [notification, setNotification] = useState([]);
 
     const [devices, setDevices] = useState([])
 
@@ -385,12 +386,25 @@ export default function App() {
         }
     }, [windowWidth, fontClicked]);
 
-    function handleNotification (type, message) {
-        setNotification({type: type, message: message})
+    function handleNotification(type, message) {
+        const id = nanoid();
+
+        setNotification(prev => [...prev, { id, type, message, active: false }]);
+
+        // allow browser to paint the element first, then trigger transition
         setTimeout(() => {
-            setNotification("")
-        }, 3500)
-    }
+            setNotification(prev => prev.map(n => n.id === id ? { ...n, active: true } : n));
+        }, 10);
+
+        setTimeout(() => {
+            setNotification(prev => prev.map(n => n.id === id ? { ...n, active: false } : n));
+        }, 3000);
+
+        // remove from DOM after the transition has finished
+        setTimeout(() => {
+            setNotification(prev => prev.filter(n => n.id !== id));
+        }, 3400); // 3500 + transition duration
+        }
 
     useEffect(() => {
         const handleResize = () => {
@@ -457,12 +471,15 @@ export default function App() {
                             if (isMounted) setMetrics(resData.metrics)
                             return
                         }
+                    } else if (response.status === 403) {
+                        handleNotification('error', 'You dont have access to this device')
+                    } else {
+                        handleNotification('error', `Failed to fetch metrics for: ${selectedDevice.name}`);
                     }
                     //instantly stops the interval, no fetches after initial failed fetch
                     clearInterval(interval)
                     setMetrics(null)
                     isMounted = false;
-                    handleNotification('error', `Failed to fetch metrics for: ${selectedDevice.name}`);
                 } catch (err) {
                     clearInterval(interval);
                     console.error("[APP_METRICS] Error fetching metrics:", err.message);
@@ -576,7 +593,8 @@ export default function App() {
               {activeView === 'admin' && <Admin handleNotification={handleNotification}
                                                 devices={devices} hostIp={hostIp}
                                                 user={user} authentication={authentication}
-                                                deviceType={deviceType} viewPort={viewPort}/>}
+                                                deviceType={deviceType}
+                                                viewPort={viewPort}/>}
           </main>
       </>
   )

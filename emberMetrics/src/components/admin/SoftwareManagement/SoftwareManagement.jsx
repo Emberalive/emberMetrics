@@ -60,6 +60,9 @@ export default function SoftwareManagement({devices, handleNotification, hostIp,
                 const installed = await handleLogs(response)
                 if (installed) handleNotification('notice', `Successfully ${chosenOperation === 'install' ? 'installed' : 'removed'} ${chosenPackage}`);
                 return
+            } else if (response.status === 403) {
+                handleNotification('error', 'You dont have permission to access this device')
+                return
             }
             handleNotification('error', `was unable to ${chosenOperation} ${chosenPackage}`);
         } catch (e) {

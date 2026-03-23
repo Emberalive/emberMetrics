@@ -72,11 +72,11 @@ export default function MemoryData(props) {
                                     },
                                     [`.${axisClasses.tickLabel}`]: {
                                         fill: 'var(--accent)',
-                                        fontSize: 'var(--font-size)',
+                                        fontSize: 20,
                                     },
                                     [`.${axisClasses.label}`]: {
                                         fill: 'var(--accent)',
-                                        fontSize: 'var(--font-size)',
+                                        fontSize: 20,
                                     },
                                 },
 
@@ -101,8 +101,6 @@ export default function MemoryData(props) {
                 </section>
             )
         }
-
-
     }
     return (
         <>
