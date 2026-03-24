@@ -27,8 +27,7 @@ export default function Profile (props) {
     function resetEditUser () {
         setEditUser({
             username: props.user.username,
-            email: props.user.email ? props.user.email : '',
-            bio: props.user.bio ? props.user.bio : '',
+            details: props.user.details,
             role: props.user.role,
             id: props.user.id,
             devices: props.user.devices,
@@ -37,11 +36,16 @@ export default function Profile (props) {
 
     async function patchUser (updatedUser) {
         try {
+            const sessionId = localStorage.getItem('sessionId');
+            if (!sessionId) {
+                props.handleNotification('notice', 'Your session has ran out, please refresh the page');
+            }
             console.info('[ App.jsx - patchUser ] starting function')
             const response = await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/users`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
+                    'x-session-id': sessionId,
                 },
                 body: JSON.stringify({
                     username: props.user.username,
@@ -95,8 +99,8 @@ export default function Profile (props) {
                     {isEditing ?
                         <div className="profile-item__container">
                             <label>Email</label>
-                            <input type={'text'} value={editUser.email} onChange={(e) => {
-                                setEditUser({...editUser, email: e.target.value})
+                            <input type={'text'} value={editUser.details.email} onChange={(e) => {
+                                setEditUser({...editUser, details: {email: e.target.value}})
                             }}/>
                         </div>
                         :
@@ -110,14 +114,14 @@ export default function Profile (props) {
                             <label>Bio</label>
                             <textarea className={'profile-item-container__bio__edit'}
                                       style={{borderBottom: '1px solid var(--secondary)'}} onChange={(e) => {
-                                setEditUser({...editUser, bio: e.target.value})
-                            }}>{editUser.bio}</textarea>
+                                setEditUser({...editUser, details: {bio: e.target.value}})
+                            }}>{editUser.details.bio}</textarea>
 
                         </div>
                         :
                         <div className="profile-item__container">
                             <h1>Bio</h1>
-                            <p className={'profile-item-container__bio'}>{props.user.bio}</p>
+                            <p className={'profile-item-container__bio'}>{props.user.details.bio}</p>
                         </div>
                     }
                     <div className="profile-button__container">

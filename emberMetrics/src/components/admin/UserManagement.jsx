@@ -28,9 +28,16 @@ export default function UserManagement({users, allDevices, handleNotification, d
         const userData = { ...editUserDevices, devices: updatedDevices };
 
         try {
+            const sessionId = localStorage.getItem('sessionId');
+            if (!sessionId) {
+                handleNotification('notice', 'Your session has ran out, please refresh the page');
+            }
             const response = await fetch(`http://${deviceType === "remote-access" ? hostIp : "127.0.0.1"}:3000/users/${isAdd ? 'addDevice' : 'removeDevice'}`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-session-id": sessionId,
+                },
                 body: JSON.stringify({
                     admin: user,
                     editUser: userData,

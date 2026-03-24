@@ -20,10 +20,15 @@ export default function Admin({devices, handleNotification,
 
     async function getAllUsers() {
         try {
-            const response = await fetch(`http://${hostIp}:3000/users`, {
+            const sessionId = localStorage.getItem('sessionId');
+            if (!sessionId) {
+                handleNotification('notice', 'Your session has ran out, please refresh the page');
+            }
+            const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp : '127.0.0.1'}:3000/users`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
+                    'x-session-id': sessionId,
                 }
             })
             if (response.ok) {
@@ -33,20 +38,26 @@ export default function Admin({devices, handleNotification,
                 }
             }
         } catch (e) {
-            handleNotification('notice', `could not get the user list for the admin: ${user.username}`)
+            handleNotification('error', `could not get the user list for the admin: ${user.username}`)
         }
     }
 
     async function getALlDevices () {
         try {
-            const response = await fetch(`http://${hostIp}:3000/devices`, {
+            const sessionId = localStorage.getItem('sessionId');
+            if (!sessionId) {
+                handleNotification('notice', 'Your session has ran out, please refresh the page');
+            }
+            const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp : '127.0.0.1'}:3000/devices`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
+                    'x-session-id': sessionId,
                 }
             })
             if (response.ok) {
                 const resData = await response.json()
+                console.log(JSON.stringify(resData.success, null, 2))
                 if (resData.success) {
                     setAllDevices(resData.devices)
                 } else {
@@ -56,6 +67,7 @@ export default function Admin({devices, handleNotification,
 
         } catch (e) {
             handleNotification('error', `Could not get all the devices for the admin ${user.username}`);
+            console.log(e)
         }
     }
 

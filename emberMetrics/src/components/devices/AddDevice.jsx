@@ -31,11 +31,16 @@ export default function AddDevice(props) {
             devices: [...props.devices, newDevice]
         } : null
         try {
+            const sessionId = localStorage.getItem('sessionId');
+            if (!sessionId) {
+                props.handleNotification('notice', 'Your session has ran out, please refresh the page');
+            }
             // requesting to create a device to the main device.json
             const response = await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/devices`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    'x-session-id': sessionId,
                 },
                 body: JSON.stringify({
                     device: newDevice,

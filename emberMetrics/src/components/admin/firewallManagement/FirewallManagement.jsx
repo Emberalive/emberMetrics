@@ -30,10 +30,15 @@ export default function FirewallManagement({ devices, selectedDevice, setSelecte
     async function setFireWallRule(args) {
         resetFields()
         try {
+            const sessionId = localStorage.getItem('sessionId');
+            if (!sessionId) {
+                handleNotification('notice', 'Your session has ran out, please refresh the page');
+            }
             const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp : '127.0.0.1:3000/admin/fireWallRule'}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'x-session-id': sessionId
                 },
                 body: JSON.stringify(args)
             })

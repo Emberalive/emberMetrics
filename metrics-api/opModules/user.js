@@ -8,14 +8,11 @@ const tmpfilePath = storedFilePath + ".tmp"
 
 
 async function checkDevicePerm (userID, deviceID) {
-    console.log("[ Server - /users/checkDevicePerms ] checking device permissions");
     if (!userID) return false
-    const userData = (await getUser(userID))
+    const userData = (await getUserById(userID))
     if (!userData.success || !userData.user.active) return false
     const userDevices = userData.user.devices
-    console.log(`[ Server - /users/checkDevicePerm ] current allowed devices: ${JSON.stringify(userDevices, null, 2)}`);
     const allowed = userDevices.findIndex(device => device.id === deviceID)
-    console.log("[ Server - /users/checkDevicePerm ] is the device allowed?: ", allowed !== -1)
     return allowed !== -1;
 }
 
@@ -39,7 +36,7 @@ async function createUser(username, password, role) {
             const response = await hashPassword(password, saltRounds);
             if (response.success) {
                 console.log('[Server - createUser] Successfully created!]')
-                return await addUser({username: username, password: response.hash, role, id: nanoid(), devices: [{"name":"localhost","ip":"127.0.0.1","id":"DgxI77r32HDNeBfh0sK8B"}]});
+                return await addUser({username: username, password: response.hash, role, id: nanoid(), details: {bio: '', email: ''}, active: true, devices: [{"name":"localhost","ip":"127.0.0.1","id":"DgxI77r32HDNeBfh0sK8B"}]});
             } else {
                 console.error('[Server - createUser] Error hashing password')
                 return {
@@ -182,7 +179,8 @@ async function getUser(username) {
         const users = await readUsers()
         let user = users.find((user) => user.username === username)
         if (!user) {
-            user = users.find((user) => user.id === username)
+            console.log('[ Server - /getUser ] No user found by checking username')
+            return {success: false}
         }
         console.log('[Server - getUser] user found: ', user)
         return {
@@ -194,6 +192,19 @@ async function getUser(username) {
         return {
             success: false,
         }
+    }
+}
+
+async function getUserById(userId) {
+    const users = await readUsers()
+    let user = users.find((user) => user.id === userId)
+    if (!user) {
+        console.log('[ Server - getUserById] No user found')
+        return {success: false}
+    }
+    return {
+        success: true,
+        user: user
     }
 }
 
@@ -275,4 +286,4 @@ async function checkPassword(password, hashedPassword) {
 }
 
 
-module.exports = {createUser, deleteUser, authenticateUser, updateUser, readUsers, writeUser, checkDevicePerm}
+module.exports = {createUser, deleteUser, authenticateUser, updateUser, readUsers, writeUser, checkDevicePerm, getUser, getUserById}

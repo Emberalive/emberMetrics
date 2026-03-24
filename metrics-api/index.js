@@ -3,14 +3,14 @@ const app = express()
 const {getHostIp} = require('./opModules/utils')
 // functions for metrics gathering
 const {getMetrics, setChildLength} = require('./opModules/metrics')
-const {findDevice} = require('./opModules/device')
+const {findDevice, getDevices} = require('./opModules/device')
 const cors = require('cors')
 const port = 3000
-
 const deviceRoutes = require('./routes/deviceRoutes')
 const userRoutes = require('./routes/userRoutes')
 const adminRoutes = require('./routes/adminRoutes')
-const {checkDevicePerm} = require("./opModules/user");
+const {checkDevicePerm, getUserById} = require("./opModules/user");
+const {getSession} = require("./opModules/sessionUtils");
 
 app.use(express.json())
 app.use(cors({
@@ -21,6 +21,25 @@ app.use(cors({
 app.use('/devices', deviceRoutes);
 app.use('/users', userRoutes);
 app.use('/admin', adminRoutes)
+
+app.post('/validateSession', async (req, res) => {
+    console.log('[ Server - /validateSession ] Starting route endpoint')
+    const sessionId = req.body.sessionId;
+    if (!sessionId) {
+        console.log('[ Server - /validateSession ] Session ID missing from request')
+        return res.status(400).send({success: false})
+    }
+    const session = await getSession(sessionId);
+    console.log('[ Server - /validateSession ] user session found:', JSON.stringify(session, null, 2))
+    if (!session) {
+        console.log('[ Server - /validateSession ] no valid session with session id')
+        return res.status(401).send({success: false})
+    }
+    console.log('session.userId:', JSON.stringify(session.userId))
+    const response = await getUserById(session.userId);
+    if (!response.success) return res.status(401).send({success: false})
+    res.status(200).send({success: true, user: response.user})
+});
 
 app.post('/', async (req, res) => {
     const {device, childLength, user} = req.body

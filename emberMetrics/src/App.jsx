@@ -34,8 +34,39 @@ export default function App() {
     //change the value of authentication to false if you don't want a user-auth system
     const authentication = true
 //<<-------------------------^^^^^Only edit this^^^^^---------------------------------------->>
+//Nothing below here should be touched, you will most likely break the application!!!
 
-    //Nothing below here should be touched, you will most likely break the application!!!
+    useEffect(() => {
+        const sessionId = localStorage.getItem("sessionId")
+        if (sessionId) {
+            validateSessions(sessionId)
+        }
+    }, [])
+
+    async function validateSessions(sessionId) {
+        try {
+            const response = await fetch(`http://${deviceType === 'remote-device'? hostIp : '127.0.0.1'}:3000/validateSession`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    sessionId: sessionId,
+                })
+            })
+            if (response.ok) {
+                const resData = await response.json()
+                setIsLoggedIn(true)
+                setActiveView('resources')
+                setUser(resData.user)
+            } else {
+                localStorage.removeItem("sessionId")
+            }
+
+        } catch (e) {
+            handleNotification('error', 'Your session has expired');
+        }
+    }
 
     const [isGraph, setIsGraph] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(!authentication);
@@ -453,11 +484,16 @@ export default function App() {
             const fetchMetrics = async () => {
                 console.info('Fetching metrics');
                 try {
+                    const sessionId = localStorage.getItem('sessionId');
+                    if (!sessionId) {
+                        handleNotification('notice', 'Your session has ran out, please refresh the page');
+                    }
                     const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp : 'localhost'}:3000`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
                             "Accept": "application/json",
+                            'x-session-id': sessionId,
                         },
                         body: JSON.stringify({
                             device: selectedDevice,

@@ -19,10 +19,17 @@ export default function DeviceList (props) {
         const userData = props.authentication? { ...props.user, devices: updatedDevices } : null
 
         try {
+            const sessionId = localStorage.getItem('sessionId');
+            if (!sessionId) {
+                props.handleNotification('notice', 'Your session has ran out, please refresh the page');
+            }
             // DELETE device from server
             const response = await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/devices`, {
                 method: "DELETE",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    'x-session-id': sessionId,
+                },
                 body: JSON.stringify({ deviceId: deviceID, user: userData, originalDevice: device }),
             });
 
@@ -68,10 +75,17 @@ export default function DeviceList (props) {
         const userData = props.authentication? { ...props.user, devices: newDevices } : null;
 
         try {
+            const sessionId = localStorage.getItem('sessionId');
+            if (!sessionId) {
+                props.handleNotification('notice', 'Your session has ran out, please refresh the page');
+            }
             // PATCH the device on the server
             const response = await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/devices`, {
                 method: 'PATCH',
-                headers: {'Content-Type': 'application/json'},
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-session-id': sessionId,
+                },
                 body: JSON.stringify({
                     editedDevice: editDevice,
                     user: userData,

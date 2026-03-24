@@ -44,9 +44,14 @@ export default function SoftwareManagement({devices, handleNotification, hostIp,
         }
         resetFields()
         try {
+            const sessionId = localStorage.getItem('sessionId');
+            if (!sessionId) {
+                handleNotification('notice', 'Your session has ran out, please refresh the page');
+            }
             const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp: '127.0.0.1'}:3000/admin/software`, {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: {'Content-Type': 'application/json',
+                'x-session-id': sessionId,},
                 body: JSON.stringify({
                     packageName: chosenPackage,
                     device: selectedDevice,

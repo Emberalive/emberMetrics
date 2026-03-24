@@ -4,6 +4,9 @@ const { addFireWallRule, runSoftwareOperation } = require('../opModules/admin')
 const {checkDeviceStructure, generateLogs, returnReads } = require('../opModules/utils')
 const {findDevice} = require("../opModules/device");
 const {checkDevicePerm} = require("../opModules/user");
+const {authenticate} = require("../opModules/sessionMiddleware");
+
+router.use(authenticate);
 
 //run a command on the machine
 router.post("/software", async (req, res) => {

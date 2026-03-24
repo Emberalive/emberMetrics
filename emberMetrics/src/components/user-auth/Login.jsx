@@ -11,8 +11,10 @@ export default function Login (props) {
         const user = {
             username: username.value,
             password: password.value,
-            bio: '',
-            email: '',
+            details: {
+                email: "",
+                bio: ""
+            },
             active: true
         };
         if (isRegister) {
@@ -54,6 +56,7 @@ export default function Login (props) {
             if (!isRegister) {
                 const resData = await response.json();
                 if (resData.success) {
+                    localStorage.setItem('sessionId', resData.sessionId);
                     props.setUser(resData.user);
                     props.setActiveView('resources')
                     props.handleNotification('notice', `Successfully ${isRegister ? 'registered' : 'logged in'} as: ${user.username}`);

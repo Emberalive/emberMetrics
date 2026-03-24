@@ -1,7 +1,10 @@
 const express = require('express')
 const {getDevices, editDevice, addDevice, deleteDevice} = require("../opModules/device");
 const {updateUser, checkDevicePerm} = require("../opModules/user");
+const {authenticate} = require("../opModules/sessionMiddleware");
 const router = express.Router()
+
+router.use(authenticate);
 
 router.get('/', async (req, res) => {
     console.log("[Server - GET | devices] starting route access")
