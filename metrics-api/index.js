@@ -10,7 +10,14 @@ const deviceRoutes = require('./routes/deviceRoutes')
 const userRoutes = require('./routes/userRoutes')
 const adminRoutes = require('./routes/adminRoutes')
 const {checkDevicePerm, getUserById} = require("./opModules/user");
-const {getSession} = require("./opModules/sessionUtils");
+const {getSession, cleanExpiredSessions} = require("./opModules/sessionUtils");
+
+
+//clean all expired sessions on start up
+cleanExpiredSessions()
+// run every hour to clean expired sessions
+setInterval(cleanExpiredSessions, 60 * 60 * 1000); // every hour
+
 
 app.use(express.json())
 app.use(cors({
@@ -32,7 +39,7 @@ app.post('/validateSession', async (req, res) => {
     const session = await getSession(sessionId);
     console.log('[ Server - /validateSession ] user session found:', JSON.stringify(session, null, 2))
     if (!session) {
-        console.log('[ Server - /validateSession ] no valid session with session id')
+        console.log('[ Server - /validateSession ] no valid session with session id | session expired')
         return res.status(401).send({success: false})
     }
     console.log('session.userId:', JSON.stringify(session.userId))
