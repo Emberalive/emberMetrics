@@ -11,10 +11,8 @@ export default function Login (props) {
         const user = {
             username: username.value,
             password: password.value,
-            details: {
-                email: "",
-                bio: ""
-            },
+            email: "",
+            bio: "",
             active: true
         };
         if (isRegister) {

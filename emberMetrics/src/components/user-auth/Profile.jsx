@@ -58,7 +58,7 @@ export default function Profile (props) {
                     props.setUser(resData.updatedUser)
                     props.handleNotification('notice', 'User info successfully updated')
                     setEditing(false);
-                    return
+                    return {success: true}
                 }
                 props.handleNotification('error', 'The request was incorrect')
             }
@@ -99,8 +99,8 @@ export default function Profile (props) {
                     {isEditing ?
                         <div className="profile-item__container">
                             <label>Email</label>
-                            <input type={'text'} value={editUser.details.email} onChange={(e) => {
-                                setEditUser({...editUser, details: {email: e.target.value}})
+                            <input type={'text'} value={editUser.email} onChange={(e) => {
+                                setEditUser({...editUser, email: e.target.value})
                             }}/>
                         </div>
                         :
@@ -112,16 +112,16 @@ export default function Profile (props) {
                     {isEditing ?
                         <div className="profile-item__container">
                             <label>Bio</label>
-                            <textarea className={'profile-item-container__bio__edit'}
+                            <textarea className={'profile-item-container__bio__edit'} value={editUser.bio}
                                       style={{borderBottom: '1px solid var(--secondary)'}} onChange={(e) => {
-                                setEditUser({...editUser, details: {bio: e.target.value}})
-                            }}>{editUser.details.bio}</textarea>
+                                setEditUser({...editUser, bio: e.target.value})
+                            }}></textarea>
 
                         </div>
                         :
                         <div className="profile-item__container">
                             <h1>Bio</h1>
-                            <p className={'profile-item-container__bio'}>{props.user.details.bio}</p>
+                            <p className={'profile-item-container__bio'}>{props.user.bio}</p>
                         </div>
                     }
                     <div className="profile-button__container">
