@@ -2222,6 +2222,7 @@ section {
     align-items: center;
     justify-content: space-between;
     transition: height 0.3s ease-in-out;
+    gap: 15px;
 }
 
 @media (max-width: 700px) {
@@ -2235,9 +2236,10 @@ section {
     margin: 0;
     font-weight: bold;
     color: var(--accent);
+    min-width: 200px;
 }
 
-.admin__devices-list .admin__devices-list__item > p {
+.admin__devices-list .admin__devices-list__item >  div > p {
     margin: 0;
     padding: var(--element-padding);
     background: var(--neutral);
@@ -2252,10 +2254,10 @@ section {
     .admin__devices-list__item {
         gap: var(--element-padding);
     }
-    .admin__devices-list > .admin__devices-list__item > label  {
+    .admin__devices-list > .admin__devices-list__item >label  {
         width: 100%;
     }
-    .admin__devices-list > .admin__devices-list__item > p {
+    .admin__devices-list > .admin__devices-list__item >  div > p {
         width: 100%;
     }
 }

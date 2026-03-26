@@ -155,7 +155,12 @@ export default function Admin({devices, handleNotification,
                 {user &&
                     <>
                         {user.role === "admin" && adminView === "Global Devices" &&
-                            <GlobalDevices allDevices={allDevices} handleNotification={handleNotification}/>}
+                            <GlobalDevices allDevices={allDevices}
+                                           handleNotification={handleNotification}
+                                           user={user}
+                                           deviceType={deviceType}
+                                           hostIp={hostIp}
+                                           setAllDevices={setAllDevices}/>}
                     </>
                 }
             </section>

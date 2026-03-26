@@ -33,7 +33,7 @@ export default function DeviceManagement (props) {
                                setUser={props.setUser}
                                user={props.user}/>
                     <div className="device-management__header">
-                        <h1>Remote Devices</h1>
+                        <h1>Your Devices</h1>
                     </div>
                     <DeviceList submitDevice={props.submitDevice} devices={props.devices}
                                 checkReservedDeviceProperties={checkReservedDeviceProperties}

@@ -1,4 +1,5 @@
 const { spawn } = require('child_process');
+const {readUsers, writeUser} = require("./user");
 
 
 function killProcess(process) {
@@ -170,4 +171,20 @@ function addFireWallRule (rule, chosenPort = null) {
     return {success: false}
 }
 
-module.exports = { addFireWallRule, runSoftwareOperation }
+async function deactivateAccount (user) {
+    console.log(`[ Server - /deactivateAccount ] starting operation`)
+    if (!user) return {success: false}
+    const users = await readUsers()
+    const updatedUsers = users.map((u) =>{
+        if (u.id === user.id) {
+            return {
+                ...user,
+                active: false,
+            }
+        }
+        return u
+    })
+    return await writeUser(updatedUsers)
+}
+
+module.exports = { addFireWallRule, runSoftwareOperation, deactivateAccount}

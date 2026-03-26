@@ -4,6 +4,7 @@ const {checkDeviceStructure } = require('../opModules/utils')
 const {findDevice, deleteDevice} = require("../opModules/device");
 const {writeUser, readUsers, deleteUser, updateUser} = require("../opModules/user");
 const {authenticate} = require("../opModules/sessionMiddleware");
+const {deactivateAccount} = require("../opModules/admin");
 
 router.use(authenticate);
 
@@ -64,6 +65,7 @@ router.delete('/globalDevice', async (req, res) => {
     if (!device) return res.status(400).send({success: false})
     if (!checkDeviceStructure(device)) res.status(400).send({success: false})
 
+    console.log('[ Server - DELETE /admin/removeDevice ] Removed device from the user\'s that hold it')
     const deleted = await deleteDevice(device.id)
     if (deleted.success) {
         const users = await readUsers()
@@ -78,33 +80,20 @@ router.delete('/globalDevice', async (req, res) => {
 })
 
 
-router.delete('/', async (req, res) => {
-    console.log('[Server - DELETE /users] starting route access')
-    const user = req.body.user
-    if (!user) {
-        console.log('[Server - DELETE /users] no username sent')
-        return res.status(400).send({
-            success: false,
-        })
-    } else {
-        try {
-            const response = await deleteUser(user)
-            if (!response.success) {
-                console.log('[Server - DELETE /users] delete user failed.')
-                return res.status(500).send({
-                    success: false,
-                })
-            } else {
-                console.log('[Server - DELETE /users] delete succeeded.')
-                res.status(200).send(response)
-            }
-        } catch (e) {
-            console.log('[Server - DELETE /users] delete failed.')
-            return res.status(500).send({
-                success: false,
-            })
-        }
+router.delete('/user', async (req, res) => {
+    console.log('[Server - DELETE /admin/user ] starting route access')
+    const { user, admin} = req.body
+    if (!user || admin) {
+        console.log('[Server - DELETE /admin/user ] no username sent')
+        return res.status(400).send({success: false})
     }
+    if (admin.role !== 'admin') return res.status(401).send({success: false})
+
+    const result = await deactivateAccount(user)
+    if (result.success) {
+        return res.status(200).send({success: true})
+    }
+    return res.status(500).send({success: false})
 })
 
 module.exports = router

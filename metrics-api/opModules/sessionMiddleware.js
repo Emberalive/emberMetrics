@@ -26,8 +26,6 @@ const authenticate = async (req, res, next) => {
     if (!userData.user.active) {
         return res.status(403).json({ success: false, error: 'Account suspended' });
     }
-
-    req.user = userData.user;
     next();
 };
 
