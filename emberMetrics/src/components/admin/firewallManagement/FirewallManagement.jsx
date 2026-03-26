@@ -1,6 +1,6 @@
 import {useState} from "react";
 import PortSelection from "./PortSelection.jsx";
-import DeviceSelection from "../DeviceSelection.jsx";
+import DeviceSelection from "../sharedAdmin/DeviceSelection.jsx";
 import RuleSelection from "./RuleSelection.jsx";
 import ItemSelection from "../SoftwareManagement/ItemSelection.jsx";
 

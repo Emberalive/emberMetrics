@@ -2,8 +2,9 @@ import {useEffect, useRef, useState} from "react";
 import SoftwareManagement from "./SoftwareManagement/SoftwareManagement.jsx";
 import SubNav from "../shared/SubNav.jsx";
 import FirewallManagement from "./firewallManagement/FirewallManagement.jsx";
-import LogDisplay from "./LogDisplay.jsx";
+import LogDisplay from "./sharedAdmin/LogDisplay.jsx";
 import UserManagement from "./UserManagement.jsx";
+import GlobalDevices from "./GlobalDevices.jsx";
 
 export default function Admin({devices, handleNotification,
                               hostIp, deviceType, viewPort,
@@ -72,7 +73,7 @@ export default function Admin({devices, handleNotification,
     }
 
     const adminNavList = user? user.role === 'admin' ?
-        ['Software', 'Firewall', 'User Management']
+        ['Software', 'Firewall', 'User Management', 'Global Devices']
         : ['Software', 'Firewall']
         : ['Software', 'Firewall']
 
@@ -150,6 +151,12 @@ export default function Admin({devices, handleNotification,
                                         user={user}
                                         setUsers={setAllUsers}/>}
                 </>
+                }
+                {user &&
+                    <>
+                        {user.role === "admin" && adminView === "Global Devices" &&
+                            <GlobalDevices allDevices={allDevices} handleNotification={handleNotification}/>}
+                    </>
                 }
             </section>
         </div>

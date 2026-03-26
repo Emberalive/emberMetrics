@@ -1,4 +1,4 @@
-import DeviceSelection from "../DeviceSelection.jsx";
+import DeviceSelection from "../sharedAdmin/DeviceSelection.jsx";
 import PackageManSelection from "./ItemSelection.jsx";
 import {useRef, useState} from "react";
 import PackageSelection from "./PackageSelection.jsx";

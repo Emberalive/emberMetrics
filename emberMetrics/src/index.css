@@ -456,11 +456,14 @@ section {
 }
 
 .section-header {
+    max-width: 500px;
+    width: 100%;
     align-items: center;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
     max-height: 70px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: var(--element-padding);
 }
 
 .section-header > * {
@@ -1729,11 +1732,6 @@ section {
     }
 }
 
-.profile-container > .section-header > h1, .user-management > .section-header > h1 {
-    text-align: center;
-    width: 100%;
-}
-
 .profile-item__container {
     display: flex;
     flex-direction: row;
@@ -1819,6 +1817,7 @@ section {
     }
     .profile-devices__container > .profile-item__container > p {
         min-width: 100%;
+        margin: 0;
     }
     .profile-devices__container > .profile-item__container > label {
         width: 100%;
@@ -2062,11 +2061,6 @@ section {
     align-items: center;
 }
 
-.admin-navigation__link:nth-child(3) {
-    grid-column-start: 1;
-    grid-column-end: 3;
-}
-
 @media (max-width: 500px) {
     .admin-navigation {
         width: 100%;
@@ -2199,6 +2193,71 @@ section {
 .package-selection > label{
     width: calc(80% - var(--element-padding));
     font-size: 20px;
+}
+
+.admin__devices {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: calc(100% - var(--element-padding));
+}
+
+.admin__devices-list {
+    display: flex;
+    flex-direction: column;
+    width: calc(60% - var(--element-padding));
+    gap: 10px;
+}
+
+@media (max-width: 700px) {
+    .admin__devices-list {
+        width: 100%;
+    }
+}
+
+.admin__devices-list__item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    transition: height 0.3s ease-in-out;
+}
+
+@media (max-width: 700px) {
+    .admin__devices-list__item {
+        flex-direction: column;
+    }
+}
+
+.admin__devices-list > .admin__devices-list__item > label  {
+    font-size: 25px;
+    margin: 0;
+    font-weight: bold;
+    color: var(--accent);
+}
+
+.admin__devices-list .admin__devices-list__item > p {
+    margin: 0;
+    padding: var(--element-padding);
+    background: var(--neutral);
+    border-radius: var(--border-radius);
+    font-size: 20px;
+    background-color: var(--neutral);
+    min-width: 200px;
+    text-align: center;
+}
+
+@media (max-width: 700px) {
+    .admin__devices-list__item {
+        gap: var(--element-padding);
+    }
+    .admin__devices-list > .admin__devices-list__item > label  {
+        width: 100%;
+    }
+    .admin__devices-list > .admin__devices-list__item > p {
+        width: 100%;
+    }
 }
 
 /*log display styles*/
