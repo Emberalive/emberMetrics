@@ -27,7 +27,6 @@ export default function DeviceManagement (props) {
                     <AddDevice handleNotification={props.handleNotification}
                                devices={props.devices}
                                checkReservedDeviceProperties={checkReservedDeviceProperties}
-                               authentication={props.authentication}
                                deviceType={props.deviceType}
                                hostIp={props.hostIp}
                                setDevices={props.setDevices}
@@ -43,8 +42,7 @@ export default function DeviceManagement (props) {
                                 handleNotification={props.handleNotification}
                                 setDevices={props.setDevices}
                                 user={props.user}
-                                setUser={props.setUser}
-                                authentication={props.authentication}/>
+                                setUser={props.setUser}/>
                 </section>
             </div>
 

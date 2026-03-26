@@ -163,8 +163,6 @@ async function readUsers() {
             console.error('[Server - readUsers] Expected array, got:', JSON.stringify(rawUsers));
             return []
         }
-        console.log('[ Server - readUsers] Retrieved user list')
-
         return JSON.parse(rawUsers);
     } catch (e) {
         console.error('[Server - readUsers] Internal error: ', e)

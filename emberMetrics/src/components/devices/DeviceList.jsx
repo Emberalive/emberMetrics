@@ -16,7 +16,7 @@ export default function DeviceList (props) {
         const deviceID = device.id;
         // Use latest user-auth state to compute updated devices
         const updatedDevices = props.user.devices.filter(d => d.id !== deviceID);
-        const userData = props.authentication? { ...props.user, devices: updatedDevices } : null
+        const userData = { ...props.user, devices: updatedDevices }
 
         try {
             const sessionId = localStorage.getItem('sessionId');
@@ -41,16 +41,10 @@ export default function DeviceList (props) {
                     }
                     return;
                 }
-                if (userData !== null) {
-                    //if authentication is true (users exist) do this
-                    props.handleNotification('notice', 'updated device successfully');
+                if (userData) {
+                    props.handleNotification('notice', `Un-Linked device: ${deleteDeviceData.name}`);
                     props.setUser(resData.updatedUser)
                     props.setDevices(resData.updatedUser.devices)
-                    return
-                } else {
-                    //if no authentication (no user-auth data) do this
-                    props.handleNotification('notice', 'updated device successfully');
-                    props.setDevices(updatedDevices)
                     return
                 }
             }
@@ -72,7 +66,7 @@ export default function DeviceList (props) {
         );
 
         //build new user-auth object with the new devices
-        const userData = props.authentication? { ...props.user, devices: newDevices } : null;
+        const userData = { ...props.user, devices: newDevices };
 
         try {
             const sessionId = localStorage.getItem('sessionId');
@@ -95,15 +89,10 @@ export default function DeviceList (props) {
 
             if (response.ok) {
                 const resData = await response.json();
-                if (userData !== null) {
-                    //if authentication is true (users exist) do this
+                if (userData) {
                     props.handleNotification('notice', 'updated device successfully');
                     props.setUser(resData.updatedUser)
                     props.setDevices(resData.updatedUser.devices)
-                } else {
-                    //if no authentication (no user-auth data) do this
-                    props.handleNotification('notice', 'updated device successfully');
-                    props.setDevices(newDevices)
                 }
             } else {
                 if (response.status === 403) {
@@ -157,7 +146,7 @@ export default function DeviceList (props) {
                             <button className="general-button danger-button" onClick={() => {
                                 console.log('[Client - deleteDevice] setting deleteDevice data to show check screen')
                                 setDeleteDeviceData(device);
-                            }}>Delete
+                            }}>Un-Link
                             </button>
                             <button className="general-button success-button" style={{fontSize: "20px"}}
                                     onClick={() => {
@@ -199,7 +188,7 @@ export default function DeviceList (props) {
                         }}>No</button>
                     </div>
                 </section>
-                <YouSure message={'Do you want to delete'} messageHighlight={deleteDeviceData.name} confirmFunction={() => deleteDevice(deleteDeviceData)} cancelFunction={() => setDeleteDeviceData(null)}/>
+                <YouSure message={'Do you want to Un-Link the device:'} messageHighlight={deleteDeviceData.name} confirmFunction={() => deleteDevice(deleteDeviceData)} cancelFunction={() => setDeleteDeviceData(null)}/>
             </div>}
             <div className="device-list__container">
                 {devices.length === 0 && <p style={{fontSize: "10px", fontWeight: "700", textAlign: "center"}}>You have no remote devices registered.</p>}

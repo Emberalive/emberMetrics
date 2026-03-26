@@ -26,10 +26,10 @@ export default function AddDevice(props) {
 
         if (props.checkReservedDeviceProperties(newDevice)) return
 
-        const userData = props.authentication ? {
+        const userData = {
             ...props.user,
             devices: [...props.devices, newDevice]
-        } : null
+        }
         try {
             const sessionId = localStorage.getItem('sessionId');
             if (!sessionId) {
@@ -50,16 +50,11 @@ export default function AddDevice(props) {
 
             if (response.ok) {
                 const resData = await response.json();
-                if (resData.success && userData !== null) {
+                if (resData.success) {
                     //if authentication is true (users exist) do this
                     props.handleNotification('notice', 'updated device successfully');
                     props.setUser(resData.updatedUser)
                     props.setDevices(resData.updatedUser.devices)
-                    return
-                } else if (resData.success && userData === null) {
-                    //if no authentication (no user-auth data) do this
-                    props.handleNotification('notice', 'updated device successfully');
-                    props.setDevices(prev => [...prev, newDevice]);
                     return
                 }
             }

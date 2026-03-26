@@ -32,7 +32,7 @@ export default function UserManagement({users, allDevices, handleNotification, d
             if (!sessionId) {
                 handleNotification('notice', 'Your session has ran out, please refresh the page');
             }
-            const response = await fetch(`http://${deviceType === "remote-access" ? hostIp : "127.0.0.1"}:3000/users/${isAdd ? 'addDevice' : 'removeDevice'}`, {
+            const response = await fetch(`http://${deviceType === "remote-access" ? hostIp : "127.0.0.1"}:3000/admin/${isAdd ? 'addDevice' : 'removeDevice'}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

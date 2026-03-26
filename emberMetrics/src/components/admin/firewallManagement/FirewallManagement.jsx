@@ -34,7 +34,7 @@ export default function FirewallManagement({ devices, selectedDevice, setSelecte
             if (!sessionId) {
                 handleNotification('notice', 'Your session has ran out, please refresh the page');
             }
-            const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp : '127.0.0.1:3000/admin/fireWallRule'}`, {
+            const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp : '127.0.0.1:3000/devices/fireWallRule'}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -21,9 +21,16 @@
     "id": "HXm1Ynv_kjER73gM4Ftqr",
     "password": "$2b$10$vZ1Q2I1D83zOf9nMgbyk7eFJXdCXZTlhuShtU9TntftS1kDYvXnOS",
     "email": "email",
+    "role": "admin",
     "bio": "This is my bio and i need to add some large text to see what is happening, when there is a lot of text, I need some more text, how about some more",
     "active": true,
     "devices": [
+      {
+        "name": "localhost",
+        "ip": "127.0.0.1",
+        "id": "DgxI77r32HDNeBfh0sK8B",
+        "isHost": true
+      },
       {
         "name": "EmberLocal",
         "ip": "192.168.0.208",
@@ -35,10 +42,9 @@
         "id": "tQMVV7uSEqai7GWCRwgjQ"
       },
       {
-        "name": "localhost",
-        "ip": "127.0.0.1",
-        "id": "DgxI77r32HDNeBfh0sK8B",
-        "isHost": true
+        "name": "My Server",
+        "ip": "203.0.113.0",
+        "id": "JgHbOKqMlTtFjbcU8ieXM"
       }
     ]
   },

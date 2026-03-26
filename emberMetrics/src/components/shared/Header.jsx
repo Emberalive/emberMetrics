@@ -103,7 +103,7 @@ export default function Header (props) {
             </header>
                 </>
             }
-            {(props.authentication === true && props.isLoggedIn === false) && <h1 style={{textAlign: 'center'}}>Welcome to Ember Metrics</h1>}
+            {(props.isLoggedIn === false) && <h1 style={{textAlign: 'center'}}>Welcome to Ember Metrics</h1>}
         </header>
             {((props.activeView === "resources" && props.devices) && props.isLoggedIn === true) &&
                 <>

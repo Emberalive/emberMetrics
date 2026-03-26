@@ -3,7 +3,7 @@ const app = express()
 const {getHostIp} = require('./opModules/utils')
 // functions for metrics gathering
 const {getMetrics, setChildLength} = require('./opModules/metrics')
-const {findDevice, getDevices} = require('./opModules/device')
+const {findDevice} = require('./opModules/device')
 const cors = require('cors')
 const port = 3000
 const deviceRoutes = require('./routes/deviceRoutes')
@@ -49,12 +49,10 @@ app.post('/', async (req, res) => {
         return res.status(400).send({success: false})
     }
 
-    if (user) {
-        const allowed = await checkDevicePerm(user.id, device.id)
-        if (!allowed) {
-            console.log('[ Server - /getMetrics ] User is not allowed ot access this device')
-            return res.status(403).send({success: false})
-        }
+    const allowed = await checkDevicePerm(user.id, device.id)
+    if (!allowed) {
+        console.log('[ Server - /getMetrics ] User is not allowed ot access this device')
+        return res.status(403).send({success: false})
     }
 
     const parsed = parseInt(childLength, 10)

@@ -29,13 +29,6 @@ import Violet from "./assets/SVG 2.1 | Violet Storm.svg";
 import {nanoid} from "nanoid";
 
 export default function App() {
-//<<-----------------------------Only edit this!!!!!----------------------------------------->>
-    // This is a quick fix to allow the user-auth to make the app have or not have authentication
-    //change the value of authentication to false if you don't want a user-auth system
-    const authentication = true
-//<<-------------------------^^^^^Only edit this^^^^^---------------------------------------->>
-//Nothing below here should be touched, you will most likely break the application!!!
-
     useEffect(() => {
         const sessionId = localStorage.getItem("sessionId")
         if (sessionId) {
@@ -69,7 +62,7 @@ export default function App() {
     }
 
     const [isGraph, setIsGraph] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(!authentication);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState(null);
     const [metricInterval, setMetricInterval] = useState(1000);
     const [childProcessFilter, setChildProcessFilter] = useState('cpu');
@@ -127,8 +120,6 @@ export default function App() {
     const [devices, setDevices] = useState([])
 
     useEffect(() => {
-        if (!authentication) return;
-        //if authentication doesn't exist don't run this function
         if (isLoggedIn && user) {
             const userDevices = user.devices;
             if (deviceType === "remote-access") {
@@ -154,54 +145,7 @@ export default function App() {
                 setSelectedDevice(user.devices[0]);
             }
         }
-    }, [user, isLoggedIn, deviceType, hostIp, authentication, devices])
-
-    useEffect(() => {
-        async function getInitialDevices () {
-            if (authentication) return
-            //if authentication is true don't run this effect
-            try {
-                const response = await fetch(`http://${deviceType === "remote-access" ? hostIp : "127.0.0.1"}:3000/devices`);
-
-                if (response.ok) {
-                    const resData = await response.json();
-                    let resData_devices
-                    if (resData.success) {
-                        resData_devices = resData.devices
-                    }
-                    const newDevices = [...resData_devices];
-                    if (deviceType === "") return
-                    if (deviceType === "remote-access") {
-                        const filteredDevices = newDevices.filter(
-                            (d) => !(d.ip === "127.0.0.1" && d.name === "localhost")
-                        );
-
-                        if (filteredDevices.length === newDevices.length) {
-                            handleNotification('error', 'Could not find localhost device');
-                        }
-
-                        if (hostIp) {
-                            filteredDevices.unshift({
-                                name: "Host-Device",
-                                ip: hostIp,
-                                isHost: true,
-                            });
-                        }
-                        setDevices(filteredDevices);
-                        setSelectedDevice(filteredDevices[0]);
-                        return;
-                    }
-                    setDevices(newDevices);
-                    setSelectedDevice(newDevices[0]);
-                } else {
-                    setDevices([])
-                }
-            } catch (e) {
-                console.error('error getting devices from the host', e.message);
-            }
-        }
-        getInitialDevices()
-    }, [hostIp, deviceType, authentication]);
+    }, [user, isLoggedIn, deviceType, hostIp, devices])
 
     useEffect(() => {
         //stores the deviceType in state
@@ -212,7 +156,7 @@ export default function App() {
 
     const [fontClicked, setFontClicked] = useState("medium");
 
-    const [activeView, setActiveView] = useState(authentication ? deviceType === "" ? "deviceTypeSelection" : "login" : deviceType === "" ? "deviceTypeSelection" : "resources");
+    const [activeView, setActiveView] = useState(deviceType === "" ? "deviceTypeSelection" : "resources");
 
     const [isMetricSettings, setIsMetricSettings] = useState(false);
 
@@ -473,7 +417,6 @@ export default function App() {
     }, [isDarkMode])
 
         useEffect(() => {
-            if (authentication && !isLoggedIn) return;
             if (!isLoggedIn || (activeView !== 'resources' && activeView !== 'fullScreen')) return;
             if (!selectedDevice) return;
 
@@ -524,14 +467,14 @@ export default function App() {
                     setMetrics(null)
                 }
             };
-            fetchMetrics(); // optional: fetch immediately
+            fetchMetrics(); // fetch immediately
             interval = setInterval(fetchMetrics, metricInterval);
 
             return () => {
                 isMounted = false;
                 clearInterval(interval);
             };
-        }, [selectedDevice, isLoggedIn, authentication, metricInterval, activeView, childProcessLength]);
+        }, [selectedDevice, isLoggedIn, metricInterval, activeView, childProcessLength]);
 
   return (
       <>
@@ -563,7 +506,6 @@ export default function App() {
                    activeView={activeView}
                   logoImage={logoImage}
                   viewPort={viewPort}
-                  authentication={authentication}
                   isLoggedIn={isLoggedIn} selectedDevice={selectedDevice}
                   isGraph={isGraph}
                   setIsGraph={setIsGraph}
@@ -575,14 +517,13 @@ export default function App() {
                   setTimeMetrics={setTimeMetrics}
           />
 
-          <main className={(activeView === 'resources' || activeView === 'fullScreen') ? (deviceType === '' || (authentication === true && isLoggedIn === false) || !metrics) ? 'main-single-column' : '' : 'main-single-column'}>
+          <main className={(activeView === 'resources' || activeView === 'fullScreen') ? (deviceType === '' || isLoggedIn === false || !metrics) ? 'main-single-column' : '' : 'main-single-column'}>
               {(activeView === "deviceTypeSelection") && (deviceType === '') &&
                   <DeviceTypeSelection setDeviceType={setDeviceType}
                                        activeView={activeView}
-                                       setActiveView={setActiveView}
-                                       authentication={authentication}/>}
+                                       setActiveView={setActiveView}/>}
 
-              {(authentication === false || isLoggedIn === true ) && <>
+              {isLoggedIn === true && <>
                     <Metrics metrics={metrics}
                              isGraph={isGraph}
                              timeMetrics={timeMetrics}
@@ -620,8 +561,7 @@ export default function App() {
                                                                  hostIp={hostIp}
                                                                  deviceType={deviceType}
                                                                  setUser={setUser}
-                                                                 user={user}
-                                                                 authentication={authentication}/>}
+                                                                 user={user}/>}
               </>}
               {activeView === 'profile' && <Profile user={user} handleNotification={handleNotification} setUser={setUser} devices={devices} hostIp={hostIp}/>}
               {activeView === 'login' && <Login handleNotification={handleNotification}
@@ -633,9 +573,9 @@ export default function App() {
                                                                            setActiveView={setActiveView}/>}
               {activeView === 'admin' && <Admin handleNotification={handleNotification}
                                                 devices={devices} hostIp={hostIp}
-                                                user={user} authentication={authentication}
                                                 deviceType={deviceType}
-                                                viewPort={viewPort}/>}
+                                                viewPort={viewPort}
+                                                user={user}/>}
           </main>
       </>
   )

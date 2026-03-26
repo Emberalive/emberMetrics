@@ -7,7 +7,7 @@ import UserManagement from "./UserManagement.jsx";
 
 export default function Admin({devices, handleNotification,
                               hostIp, deviceType, viewPort,
-                              user, authentication}) {
+                              user}) {
     const deviceList = devices
     const [allUsers, setAllUsers] = useState([]);
     const [allDevices, setAllDevices] = useState([]);
@@ -142,7 +142,7 @@ export default function Admin({devices, handleNotification,
                                                                  viewPort={viewPort} user={user}/>}
                 {user &&
                     <>
-                        {(user.role === "admin" && adminView === "User Management" && authentication) &&
+                        {user.role === "admin" && adminView === "User Management" &&
                         <UserManagement users={allUsers} allDevices={allDevices}
                                         handleNotification={handleNotification}
                                         deviceType={deviceType}
