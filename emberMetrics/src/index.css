@@ -337,7 +337,7 @@ option {
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
     right: calc(var(--section-padding) * 4 - 50px);
     top: 230px;
-    height: 225px;
+    height: 322px;
     min-width: 200px;
     transform-origin: top right;
     transform: scale(1);

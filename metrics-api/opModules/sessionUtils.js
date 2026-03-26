@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 
-const SESSIONS_FILE = './sessions.json';
+const SESSIONS_FILE = './persistentData/sessions.json';
 const SESSION_EXPIRY_HOURS = 24;
 
 const getSession = async (sessionId) => {
@@ -47,6 +47,7 @@ const deleteSession = (sessionId) => {
 };
 
 const cleanExpiredSessions = () => {
+    console.log('[ Server - /cleanExpiredSessions] sessions expired are being cleaned')
     const sessions = readSessions();
     const now = new Date();
     const valid = sessions.filter(s => new Date(s.expiresAt) > now);

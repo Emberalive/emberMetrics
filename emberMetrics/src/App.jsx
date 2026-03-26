@@ -72,6 +72,7 @@ export default function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(!authentication);
     const [user, setUser] = useState(null);
     const [metricInterval, setMetricInterval] = useState(1000);
+    const [childProcessFilter, setChildProcessFilter] = useState('cpu');
     const [hostIp, setHostIP] = useState(() => {
         const hostPublicIP = localStorage.getItem('hostPublicIP')
         if (hostPublicIP) {
@@ -550,7 +551,10 @@ export default function App() {
                                setIsGraph={setIsGraph}
                                setMetricInterval={setMetricInterval}
                                handleNotification={handleNotification}
-                               setTimeMetrics={setTimeMetrics}/>}
+                               setTimeMetrics={setTimeMetrics}
+                               childProcessFilter={childProcessFilter}
+                               setChildProcessFilter={setChildProcessFilter} />
+          }
 
           <Header metrics={metrics}
                    setIsDarkMode={setIsDarkMode}
@@ -589,7 +593,8 @@ export default function App() {
                              randomColour={randomColour}
                              activeView={activeView}
                              setMetrics={setMetrics}
-                             isDarkMode={isDarkMode}/>
+                             isDarkMode={isDarkMode}
+                             childProcessFilter={childProcessFilter}/>
 
                   {activeView === "settings" && <Settings setActiveView={setActiveView}
                                                           devices={devices}

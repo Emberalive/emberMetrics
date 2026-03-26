@@ -33,7 +33,9 @@ export default function HoveringButtons (props) {
                                  setIsGraph={props.setIsGraph} isGraph={props.isGraph}
                                  isMetricSettings={props.isMetricSettings}
                                  setMetricInterval={props.setMetricInterval}
-                                 setTimeMetrics={props.setTimeMetrics}/>
+                                 setTimeMetrics={props.setTimeMetrics}
+                                 childProcessFilter={props.childProcessFilter}
+                                 setChildProcessFilter={props.setChildProcessFilter}/>
         </div>
 
     )

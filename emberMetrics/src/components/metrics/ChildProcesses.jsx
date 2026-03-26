@@ -2,7 +2,26 @@ import React, {useEffect, useRef} from "react";
 
 export default function ChildProcesses (props) {
     let childDataList;
-    const children = props.metrics.childProcesses
+    const children = () => {
+        const processes = props.metrics.childProcesses
+        let filteredProcesses
+        switch (props.childProcessFilter) {
+            case 'cpu':
+                filteredProcesses = processes.sort((a, b) => b.cpu - a.cpu);
+                break;
+            case 'mem':
+                filteredProcesses = processes.sort((a, b) => b.memory - a.memory);
+                break;
+            case 'pid':
+                filteredProcesses = processes.sort((a, b) => a.pid - b.pid);
+                break;
+            default:
+                props.handleNotification('error', 'There was an issue sorting the processes')
+                return processes;
+        }
+        return filteredProcesses;
+    }
+
 
     const [foundChild, setFoundChild] = React.useState(null);
     const [searchValue, setSearchValue] = React.useState("");
@@ -18,12 +37,12 @@ export default function ChildProcesses (props) {
     }, [foundChild]);
 
     useEffect(() => {
-        childrenRef.current = children;
+        childrenRef.current = children();
     }, [children]);
 
     function searchChildProcesses() {
         if (searchValue) {
-            const process = children.find(child => child.name === searchValue)
+            const process = children().find(child => child.name === searchValue)
             if (process) {
                 setFoundChild(process);
             } else {
@@ -60,20 +79,20 @@ export default function ChildProcesses (props) {
         }
     }
 
-    if (children) {
-        childDataList = children.map(child => {
+    if (children()) {
+        childDataList = children().map(child => {
             return (
                     <div className={'child-processes__row'} key={child.pid} title={child.name}>
-                        <p className={'child-processes__row-item'} style={{textAlign: 'left'}}>
+                        <p className={'child-processes__row-item'} style={{textAlign: 'left', fontWeight: props.childProcessFilter === 'pid' ? 'bold': 'normal'}}>
                             {child.pid}
                         </p>
-                        <p className={'child-processes__row-item'} style={{color: child.memory >= 70.00 ? 'var(--danger)' : child.memory > 40.00 ? 'orange' : '', textAlign: 'left'}}>
+                        <p className={'child-processes__row-item'} style={{fontWeight: props.childProcessFilter === 'mem' ? 'bold': 'normal',color: child.memory >= 70.00 ? 'var(--danger)' : child.memory > 40.00 ? 'orange' : '', textAlign: 'left'}}>
                             {child.memory}
                         </p>
                         <p className={'child-processes__row-item'} style={{textAlign: 'left'}}>
                             {child.name}
                         </p>
-                        <p className={'child-processes__row-item'} style={{fontWeight: 'bold', color: child.cpu >= 70.00 ? 'var(--danger)' : child.cpu > 40.00 ? 'orange' : '', textAlign: 'right'}}>
+                        <p className={'child-processes__row-item'} style={{fontWeight: props.childProcessFilter === 'cpu' ? 'bold': 'normal', color: child.cpu >= 70.00 ? 'var(--danger)' : child.cpu > 40.00 ? 'orange' : '', textAlign: 'right'}}>
                             {child.cpu.toFixed(2)}
                         </p>
                         <p className={'child-processes__row-item'} style={{textAlign: 'right'}}>
@@ -111,16 +130,16 @@ export default function ChildProcesses (props) {
                     </header>
                     <div className={'child-processes__found-child-wrapper'}>
                         <div className={'child-processes__row'} key={foundChild.pid} title={foundChild.name}>
-                            <p className={'child-processes__row-item'} >
+                            <p className={'child-processes__row-item'} style={{fontWeight: props.childProcessFilter === 'pid' ? 'bold': 'normal'}} >
                                 {foundChild.pid}
                             </p>
-                            <p className={'child-processes__row-item'} style={{color: foundChild.memory >= 70.00 ? 'var(--danger)' : foundChild.memory > 40.00 ? 'orange' : ''}}>
+                            <p className={'child-processes__row-item'} style={{fontWeight: props.childProcessFilter === 'mem' ? 'bold': 'normal',color: foundChild.memory >= 70.00 ? 'var(--danger)' : foundChild.memory > 40.00 ? 'orange' : ''}}>
                                 {foundChild.memory}
                             </p>
                             <p className={'child-processes__row-item'}>
                                 {foundChild.name}
                             </p>
-                            <p className={'child-processes__row-item'} style={{fontWeight: 'bold', color: foundChild.cpu >= 70.00 ? 'var(--danger)' : foundChild.cpu > 40.00 ? 'orange' : ''}}>
+                            <p className={'child-processes__row-item'} style={{fontWeight: props.childProcessFilter === 'cpu' ? 'bold': 'normal', color: foundChild.cpu >= 70.00 ? 'var(--danger)' : foundChild.cpu > 40.00 ? 'orange' : ''}}>
                                 {foundChild.cpu.toFixed(2)}
                             </p>
                             <p className={'child-processes__row-item'}>
@@ -134,16 +153,16 @@ export default function ChildProcesses (props) {
             <div  className={'child-processes__table__wrapper'}>
                 <div className="child-processes__table">
                     <div className={'child-processes__row-header'}>
-                        <p className={' child-processes__header'} style={{textAlign: 'left'}}>
+                        <p className={' child-processes__header'} style={{fontWeight: props.childProcessFilter === 'pid' ? 'bold': 'normal', textAlign: 'left'}}>
                             Pid
                         </p>
-                        <p className={'child-processes__header'} style={{textAlign: 'left'}}>
+                        <p className={'child-processes__header'} style={{textAlign: 'left', fontWeight: props.childProcessFilter === 'mem' ? 'bold': 'normal'}}>
                             Mem%
                         </p>
                         <p className={'child-processes__header'} style={{textAlign: 'left'}}>
                             Name
                         </p>
-                        <p className={'child-processes__header'} style={{textAlign: 'right'}}>
+                        <p className={'child-processes__header'} style={{textAlign: 'right', fontWeight: props.childProcessFilter === 'cpu' ? 'bold': 'normal'}}>
                             CPU%
                         </p>
                         <p className={'child-processes__header child-processes__header-end'} style={{textAlign: 'right'}}>

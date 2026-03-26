@@ -106,8 +106,6 @@ async function getChildProcesses () {
                 user: process.user
             }
         })
-        //this sorts the processes based on cpu usage
-        childProcesses.sort((a, b) => b.cpu - a.cpu);
         if (childProcesses.length > 0) {
             if (childLength === 0) {
                 return childProcesses.splice(0, 10)

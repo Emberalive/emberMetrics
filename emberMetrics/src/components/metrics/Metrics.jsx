@@ -5,7 +5,7 @@ import DiskData from "./DiskData.jsx";
 import MemoryData from "./MemoryData.jsx";
 import CpuData from "./CpuData.jsx";
 
-export default function Metrics({metrics, isGraph, timeMetrics, metricInterval, handleNotification, viewPort, themes, randomColour, activeView, isDarkMode}) {
+export default function Metrics({metrics, isGraph, timeMetrics, metricInterval, handleNotification, viewPort, themes, randomColour, activeView, isDarkMode, childProcessFilter}) {
 
     return (
         <>
@@ -24,11 +24,14 @@ export default function Metrics({metrics, isGraph, timeMetrics, metricInterval, 
                                                 metricInterval={metricInterval}
                                                 isDarkMode={isDarkMode}/>
                                     <ChildProcesses metrics={metrics}
-                                                    isDarkMode={isDarkMode}/>
+                                                    isDarkMode={isDarkMode}
+                                                    childProcessFilter={childProcessFilter}/>
                                 </>:
                                 <>
                                     <DeviceData metrics={metrics}/>
-                                    <ChildProcesses metrics={metrics} handleNotification={handleNotification}/>
+                                    <ChildProcesses metrics={metrics}
+                                                    handleNotification={handleNotification}
+                                                    childProcessFilter={childProcessFilter}/>
                                     <DiskData metrics={metrics}/>
                                 </>
                             }

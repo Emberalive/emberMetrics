@@ -48,6 +48,32 @@ export default function MetricsSettings(props) {
                         }}>Graphs</button>
                     </div>
                 </div>
+                <div className="metrics-settings-entry">
+                    <p className="settings-entry__label">Process filter: </p>
+                    <div className={"settings-entry__value-container"} style={{display: "flex"}}>
+                        <button
+                            className={props.childProcessFilter === 'cpu' ? "general-button__selection general-button-selection__clicked" : "general-button__selection"}
+                            onClick={() => {
+                                props.setChildProcessFilter('cpu');
+                            }}
+                        >CPU
+                        </button>
+                        <button
+                            className={props.childProcessFilter === 'mem' ? "general-button__selection general-button-selection__clicked" : "general-button__selection"}
+                            onClick={() => {
+                                props.setChildProcessFilter('mem')
+                            }}
+                        >Memory
+                        </button>
+                        <button
+                            className={props.childProcessFilter === 'pid' ? "general-button__selection general-button-selection__clicked" : "general-button__selection"}
+                            onClick={ () => {
+                                props.setChildProcessFilter('pid')
+                            }}
+                        >pid
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     )

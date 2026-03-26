@@ -13,12 +13,6 @@ const {checkDevicePerm, getUserById} = require("./opModules/user");
 const {getSession, cleanExpiredSessions} = require("./opModules/sessionUtils");
 
 
-//clean all expired sessions on start up
-cleanExpiredSessions()
-// run every hour to clean expired sessions
-setInterval(cleanExpiredSessions, 60 * 60 * 1000); // every hour
-
-
 app.use(express.json())
 app.use(cors({
     origin: "*",
@@ -115,4 +109,8 @@ app.post('/', async (req, res) => {
 app.listen(port, async () => {
     console.log(`[Server] API Listening on port ${port}`)
     await getHostIp()
+    //clean all expired sessions on start up
+    cleanExpiredSessions()
+// run every hour to clean expired sessions
+    setInterval(cleanExpiredSessions, 60 * 60 * 1000); // every hour
 })
