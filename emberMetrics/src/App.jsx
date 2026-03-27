@@ -156,7 +156,11 @@ export default function App() {
 
     const [fontClicked, setFontClicked] = useState("medium");
 
-    const [activeView, setActiveView] = useState(deviceType === "" ? "deviceTypeSelection" : "resources");
+    const [activeView, setActiveView] = useState(deviceType === "" ? "deviceTypeSelection" : isLoggedIn ? "resources" : 'login');
+
+    useEffect(() => {
+        console.log('activeView:', activeView)
+    }, [activeView])
 
     const [isMetricSettings, setIsMetricSettings] = useState(false);
 
