@@ -47,9 +47,8 @@ export default function AddDevice(props) {
                     user: userData,
                 })
             })
-
+            const resData = await response.json();
             if (response.ok) {
-                const resData = await response.json();
                 if (resData.success) {
                     //if authentication is true (users exist) do this
                     props.handleNotification('notice', 'updated device successfully');
@@ -57,6 +56,9 @@ export default function AddDevice(props) {
                     props.setDevices(resData.updatedUser.devices)
                     return
                 }
+            }
+            if (resData.reason === 'device already exists') {
+                return props.handleNotification('error', 'A device already has this ip address')
             }
             props.handleNotification("error", "Adding device failed")
         } catch (e) {

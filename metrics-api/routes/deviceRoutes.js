@@ -57,6 +57,9 @@ async function deviceTransaction({
     const deviceRes = await deviceOperation()
 
     if (!deviceRes.success) {
+        if (deviceRes.reason) {
+            return deviceRes
+        }
         return { success: false, stage: "device" }
     }
 
@@ -130,6 +133,9 @@ router.post('/', async (req, res) => {
 
         if (result.success) {
             return res.status(200).json(result)
+        }
+        if (result.reason) {
+            return res.status(400).send(result)
         }
         return res.status(500).send({success: false})
 

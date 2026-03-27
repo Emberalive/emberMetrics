@@ -480,6 +480,21 @@ export default function App() {
             };
         }, [selectedDevice, isLoggedIn, metricInterval, activeView, childProcessLength]);
 
+    function checkReservedDeviceProperties(device) {
+        console.log('checking for a reserved device property')
+        const reservedProperties = ['localhost', 'host-device', '127.0.0.1'];
+        const isReserved = reservedProperties.some(property => {
+            return (device.ip.toLocaleLowerCase() === property || device.name.toLocaleLowerCase() === property);
+        })
+        if (isReserved) {
+            console.log('device has a reserved property')
+            props.handleNotification('error', 'Device used a reserved name or IP: \'localhost\', \'127.0.0.1\', \'host-device\'')
+            return true
+        }
+        console.log('device does not have a reserved property')
+        return false
+    }
+
   return (
       <>
           <Notification notification={notification} setNotification={setNotification} />
@@ -565,7 +580,8 @@ export default function App() {
                                                                  hostIp={hostIp}
                                                                  deviceType={deviceType}
                                                                  setUser={setUser}
-                                                                 user={user}/>}
+                                                                 user={user}
+                                                                 checkReservedDeviceProperties={checkReservedDeviceProperties}/>}
               </>}
               {activeView === 'profile' && <Profile user={user} handleNotification={handleNotification} setUser={setUser} devices={devices} hostIp={hostIp}/>}
               {activeView === 'login' && <Login handleNotification={handleNotification}
@@ -579,7 +595,8 @@ export default function App() {
                                                 devices={devices} hostIp={hostIp}
                                                 deviceType={deviceType}
                                                 viewPort={viewPort}
-                                                user={user}/>}
+                                                user={user}
+                                                checkReservedDeviceProperties={checkReservedDeviceProperties}/>}
           </main>
       </>
   )

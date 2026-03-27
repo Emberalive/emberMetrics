@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const {checkDeviceStructure } = require('../opModules/utils')
-const {findDevice, deleteDevice} = require("../opModules/device");
+const {findDevice, deleteDevice, addDevice} = require("../opModules/device");
 const {writeUser, readUsers, deleteUser, updateUser} = require("../opModules/user");
 const {authenticate} = require("../opModules/sessionMiddleware");
 const {deactivateAccount} = require("../opModules/admin");
@@ -36,12 +36,31 @@ router.post('/removeDevice', async (req, res) => {
     console.log('[ Server - DELETE /admin/removeDevice ] starting route access')
     const {editUser, device, admin} = req.body
 
+    if (!admin || !device || !editUser) return res.status(400).send({success: false})
+    if (admin.role !== 'admin') return res.status(401).send({success: false})
+
     const response = await deviceAdminHandler(editUser, device, admin,`[Server - POST /users/removeDevice] Revoke access of ${device.name} from the  user: ${editUser.username} failed`, res)
     if (response.success) {
         console.log(`[ Server - POST /admin/removeDevice ] User: ${editUser.username} has been revoked of access from device: ${device.name}`)
         res.status(200).send({success: true})
     } else {
         res.status(500).send({success: false})
+    }
+})
+
+router.post('/createDevice', async (req, res) => {
+    const {device, admin} = req.body
+
+    if (!admin || !device) return res.status(400).send({success: false})
+    if (admin.role !== 'admin') return res.status(401).send({success: false})
+    const response = await addDevice(device)
+    if (response.success) {
+        return res.status(200).send({success: true})
+    } else {
+        if (response.reason) {
+            return res.status(400).send(response)
+        }
+        return res.status(500).send({success: false})
     }
 })
 

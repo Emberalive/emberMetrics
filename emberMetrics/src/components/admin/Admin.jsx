@@ -8,7 +8,7 @@ import GlobalDevices from "./GlobalDevices.jsx";
 
 export default function Admin({devices, handleNotification,
                               hostIp, deviceType, viewPort,
-                              user}) {
+                              user, checkReservedDeviceProperties}) {
     const deviceList = devices
     const [allUsers, setAllUsers] = useState([]);
     const [allDevices, setAllDevices] = useState([]);
@@ -160,7 +160,8 @@ export default function Admin({devices, handleNotification,
                                            user={user}
                                            deviceType={deviceType}
                                            hostIp={hostIp}
-                                           setAllDevices={setAllDevices}/>}
+                                           setAllDevices={setAllDevices}
+                                           checkReservedDeviceProperties={checkReservedDeviceProperties}/>}
                     </>
                 }
             </section>

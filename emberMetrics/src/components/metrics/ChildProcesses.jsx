@@ -104,7 +104,7 @@ export default function ChildProcesses (props) {
     }
     return (
         <section className={'child-processes'}>
-            <header className={'section-header'}>
+            <header className={'processes-header'}>
                 <h1>Child Processes</h1>
                     <div className={'child-processes__find-child'}>
                         <input type={'text'} placeholder={'Process Name'} value={searchValue} onChange={(e) => {

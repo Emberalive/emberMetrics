@@ -54,7 +54,12 @@ async function addDevice (device) {
     try {
         console.log(`[Server - POST | devices] addDevice: ${JSON.stringify(device)} ]`)
         let deviceData = await readDevices()
-
+        for (const d of deviceData) {
+            if (d.ip === device.ip) {
+                console.log(`[ Server - POST | devices] Device: ${device.name}\'s ip address is already in use`)
+                return {success: false, reason: 'device already exists'}
+            }
+        }
         deviceData.push(device)
         console.log(`[Server - POST | devices] updatedDevices: ${JSON.stringify(deviceData)}`)
         return await writeDevices(deviceData)
