@@ -52,8 +52,11 @@ export default function App() {
                 setIsLoggedIn(true)
                 setActiveView('resources')
                 setUser(resData.user)
-            } else {
+            } else if (response.status === 403) {
+                handleNotification('error', 'Your account has been deactivated')
                 localStorage.removeItem("sessionId")
+            } else {
+                handleNotification('error', 'Could not retrieve session: Server error')
             }
 
         } catch (e) {
