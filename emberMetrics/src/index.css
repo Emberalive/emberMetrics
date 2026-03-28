@@ -2007,6 +2007,13 @@ section {
     padding: 10px 15px 10px 15px;
 }
 
+.user-container-item__details__controls {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
 @media (max-width: 550px) {
     .user-container-item__details__entry {
         flex-direction: column;

@@ -148,7 +148,7 @@ export default function Admin({devices, handleNotification,
                                         handleNotification={handleNotification}
                                         deviceType={deviceType}
                                         hostIp={hostIp}
-                                        user={user}
+                                        admin={user}
                                         setUsers={setAllUsers}/>}
                 </>
                 }

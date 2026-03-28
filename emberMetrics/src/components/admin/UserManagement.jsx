@@ -1,8 +1,8 @@
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import Select from 'react-select'
 import YouSure from "../shared/YouSure.jsx";
 
-export default function UserManagement({users, allDevices, handleNotification, deviceType, hostIp, user, setUsers}) {
+export default function UserManagement({users, allDevices, handleNotification, deviceType, hostIp, admin, setUsers}) {
     let userList =[]
     const [editUserDevices, setEditUserDevices] = useState({
         id:''
@@ -10,6 +10,46 @@ export default function UserManagement({users, allDevices, handleNotification, d
     const [selectedAddDevice, setSelectedAddDevice] = useState(false)
     const [selectedDeleteDevice, setSelectedDeleteDevice] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
+
+    async function deactivateUser (account) {
+        const sessionId = localStorage.getItem('sessionId');
+        if (!sessionId) {
+            handleNotification('notice', 'Your session has ran out, please refresh the page');
+        }
+        if (!account) return
+        try {
+            const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp : '127.0.0.1'}:3000/admin/deactivateAccount`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "x-session-id": sessionId,
+                },
+                body: JSON.stringify({
+                    admin: admin,
+                    user: account,
+                })
+            })
+            if (response.ok) {
+                const resdata = await response.json()
+                if (resdata.success) {
+                    const updatedUsers = users.map((user) => {
+                        if (user.id === account.id) {
+                            return {
+                                ...user,
+                                active: !account.active
+                            }
+                        }
+                        return user
+                    })
+                    setUsers(updatedUsers)
+                    handleNotification('success', `The User: ${account.username}\'s account has been ${account.active ? 'deactivated' : 'activated'}`)
+                    return
+                }
+            }
+            handleNotification('error', `The User: ${account.username}\'s account could not be ${account.active ? 'deactivated' : 'activated'}`)
+        } catch (e) {
+        }
+    }
 
     async function handleUserDevice(action) {
         const isAdd = action === 'add';
@@ -39,7 +79,7 @@ export default function UserManagement({users, allDevices, handleNotification, d
                     "x-session-id": sessionId,
                 },
                 body: JSON.stringify({
-                    admin: user,
+                    admin: admin,
                     editUser: userData,
                     device: selectedDevice,
                 }),
@@ -110,6 +150,9 @@ export default function UserManagement({users, allDevices, handleNotification, d
                         <div className={'user-container-item__details__entry'}>
                             <label>Role:</label>
                             <p>{user.role}</p>
+                        </div>
+                        <div className={'user-container-item__details__controls'}>
+                            <button className={'general-button danger-button'} onClick={() => deactivateUser(user)}>{user.active? 'Deactivate Account' : 'Activate Account'}</button>
                         </div>
                         {editUserDevices.id === user.id ?
                             <div className={'user-container-item__details__devices'}>

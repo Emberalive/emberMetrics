@@ -2,16 +2,15 @@ const express = require('express')
 const router = express.Router()
 const {checkDeviceStructure } = require('../opModules/utils')
 const {findDevice, deleteDevice, addDevice} = require("../opModules/device");
-const {writeUser, readUsers, deleteUser, updateUser} = require("../opModules/user");
+const {writeUser, readUsers, updateUser} = require("../opModules/user");
 const {authenticate} = require("../opModules/sessionMiddleware");
-const {deactivateAccount} = require("../opModules/admin");
+const {deactivateAccount, checkAdmin} = require("../opModules/admin");
 
 router.use(authenticate);
+router.use(checkAdmin);
 
 async function deviceAdminHandler (editUser, device, admin, failLog, res) {
     try {
-        if (admin.role !== 'admin') return res.status(500).send({success: false})
-
         if (!editUser || !admin) return res.status(400).send({success: false})
         if (!checkDeviceStructure(device)) res.status(400).send({success: false})
 
@@ -37,7 +36,6 @@ router.post('/removeDevice', async (req, res) => {
     const {editUser, device, admin} = req.body
 
     if (!admin || !device || !editUser) return res.status(400).send({success: false})
-    if (admin.role !== 'admin') return res.status(401).send({success: false})
 
     const response = await deviceAdminHandler(editUser, device, admin,`[Server - POST /users/removeDevice] Revoke access of ${device.name} from the  user: ${editUser.username} failed`, res)
     if (response.success) {
@@ -52,7 +50,6 @@ router.post('/createDevice', async (req, res) => {
     const {device, admin} = req.body
 
     if (!admin || !device) return res.status(400).send({success: false})
-    if (admin.role !== 'admin') return res.status(401).send({success: false})
     const response = await addDevice(device)
     if (response.success) {
         return res.status(200).send({success: true})
@@ -80,7 +77,6 @@ router.post('/addDevice', async (req, res) => {
 router.delete('/globalDevice', async (req, res) => {
     console.log('[ Server - DELETE /admin/removeDevice ] starting route access')
     const {device, admin} = req.body
-    if (admin.role !== 'admin') return res.status(401).send({success: false})
     if (!device) return res.status(400).send({success: false})
     if (!checkDeviceStructure(device)) res.status(400).send({success: false})
 
@@ -106,10 +102,19 @@ router.delete('/user', async (req, res) => {
         console.log('[Server - DELETE /admin/user ] no username sent')
         return res.status(400).send({success: false})
     }
-    if (admin.role !== 'admin') return res.status(401).send({success: false})
-
     const result = await deactivateAccount(user)
     if (result.success) {
+        return res.status(200).send({success: true})
+    }
+    return res.status(500).send({success: false})
+})
+
+router.post('/deactivateAccount' ,async (req, res) => {
+    console.log('[ Server - DELETE /admin/deactivateUser ] starting route access')
+    const { user, admin } = req.body
+    if (!admin || !user) return res.status(400).send({success: false})
+    const response = await deactivateAccount(user)
+    if (response.success) {
         return res.status(200).send({success: true})
     }
     return res.status(500).send({success: false})

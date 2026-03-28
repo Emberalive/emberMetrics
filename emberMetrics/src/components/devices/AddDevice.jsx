@@ -8,7 +8,7 @@ export default function AddDevice(props) {
         const ip = e.target.ipAddress.value
         const name = e.target.deviceName.value
         //----------------------------validating data-----------------------------------------------//
-        //this only allows the ip[ address to be public ipv4 and valid ip addresses to be created  || (rangeCheck.isPrivateIP(ip))
+        //this only allows the ip address to be public ipv4 and valid ip addresses to be created  || (rangeCheck.isPrivateIP(ip))
         if ((!rangeCheck.isIP(ip)) || (rangeCheck.version(ip) !== 4)) {
             console.log("Please enter a valid public and IPv4 address")
             props.handleNotification("error", "Please enter a valid public and IPv4 address")

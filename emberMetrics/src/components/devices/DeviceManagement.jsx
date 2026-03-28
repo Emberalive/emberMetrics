@@ -30,7 +30,6 @@ export default function DeviceManagement (props) {
                                 setUser={props.setUser}/>
                 </section>
             </div>
-
         </>
     )
 }
