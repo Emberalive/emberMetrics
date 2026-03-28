@@ -19,9 +19,9 @@
     --accent: #2E2E2E; /* Dark text color */
     --text-primary: #2E2E2E; /* Main text */
     --text-secondary: #5E5E5E; /* Secondary text */
-    --success-75: #4CAF5075; /* Green */
+    --success-75: #23c55275; /* Green */
     --danger-75: #A4162375; /* Deep crimson */
-    --success: #4CAF50; /* Green */
+    --success: #23c552; /* Green */
     --danger: #A41623; /* Deep crimson */
     --neutral: #E0E0E0; /* Borders/backgrounds */
     --border-color: #D1D5DB; /* Light borders */
@@ -36,10 +36,6 @@
     --dm-accent: #E5E7EB; /* Light text */
     --dm-text-primary: #E5E7EB;
     --dm-text-secondary: #9CA3AF;
-    --dm-success: #1B9AAA; /* Teal */
-    --dm-success-75: #1B9AAA75; /* Teal */
-    --dm-danger: #A41623; /* Crimson */
-    --dm-danger-75: #A4162375; /* Crimson */
     --dm-neutral: #1E1E1E; /* Dark surfaces */
     --dm-border-color: #374151; /* Dark borders */
     --dm-highlight: #4B5563; /* Dark highlight */
@@ -54,8 +50,6 @@
     --accent: var(--dm-accent);
     --text-primary: var(--dm-text-primary);
     --text-secondary: var(--dm-text-secondary);
-    --success: var(--dm-success);
-    --danger: var(--dm-danger);
     --neutral: var(--dm-neutral);
     --border-color: var(--dm-border-color);
     --highlight: var(--dm-highlight);
@@ -2380,26 +2374,6 @@ section {
 
 .dark-mode .header > button:hover {
     background-color: var(--dm-highlight);
-}
-
-.dark-mode .danger-button {
-    border: 1px solid var(--dm-danger);
-}
-
-.dark-mode .success-button {
-    border: 1px solid var(--dm-success);
-}
-
-.dark-mode .danger-button:hover {
-    background-color: var(--dm-danger-75);
-}
-
-.dark-mode .success-button:hover {
-    background-color: var(--dm-success-75);
-}
-
-.dark-mode .success-button:hover {
-    background-color: var(--dm-success-75);
 }
 
 .dark-mode .p {

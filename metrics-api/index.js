@@ -38,6 +38,7 @@ app.post('/validateSession', async (req, res) => {
     }
     console.log('session.userId:', JSON.stringify(session.userId))
     const response = await getUserById(session.userId);
+    if (!response.user.active) return res.status(401).send({success: false})
     if (!response.success) return res.status(401).send({success: false})
     res.status(200).send({success: true, user: response.user})
 });

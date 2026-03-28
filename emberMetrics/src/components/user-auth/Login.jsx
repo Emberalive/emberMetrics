@@ -47,7 +47,8 @@ export default function Login (props) {
                     props.handleNotification('error', 'Please send all fields required');
                     return
                 }
-                props.handleNotification('error', `Could not ${isRegister ? 'registered' : 'logg in'} as: ${user.username} : Server error`);
+                if (response.status === 403) return props.handleNotification('error', 'Your account has been deactivated');
+                props.handleNotification('error', `Could not ${isRegister ? 'registered' : 'login'} as: ${user.username} : Server error`);
                 return
             }
             // Only login expects JSON back
