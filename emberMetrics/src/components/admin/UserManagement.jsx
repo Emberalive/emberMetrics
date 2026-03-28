@@ -4,7 +4,7 @@ import YouSure from "../shared/YouSure.jsx";
 
 export default function UserManagement({users, allDevices, handleNotification, deviceType, hostIp, admin, setUsers}) {
     let userList =[]
-    const [editUserDevices, setEditUserDevices] = useState({
+    const [editUser, setEditUser] = useState({
         id:''
     })
     const [selectedAddDevice, setSelectedAddDevice] = useState(false)
@@ -18,7 +18,7 @@ export default function UserManagement({users, allDevices, handleNotification, d
         }
         if (!account) return
         try {
-            const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp : '127.0.0.1'}:3000/admin/deactivateAccount`, {
+            const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp : '127.0.0.1'}:3000/admin/toggleUserActive`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -55,17 +55,17 @@ export default function UserManagement({users, allDevices, handleNotification, d
         const isAdd = action === 'add';
         const selectedDevice = isAdd ? selectedAddDevice : selectedDeleteDevice;
 
-        if (!selectedDevice || !editUserDevices) {
+        if (!selectedDevice || !editUser) {
             handleNotification('error', `There was an issue ${isAdd ? 'granting' : 'revoking'} access, Please try again`);
-            setEditUserDevices({id: ''})
+            setEditUser({id: ''})
             return;
         }
 
         const updatedDevices = isAdd
-            ? [...editUserDevices.devices, selectedDevice]
-            : editUserDevices.devices.filter(d => d.id !== selectedDevice.id);
+            ? [...editUser.devices, selectedDevice]
+            : editUser.devices.filter(d => d.id !== selectedDevice.id);
 
-        const userData = { ...editUserDevices, devices: updatedDevices };
+        const userData = { ...editUser, devices: updatedDevices };
 
         try {
             const sessionId = localStorage.getItem('sessionId');
@@ -88,20 +88,20 @@ export default function UserManagement({users, allDevices, handleNotification, d
             if (response.ok) {
                 const resData = await response.json();
                 if (resData.success) {
-                    handleNotification('notice', `Updated ${editUserDevices.username}'s allowed devices: ${isAdd ? `added ${selectedDevice.name} to` : `removed ${selectedDevice.name} from`} allowed devices`);
+                    handleNotification('notice', `Updated ${editUser.username}'s allowed devices: ${isAdd ? `added ${selectedDevice.name} to` : `removed ${selectedDevice.name} from`} allowed devices`);
                     const updatedUsers = users.map((u) => {
-                        if (u.id === editUserDevices.id) {
+                        if (u.id === editUser.id) {
                             return { ...u, devices: updatedDevices };
                         }
                         return u;
                     });
                     setUsers(updatedUsers);
                 } else {
-                    handleNotification('error', `Could not update ${editUserDevices.username}'s allowed devices`);
+                    handleNotification('error', `Could not update ${editUser.username}'s allowed devices`);
                 }
             }
 
-            setEditUserDevices({ id: '' });
+            setEditUser({ id: '' });
             isAdd ? setSelectedAddDevice(false) : setSelectedDeleteDevice(false);
 
         } catch (e) {
@@ -125,7 +125,7 @@ export default function UserManagement({users, allDevices, handleNotification, d
                         <div key={device.id} className={'user-container-item__details__entry'}>
                             <label>{device.name}</label>
                             <p>{device.ip}</p>
-                            {editUserDevices.id === user.id && <button className={'general-button danger-button'} onClick={() => {
+                            {editUser.id === user.id && <button className={'general-button danger-button'} onClick={() => {
                                 //when created - pass the device through to the delete device function call
                                 setIsDeleting(prevState => !prevState)
                                 setSelectedDeleteDevice(device)
@@ -137,6 +137,7 @@ export default function UserManagement({users, allDevices, handleNotification, d
                 <div key={user.id} className={'users-container__item'}>
                     <div className={'user-container-item__name'}>
                         <p>{user.username}</p>
+                        <p style={{color: user.active ? 'var(--success)' : 'var(--danger)'}}>{user.active ? 'Active' : 'Deactivated'}</p>
                     </div>
                     <div className={'user-container-item__details'}>
                         <div className={'user-container-item__details__entry'}>
@@ -151,10 +152,13 @@ export default function UserManagement({users, allDevices, handleNotification, d
                             <label>Role:</label>
                             <p>{user.role}</p>
                         </div>
-                        <div className={'user-container-item__details__controls'}>
-                            <button className={'general-button danger-button'} onClick={() => deactivateUser(user)}>{user.active? 'Deactivate Account' : 'Activate Account'}</button>
-                        </div>
-                        {editUserDevices.id === user.id ?
+                        {editUser.id === user.id &&
+                            <div className={'user-container-item__details__controls'}>
+                            <button className={'general-button danger-button'}
+                                    onClick={() => deactivateUser(user)}>{user.active ? 'Deactivate' : 'Activate'}</button>
+                            </div>
+                        }
+                        {editUser.id === user.id ?
                             <div className={'user-container-item__details__devices'}>
                             <h3>Allowed Devices</h3>
                             {userDevices}
@@ -203,7 +207,7 @@ export default function UserManagement({users, allDevices, handleNotification, d
                                 }} onChange={(selectedOption) => {
                                     setSelectedAddDevice(selectedOption.value)
                                 }}     noOptionsMessage={() => 'No more devices to give access'}/>
-                                {(editUserDevices.id === user.id && selectedAddDevice !== false) &&
+                                {(editUser.id === user.id && selectedAddDevice !== false) &&
                                     <>
                                         <div key={selectedAddDevice.id} className={'user-container-item__details__entry'}>
                                             <label>{selectedAddDevice.name}</label>
@@ -218,7 +222,7 @@ export default function UserManagement({users, allDevices, handleNotification, d
                                 }}>Add
                                 </button>
                                 <button className={'general-button danger-button'} onClick={() => {
-                                    setEditUserDevices({
+                                    setEditUser({
                                         id: ''
                                     })
                                 }}>Cancel
@@ -231,7 +235,7 @@ export default function UserManagement({users, allDevices, handleNotification, d
                                 {userDevices}
                                 <div className={'user-container-item__details__devices-controls'}>
                                     <button className={'general-button'} onClick={() => {
-                                        setEditUserDevices(user)
+                                        setEditUser(user)
                                     }}>Edit
                                     </button>
                                 </div>
@@ -246,7 +250,7 @@ export default function UserManagement({users, allDevices, handleNotification, d
         <div className={'user-management'}>
             {isDeleting && <YouSure cancelFunction={() => setIsDeleting(false)}
                                     message={`Do you want to revoke access of ${selectedDeleteDevice.name} from`}
-                                    messageHighlight={editUserDevices.username}
+                                    messageHighlight={editUser.username}
                                     confirmFunction={async() => await handleUserDevice('delete')}/>}
             <header className={'section-header'}>
                 <h1>User Management</h1>

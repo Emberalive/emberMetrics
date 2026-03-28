@@ -109,7 +109,7 @@ router.delete('/user', async (req, res) => {
     return res.status(500).send({success: false})
 })
 
-router.post('/deactivateAccount' ,async (req, res) => {
+router.post('/toggleUserActive' ,async (req, res) => {
     console.log('[ Server - DELETE /admin/deactivateUser ] starting route access')
     const { user, admin } = req.body
     if (!admin || !user) return res.status(400).send({success: false})
