@@ -6,7 +6,7 @@
     "bio": "",
     "id": "jrG2rAwqUnemUVoWiA0Eo",
     "role": "admin",
-    "active": true,
+    "active": false,
     "devices": [
       {
         "name": "localhost",

@@ -12,8 +12,7 @@ async function checkAdmin(req, res, next) {
     if (!admin) return res.status(400).send({success: false})
     const adminData = await getUserById(admin.id)
     if (!adminData) return res.status(400).send({success: false})
-    console.log(`[ Server - /checkAdmin ] adminData: ${JSON.stringify(adminData, null, 2)}`)
-    if (adminData.role !== 'admin') {
+    if (adminData.user.role === 'admin') {
         next();
         return
     }
