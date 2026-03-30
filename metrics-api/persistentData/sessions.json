@@ -1,22 +1,10 @@
 {
   "sessions": [
     {
-      "sessionId": "993f16a5-eec3-4efe-9c92-300f979e4460",
+      "sessionId": "0ec179bd-e20f-4137-ae11-59a2f81fa52c",
       "userId": "HXm1Ynv_kjER73gM4Ftqr",
-      "createdAt": "2026-03-27T09:26:02.497Z",
-      "expiresAt": "2026-03-28T09:26:02.497Z"
-    },
-    {
-      "sessionId": "67b6c523-25aa-4168-a44d-d00f941b9df3",
-      "userId": "jrG2rAwqUnemUVoWiA0Eo",
-      "createdAt": "2026-03-28T00:33:19.673Z",
-      "expiresAt": "2026-03-29T00:33:19.673Z"
-    },
-    {
-      "sessionId": "0e717ae4-cd62-46db-aa2a-9728b2dc9df1",
-      "userId": "jrG2rAwqUnemUVoWiA0Eo",
-      "createdAt": "2026-03-28T01:04:07.061Z",
-      "expiresAt": "2026-03-29T01:04:07.061Z"
+      "createdAt": "2026-03-30T21:28:19.719Z",
+      "expiresAt": "2026-03-31T21:28:19.719Z"
     }
   ]
 }

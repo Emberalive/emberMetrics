@@ -1,6 +1,8 @@
 const os = require('os')
 const si = require('systeminformation')
 const {getDiskSize} = require("./utils");
+const {getAmdGpuData} = require("./gpu");
+const nSmi = require("node-nvidia-smi");
 
 let metrics = {}
 let childLength = 0
@@ -10,30 +12,22 @@ let oldCpus = os.cpus()
 async function monitorGraphics() {
     try {
         const data = await si.graphics();
+        const vendor =data.controllers[0]?.vendor;
 
-        let gpus = []
-
-        data.controllers.forEach((gpu, index) => {
-            const gpuData = {
-                model: gpu.model,
-                memory: {
-                    used: gpu.memoryUsed !== undefined ? gpu.memoryUsed : 'N/A',
-                    total: gpu.memoryTotal !== undefined ? gpu.memoryTotal : 'N/A',
-                    free: gpu.memoryFree !== undefined ? gpu.memoryFree : 'N/A',
-                    utilization: gpu.utilizationMemory !== undefined ? gpu.utilizationMemory : 'N/A',
-                },
-                utilization: gpu.utilizationGpu !== undefined ? gpu.utilizationGpu : 'N/A',
-                temp: gpu.temperatureGpu !== undefined ? gpu.temperatureGpu : 'N/A',
-                power: gpu.powerDraw !== undefined ? gpu.powerDraw : 'N/A',
-                clocks: {
-                    core: gpu.clockCore !== undefined ? gpu.clockCore : 'N/A',
-                    memory: gpu.clockMemory !== undefined ? gpu.clockMemory : 'N/A',
-                }
-            }
-            gpus.push(gpuData)
-        })
-        return gpus
-
+        if (vendor.includes('AMD')) {
+            return getAmdGpuData()
+        } else {
+            return new Promise((resolve, reject) => {
+                nSmi(function (err, data) {
+                    if (err) {
+                        console.log(err)
+                        return reject(err);
+                    }
+                    resolve(data)
+                    console.log(`NVIDIA: ${JSON.stringify(data, null, 2)}`);
+                })
+            })
+        }
     } catch (err) {
         console.error(`There was an issue monitoring the gpu:\n ${err.message}`)
     }
