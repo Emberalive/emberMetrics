@@ -15,7 +15,7 @@ const {getSession, cleanExpiredSessions} = require("./opModules/sessionUtils");
 
 app.use(express.json())
 app.use(cors({
-    origin: "*",
+    origin: "https://metrics.emberalive.com",
     methods: ["GET", "HEAD", "OPTIONS", "POST","DELETE", "PATCH"],
 }));
 
