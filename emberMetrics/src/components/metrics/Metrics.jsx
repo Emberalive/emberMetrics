@@ -4,6 +4,7 @@ import ChildProcesses from "./ChildProcesses.jsx";
 import DiskData from "./DiskData.jsx";
 import MemoryData from "./MemoryData.jsx";
 import CpuData from "./CpuData.jsx";
+import Graphics from "./Graphics.jsx";
 
 export default function Metrics({metrics, isGraph, timeMetrics, metricInterval, handleNotification, viewPort, themes, randomColour, activeView, isDarkMode, childProcessFilter}) {
 
@@ -28,11 +29,12 @@ export default function Metrics({metrics, isGraph, timeMetrics, metricInterval, 
                                                     childProcessFilter={childProcessFilter}/>
                                 </>:
                                 <>
-                                    <DeviceData metrics={metrics}/>
-                                    <ChildProcesses metrics={metrics}
-                                                    handleNotification={handleNotification}
-                                                    childProcessFilter={childProcessFilter}/>
-                                    <DiskData metrics={metrics}/>
+                                    {/*<DeviceData metrics={metrics}/>*/}
+                                    {/*<ChildProcesses metrics={metrics}*/}
+                                    {/*                handleNotification={handleNotification}*/}
+                                    {/*                childProcessFilter={childProcessFilter}/>*/}
+                                    {/*<DiskData metrics={metrics}/>*/}
+                                    <Graphics metrics={metrics} timeMetrics={timeMetrics}/>
                                 </>
                             }
                         </div>
@@ -61,15 +63,15 @@ export default function Metrics({metrics, isGraph, timeMetrics, metricInterval, 
                                               isDarkMode={isDarkMode}/>
                                 </>:
                                 <>
-                                    <CpuData metrics={metrics} themes={themes}/>
-                                    <MemoryData metrics={metrics}
-                                                viewPort={viewPort}
-                                                isGraph={isGraph}
-                                                timeMetrics={timeMetrics}
-                                    />
-                                    <NetworkData metrics={metrics}
-                                                 isGraph={isGraph}
-                                                 timeMetrics={timeMetrics}/>
+                                    {/*<CpuData metrics={metrics} themes={themes}/>*/}
+                                    {/*<MemoryData metrics={metrics}*/}
+                                    {/*            viewPort={viewPort}*/}
+                                    {/*            isGraph={isGraph}*/}
+                                    {/*            timeMetrics={timeMetrics}*/}
+                                    {/*/>*/}
+                                    {/*<NetworkData metrics={metrics}*/}
+                                    {/*             isGraph={isGraph}*/}
+                                    {/*             timeMetrics={timeMetrics}/>*/}
                                 </>
                             }
                         </div>

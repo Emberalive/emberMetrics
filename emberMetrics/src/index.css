@@ -1616,6 +1616,48 @@ section {
     cursor: pointer;
 }
 
+
+/*Graphics themes*/
+.graphics-static-data, .clock-speed, .gpu-utilisation {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: calc(100% - (var(--element-padding)) * 2);
+    padding: var(--element-padding);
+    gap: 20px;
+}
+
+.graphic, .video-memory {
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - var(--element-padding));
+    gap: 10px;
+}
+
+.graphics-entry {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+}
+
+.graphics-entry > label {
+    min-width: 130px;
+    padding-right: var(--element-padding);
+    font-size: var(--font-size);
+    color: var(--secondary);
+    font-weight: 700;
+    border-right: 2px solid var(--border-color);
+    gap: 10px;
+}
+
+.graphics-entry > p {
+    font-size: var(--font-size);
+    margin: 0;
+    text-wrap: wrap;
+    white-space: wrap;
+    word-break: break-word;
+}
+
 /*login themes*/
 .login-wrapper {
     width: 100%;

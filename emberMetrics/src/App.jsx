@@ -491,7 +491,7 @@ export default function App() {
         })
         if (isReserved) {
             console.log('device has a reserved property')
-            props.handleNotification('error', 'Device used a reserved name or IP: \'localhost\', \'127.0.0.1\', \'host-device\'')
+            handleNotification('error', 'Device used a reserved name or IP: \'localhost\', \'127.0.0.1\', \'host-device\'')
             return true
         }
         console.log('device does not have a reserved property')
