@@ -1,6 +1,5 @@
 const fs = require('fs').promises;
 const {getDiskSize} = require('./utils');
-const nSmi = require('node-nvidia-smi');
 
 async function getAmdGpuData() {
     const drm = await fs.readdir('/sys/class/drm');
@@ -73,7 +72,7 @@ async function getAmdGpuData() {
     }, null, 2)}`);
 
     return {
-        temp: temp ? `${Math.round(parseInt(temp) / 1000)} degreesCelc` : null,               // millidegrees -> °C
+        temp: temp ? `${Math.round(parseInt(temp) / 1000)} ℃` : null,                        // millidegrees -> °C
         fanSpeed: fanSpeed ? `${parseInt(fanSpeed)} RPM` : null,                                 // already RPM
         powerDraw: powerDraw ? `${Math.round(parseInt(powerDraw) / 1000000)} W` : null,       // microwatts -> W
         powerCap: powerCap ? `${Math.round(parseInt(powerCap) / 1000000)} W` : null,          // microwatts -> W
@@ -88,6 +87,26 @@ async function getAmdGpuData() {
                 total: vramTotal ? getDiskSize(parseInt(vramTotal)) : null,                      // bytes
                 used: vramUsed ? getDiskSize(parseInt(vramUsed)) : null,                         // bytes
             }
+        }
+    }
+}
+
+const example =
+{
+    temp: "49 degreesCelc",
+    fanSpeed: "0 RPM",
+    powerDraw: "34 W",
+    powerCap: "220 W",
+    clocks: {
+        gfx: "800 MHz",
+        mem: "875 MHz"
+},
+    util: {
+        gpu: "0 %",
+        mem: {
+            percent: "0 %",
+            total: "7.98GB",
+            used: "2.14GB"
         }
     }
 }

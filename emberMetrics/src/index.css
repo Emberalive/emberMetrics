@@ -1669,10 +1669,10 @@ section {
 }
 
 .login {
-    width: 75%;
+    width: 50%;
 }
 
-@media (max-width: 750px) {
+@media (max-width: 950px) {
     .login {
         width: 100%;
     }

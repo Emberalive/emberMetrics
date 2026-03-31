@@ -71,8 +71,8 @@ export default function Login (props) {
     return (
         <div className="login-wrapper">
             <section className={'login'}>
-                <header className="section-header">
-                    <h1 style={{width: '100%',textAlign: 'center' }}>{isRegister ? 'Register' : 'Login'}</h1>
+                <header className="section-header" style={{minWidth: '100%', marginBottom: '30px', borderBottom: 'none', justifyContent: 'center'}}>
+                    <h1 style={{width: '50%', textAlign: 'center', borderBottom: '1px solid var(--border-color)'}}>{isRegister ? 'Register' : 'Login'}</h1>
                 </header>
                 <form className="login-form" onSubmit={submit}>
                     <div className="input-container">
@@ -83,21 +83,21 @@ export default function Login (props) {
                         <label>Password:</label>
                         <input type={'password'} name={'password'} placeholder={'password123'}/>
                     </div>
-                    {isRegister && <div className="input-container">
-                        <label>Confirm Password:</label>
-                        <input type={'password'} name={'confirmPassword'} placeholder={'password123'}/>
-                    </div>}
+                    {/*{isRegister && <div className="input-container">*/}
+                    {/*    <label>Confirm Password:</label>*/}
+                    {/*    <input type={'password'} name={'confirmPassword'} placeholder={'password123'}/>*/}
+                    {/*</div>}*/}
                     <button className={'general-button'} type={'submit'} >{isRegister ? 'Register' : 'Login'}</button>
                 </form>
-                <div className="form-links">
-                    <div className={'link-container'}>
-                        <p>{isRegister ? 'Have an account?' : 'Don\'t have an account?' }</p>
-                        <p className={'link-container__link'}onClick={() => {
-                            console.info('clicked');
-                            setIsRegister(prevState => !prevState);
-                        }}>{isRegister ? 'Login' : 'Register'}</p>
-                    </div>
-                </div>
+                {/*<div className="form-links">*/}
+                {/*    <div className={'link-container'}>*/}
+                {/*        <p>{isRegister ? 'Have an account?' : 'Don\'t have an account?' }</p>*/}
+                {/*        <p className={'link-container__link'}onClick={() => {*/}
+                {/*            console.info('clicked');*/}
+                {/*            setIsRegister(prevState => !prevState);*/}
+                {/*        }}>{isRegister ? 'Login' : 'Register'}</p>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
             </section>
         </div>
     )
