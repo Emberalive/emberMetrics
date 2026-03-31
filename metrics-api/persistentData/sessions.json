@@ -1,0 +1,16 @@
+{
+  "sessions": [
+    {
+      "sessionId": "0ec179bd-e20f-4137-ae11-59a2f81fa52c",
+      "userId": "HXm1Ynv_kjER73gM4Ftqr",
+      "createdAt": "2026-03-30T21:28:19.719Z",
+      "expiresAt": "2026-03-31T21:28:19.719Z"
+    },
+    {
+      "sessionId": "5047105e-7b06-4829-9030-9715c03482dd",
+      "userId": "HXm1Ynv_kjER73gM4Ftqr",
+      "createdAt": "2026-03-31T01:34:07.496Z",
+      "expiresAt": "2026-04-01T01:34:07.496Z"
+    }
+  ]
+}

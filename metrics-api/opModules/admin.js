@@ -1,5 +1,23 @@
 const { spawn } = require('child_process');
+const {readUsers, writeUser, getUserById, } = require("./user");
 
+/**
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ */
+async function checkAdmin(req, res, next) {
+    console.log('[ Server - /checkAdmin ] Route started')
+    const admin = req.body.admin
+    if (!admin) return res.status(400).send({success: false})
+    const adminData = await getUserById(admin.id)
+    if (!adminData) return res.status(400).send({success: false})
+    if (adminData.user.role === 'admin') {
+        next();
+        return
+    }
+    return res.status(401).send({success: false})
+}
 
 function killProcess(process) {
     if (!process) return {success: false}
@@ -170,4 +188,20 @@ function addFireWallRule (rule, chosenPort = null) {
     return {success: false}
 }
 
-module.exports = { addFireWallRule, runSoftwareOperation }
+async function deactivateAccount (user) {
+    console.log(`[ Server - /deactivateAccount ] starting operation`)
+    if (!user) return {success: false}
+    const users = await readUsers()
+    const updatedUsers = users.map((u) =>{
+        if (u.id === user.id) {
+            return {
+                ...user,
+                active: !user.active,
+            }
+        }
+        return u
+    })
+    return await writeUser(updatedUsers)
+}
+
+module.exports = { addFireWallRule, runSoftwareOperation, deactivateAccount, checkAdmin}

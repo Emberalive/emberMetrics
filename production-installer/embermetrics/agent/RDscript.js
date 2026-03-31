@@ -279,18 +279,25 @@ app.use(cors({
 app.use('/admin', adminRoutes)
 
 //returns the metrics
-app.get('/', (req, res) => {
+app.post('/', (req, res) => {
     const metrics = getMetrics();
-    const childLength = req.query.childLength
+    const childLength = req.body.childLength
     if (!metrics || (typeof metrics === 'object' && Object.keys(metrics).length === 0)) {
-        return res.status(500).json({ error: 'Metrics Data not available' });
+        console.log('[ Server - /getMetrics ] failed to get metrics')
+        return res.status(500).json({ reason: 'Metrics Data not available', success: false });
     }
     const parsed = parseInt(childLength, 10)
-    if (!childLength) return res.status(500).json({ error: 'Invalid child length' });
+    if (!childLength) return res.status(500).json({ reason: 'Invalid child length', success: false });
     if (typeof parsed === 'number') {
         setChildLength(parsed);
+    } else {
+        console.log('[ Server - /getMetrics ] no childLength available')
+        return res.status(500).json({ reason: 'Invalid child length', success: false });
     }
-    res.status(200).json(metrics); // always send JSON
+    res.status(200).json({
+        success: true,
+        metrics: metrics,
+    }); // always send JSON
 });
 
 app.listen(port, async () => {

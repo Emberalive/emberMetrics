@@ -1,12 +1,15 @@
 import {useEffect, useState} from "react";
 // import './index.css'
-import Header from "./components/Header";
-import Settings from "./components/Settings.jsx";
-import DeviceManagement from "./components/DeviceManagement.jsx";
-import Notification from "./components/Notification.jsx";
-import DeviceTypeSelection from "./components/DeviceTypeSelection.jsx";
-import Login from "./components/Login.jsx";
-import Profile from "./components/Profile.jsx";
+import Header from "./components/shared/Header.jsx";
+import Settings from "./components/settings/Settings.jsx";
+import DeviceManagement from "./components/devices/DeviceManagement.jsx";
+import Notification from "./components/settings/Notification.jsx";
+import DeviceTypeSelection from "./components/onboarding/DeviceTypeSelection.jsx";
+import Login from "./components/user-auth/Login.jsx";
+import Profile from "./components/user-auth/Profile.jsx";
+import HoveringButtons from "./components/metrics/HoveringButtons.jsx";
+import Metrics from "./components/metrics/Metrics.jsx";
+import Admin from "./components/admin/Admin.jsx"
 import Sparkr from "./assets/SVG 2.1 | Original Sparkr.svg";
 import Ocean from "./assets/SVG 2.1 | Ocean Blues.svg";
 import Forest from "./assets/SVG 2.1 | Forest Green.svg";
@@ -23,24 +26,49 @@ import Arctic from "./assets/SVG 2.1 | Arctic Cyan.svg";
 import Copper from "./assets/SVG 2.1 | Copper Flame.svg";
 import Emerald from "./assets/SVG 2.1 | Emerald Depths.svg";
 import Violet from "./assets/SVG 2.1 | Violet Storm.svg";
-import HoveringButtons from "./components/HoveringButtons.jsx";
-import Metrics from "./components/Metrics.jsx";
-import Admin from "./components/adminComponents/Admin.jsx";
-
+import {nanoid} from "nanoid";
 
 export default function App() {
-//<<-----------------------------Only edit this!!!!!----------------------------------------->>
-    // This is a quick fix to allow the user to make the app have or not have authentication
-    //change the value of authentication to false if you don't want a user system
-    const authentication = true
-//<<-------------------------^^^^^Only edit this^^^^^---------------------------------------->>
+    useEffect(() => {
+        const sessionId = localStorage.getItem("sessionId")
+        if (sessionId) {
+            validateSessions(sessionId)
+        }
+    }, [])
 
-    //Nothing below here should be touched, you will most likely break the application!!!
+    async function validateSessions(sessionId) {
+        try {
+            const response = await fetch(`http://${deviceType === 'remote-device'? hostIp : '127.0.0.1'}:3000/validateSession`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    sessionId: sessionId,
+                })
+            })
+            if (response.ok) {
+                const resData = await response.json()
+                setIsLoggedIn(true)
+                setActiveView('resources')
+                setUser(resData.user)
+            } else if (response.status === 403) {
+                handleNotification('error', 'Your account has been deactivated')
+                localStorage.removeItem("sessionId")
+            } else {
+                handleNotification('error', 'Could not retrieve session: Server error')
+            }
+
+        } catch (e) {
+            handleNotification('error', 'Your session has expired');
+        }
+    }
 
     const [isGraph, setIsGraph] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(!authentication);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState(null);
     const [metricInterval, setMetricInterval] = useState(1000);
+    const [childProcessFilter, setChildProcessFilter] = useState('cpu');
     const [hostIp, setHostIP] = useState(() => {
         const hostPublicIP = localStorage.getItem('hostPublicIP')
         if (hostPublicIP) {
@@ -90,13 +118,11 @@ export default function App() {
         }
     }
 
-    const [notification, setNotification] = useState("");
+    const [notification, setNotification] = useState([]);
 
     const [devices, setDevices] = useState([])
 
     useEffect(() => {
-        if (!authentication) return;
-        //if authentication doesn't exist don't run this function
         if (isLoggedIn && user) {
             const userDevices = user.devices;
             if (deviceType === "remote-access") {
@@ -107,81 +133,37 @@ export default function App() {
                             return {
                                 name: 'Host-Device',
                                 ip: hostIp,
-                                isHost: true,
                             };
                         }
                         return device;
                     })
-                    setUser(prev => ({
-                        ...prev,
-                        devices: updatedDevices,
-                    }));
-                    setSelectedDevice(updatedDevices[0].ip);
+                    console.log('updatedDevices', JSON.stringify(updatedDevices, null, 2));
+                    setDevices(updatedDevices);
+                    setSelectedDevice(updatedDevices[0]);
                 } else {
                     handleNotification('error', 'could not find localhost device')
                 }
             } else {
-                setDevices(userDevices);
-                setSelectedDevice(userDevices[0].ip);
+                setDevices(user.devices)
+                setSelectedDevice(user.devices[0]);
             }
         }
-    }, [isLoggedIn, deviceType, hostIp, authentication])
-
-    useEffect(() => {
-        async function getInitialDevices () {
-            if (authentication) return
-            //if authentication is true don't run this effect
-            try {
-                const response = await fetch(`https://metrics-api.emberalive.com/devices`);
-
-                if (response.ok) {
-                    const resData = await response.json();
-                    const resData_devices = resData.devices
-                    const newDevices = [...resData_devices];
-                    if (deviceType === "") return
-                    if (deviceType === "remote-access") {
-                        const filteredDevices = newDevices.filter(
-                            (d) => !(d.ip === "127.0.0.1" && d.name === "localhost")
-                        );
-
-                        if (filteredDevices.length === newDevices.length) {
-                            handleNotification('error', 'Could not find localhost device');
-                        }
-
-                        if (hostIp) {
-                            filteredDevices.unshift({
-                                name: "Host-Device",
-                                ip: hostIp,
-                                isHost: true,
-                            });
-                        }
-
-                        setDevices(filteredDevices);
-                        setSelectedDevice(filteredDevices[0].ip);
-                        return;
-                    }
-                    setDevices(newDevices);
-                    setSelectedDevice(newDevices[0].ip);
-                } else {
-                    setDevices([])
-                }
-            } catch (e) {
-                console.error('error getting devices from the host', e.message);
-            }
-        }
-        getInitialDevices()
-    }, [hostIp, deviceType, authentication]);
+    }, [user, isLoggedIn, deviceType, hostIp, devices])
 
     useEffect(() => {
         //stores the deviceType in state
             localStorage.setItem("deviceType", deviceType);
     }, [deviceType])
 
-    const [selectedDevice, setSelectedDevice] = useState('86.20.86.223');
+    const [selectedDevice, setSelectedDevice] = useState();
 
     const [fontClicked, setFontClicked] = useState("medium");
 
-    const [activeView, setActiveView] = useState(authentication ? deviceType === "" ? "deviceTypeSelection" : "login" : deviceType === "" ? "deviceTypeSelection" : "resources");
+    const [activeView, setActiveView] = useState(deviceType === "" ? "deviceTypeSelection" : isLoggedIn ? "resources" : 'login');
+
+    useEffect(() => {
+        console.log('activeView:', activeView)
+    }, [activeView])
 
     const [isMetricSettings, setIsMetricSettings] = useState(false);
 
@@ -387,12 +369,25 @@ export default function App() {
         }
     }, [windowWidth, fontClicked]);
 
-    function handleNotification (type, message) {
-        setNotification({type: type, message: message})
+    function handleNotification(type, message) {
+        const id = nanoid();
+
+        setNotification(prev => [...prev, { id, type, message, active: false }]);
+
+        // allow browser to paint the element first, then trigger transition
         setTimeout(() => {
-            setNotification("")
-        }, 2000)
-    }
+            setNotification(prev => prev.map(n => n.id === id ? { ...n, active: true } : n));
+        }, 10);
+
+        setTimeout(() => {
+            setNotification(prev => prev.map(n => n.id === id ? { ...n, active: false } : n));
+        }, 3000);
+
+        // remove from DOM after the transition has finished
+        setTimeout(() => {
+            setNotification(prev => prev.filter(n => n.id !== id));
+        }, 3400); // 3500 + transition duration
+        }
 
     useEffect(() => {
         const handleResize = () => {
@@ -425,11 +420,11 @@ export default function App() {
             document.documentElement.classList.add("dark-mode");
         } else {
             document.documentElement.classList.remove("dark-mode");
-        }    }, [isDarkMode])
+        }
+    }, [isDarkMode])
 
         useEffect(() => {
-            if (authentication && !isLoggedIn) return;
-            if (!isLoggedIn || activeView !== 'resources') return;
+            if (!isLoggedIn || (activeView !== 'resources' && activeView !== 'fullScreen')) return;
             if (!selectedDevice) return;
 
             let isMounted = true;
@@ -440,22 +435,38 @@ export default function App() {
             const fetchMetrics = async () => {
                 console.info('Fetching metrics');
                 try {
-                    const url = new URL(`https://metrics-api.emberalive.com`)
-                    url.searchParams.set("childLength", childProcessLength ? childProcessLength.toString() : "10");
-
-                    const response = await fetch(url);
+                    const sessionId = localStorage.getItem('sessionId');
+                    if (!sessionId) {
+                        handleNotification('notice', 'Your session has ran out, please refresh the page');
+                    }
+                    const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp : 'localhost'}:3000`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json",
+                            'x-session-id': sessionId,
+                        },
+                        body: JSON.stringify({
+                            device: selectedDevice,
+                            childLength: childProcessLength ? childProcessLength.toString() : "10",
+                            user: user
+                        })
+                    });
                     if (response.ok) {
                         const resData = await response.json();
-                        if (resData) {
-                            if (isMounted) setMetrics(resData)
-                        } else {
-                            clearInterval(interval)
-                            setMetrics(null)
-                            isMounted = false;
+                        if (resData.success) {
+                            if (isMounted) setMetrics(resData.metrics)
+                            return
                         }
+                    } else if (response.status === 403) {
+                        handleNotification('error', 'You dont have access to this device')
                     } else {
-                        console.log("[APP_METRICS] Fetch error");
+                        handleNotification('error', `Failed to fetch metrics for: ${selectedDevice.name}`);
                     }
+                    //instantly stops the interval, no fetches after initial failed fetch
+                    clearInterval(interval)
+                    setMetrics(null)
+                    isMounted = false;
                 } catch (err) {
                     clearInterval(interval);
                     console.error("[APP_METRICS] Error fetching metrics:", err.message);
@@ -463,15 +474,29 @@ export default function App() {
                     setMetrics(null)
                 }
             };
-
-            fetchMetrics(); // optional: fetch immediately
+            fetchMetrics(); // fetch immediately
             interval = setInterval(fetchMetrics, metricInterval);
 
             return () => {
                 isMounted = false;
                 clearInterval(interval);
             };
-        }, [selectedDevice, isLoggedIn, authentication, metricInterval, activeView, childProcessLength]);
+        }, [selectedDevice, isLoggedIn, metricInterval, activeView, childProcessLength]);
+
+    function checkReservedDeviceProperties(device) {
+        console.log('checking for a reserved device property')
+        const reservedProperties = ['localhost', 'host-device', '127.0.0.1'];
+        const isReserved = reservedProperties.some(property => {
+            return (device.ip.toLocaleLowerCase() === property || device.name.toLocaleLowerCase() === property);
+        })
+        if (isReserved) {
+            console.log('device has a reserved property')
+            handleNotification('error', 'Device used a reserved name or IP: \'localhost\', \'127.0.0.1\', \'host-device\'')
+            return true
+        }
+        console.log('device does not have a reserved property')
+        return false
+    }
 
   return (
       <>
@@ -491,7 +516,10 @@ export default function App() {
                                setIsGraph={setIsGraph}
                                setMetricInterval={setMetricInterval}
                                handleNotification={handleNotification}
-                               setTimeMetrics={setTimeMetrics}/>}
+                               setTimeMetrics={setTimeMetrics}
+                               childProcessFilter={childProcessFilter}
+                               setChildProcessFilter={setChildProcessFilter} />
+          }
 
           <Header metrics={metrics}
                    setIsDarkMode={setIsDarkMode}
@@ -500,7 +528,6 @@ export default function App() {
                    activeView={activeView}
                   logoImage={logoImage}
                   viewPort={viewPort}
-                  authentication={authentication}
                   isLoggedIn={isLoggedIn} selectedDevice={selectedDevice}
                   isGraph={isGraph}
                   setIsGraph={setIsGraph}
@@ -512,14 +539,13 @@ export default function App() {
                   setTimeMetrics={setTimeMetrics}
           />
 
-          <main className={(activeView === 'resources' || activeView === 'fullScreen') ? (deviceType === '' || (authentication === true && isLoggedIn === false) || !metrics) ? 'main-single-column' : '' : 'main-single-column'}>
+          <main className={(activeView === 'resources' || activeView === 'fullScreen') ? (deviceType === '' || isLoggedIn === false || !metrics) ? 'main-single-column' : '' : 'main-single-column'}>
               {(activeView === "deviceTypeSelection") && (deviceType === '') &&
                   <DeviceTypeSelection setDeviceType={setDeviceType}
                                        activeView={activeView}
-                                       setActiveView={setActiveView}
-                                       authentication={authentication}/>}
+                                       setActiveView={setActiveView}/>}
 
-              {(authentication === false || isLoggedIn === true ) && <>
+              {isLoggedIn === true && <>
                     <Metrics metrics={metrics}
                              isGraph={isGraph}
                              timeMetrics={timeMetrics}
@@ -530,9 +556,13 @@ export default function App() {
                              randomColour={randomColour}
                              activeView={activeView}
                              setMetrics={setMetrics}
-                             isDarkMode={isDarkMode}/>
+                             isDarkMode={isDarkMode}
+                             childProcessFilter={childProcessFilter}/>
 
                   {activeView === "settings" && <Settings setActiveView={setActiveView}
+                                                          devices={devices}
+                                                          user={user}
+                                                          setUser={setUser}
                                                           setIsDarkMode={setIsDarkMode}
                                                           isDarkMode={isDarkMode}
                                                           fontClicked={fontClicked}
@@ -554,9 +584,9 @@ export default function App() {
                                                                  deviceType={deviceType}
                                                                  setUser={setUser}
                                                                  user={user}
-                                                                 authentication={authentication}/>}
+                                                                 checkReservedDeviceProperties={checkReservedDeviceProperties}/>}
               </>}
-              {activeView === 'profile' && <Profile user={user} handleNotification={handleNotification} setUser={setUser}/>}
+              {activeView === 'profile' && <Profile user={user} handleNotification={handleNotification} setUser={setUser} devices={devices} hostIp={hostIp}/>}
               {activeView === 'login' && <Login handleNotification={handleNotification}
                                                                            hostIp={hostIp}
                                                                            setIsLoggedIn={setIsLoggedIn}
@@ -566,8 +596,10 @@ export default function App() {
                                                                            setActiveView={setActiveView}/>}
               {activeView === 'admin' && <Admin handleNotification={handleNotification}
                                                 devices={devices} hostIp={hostIp}
-                                                user={user} authentication={authentication}
-                                                deviceType={deviceType} viewPort={viewPort}/>}
+                                                deviceType={deviceType}
+                                                viewPort={viewPort}
+                                                user={user}
+                                                checkReservedDeviceProperties={checkReservedDeviceProperties}/>}
           </main>
       </>
   )

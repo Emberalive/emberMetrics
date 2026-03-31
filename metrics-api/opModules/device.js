@@ -3,6 +3,20 @@ const path = require('path');
 const storedFilePath = path.join(__dirname, `../persistentData/devices.json`);
 const tmpfilePath = storedFilePath + ".tmp"
 
+async function findDevice (id) {
+    if (id) {
+        const devices = await readDevices();
+        if (devices.length === 0) return {success: false};
+        const index = devices.findIndex(device => device.id === id);
+        if (index === -1) {
+            console.log('[ Server - devices /findDevice ] Device not found')
+            return {success: false};
+        }
+        return {success: true}
+    }
+    console.log('[ Server - devices /findDevice ] No id sent')
+    return {success: false}
+}
 
 async function readDevices () {
     const rawDevices = await fs.readFile(storedFilePath, 'utf8')
@@ -40,7 +54,12 @@ async function addDevice (device) {
     try {
         console.log(`[Server - POST | devices] addDevice: ${JSON.stringify(device)} ]`)
         let deviceData = await readDevices()
-
+        for (const d of deviceData) {
+            if (d.ip === device.ip) {
+                console.log(`[ Server - POST | devices] Device: ${device.name}\'s ip address is already in use`)
+                return {success: false, reason: 'device already exists'}
+            }
+        }
         deviceData.push(device)
         console.log(`[Server - POST | devices] updatedDevices: ${JSON.stringify(deviceData)}`)
         return await writeDevices(deviceData)
@@ -79,4 +98,4 @@ async function editDevice (device) {
     return await writeDevices(editedDevices)
 }
 
-module.exports = {getDevices, addDevice, deleteDevice, editDevice}
+module.exports = {getDevices, addDevice, deleteDevice, editDevice, findDevice}

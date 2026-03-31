@@ -1,129 +1,123 @@
 const express = require('express')
 const router = express.Router()
-const { addFireWallRule, runSoftwareOperation } = require('../opModules/admin')
-const { getThisIp, checkDeviceStructure, generateLogs, returnReads } = require('../opModules/utils')
+const {checkDeviceStructure } = require('../opModules/utils')
+const {findDevice, deleteDevice, addDevice} = require("../opModules/device");
+const {writeUser, readUsers, updateUser} = require("../opModules/user");
+const {authenticate} = require("../opModules/sessionMiddleware");
+const {deactivateAccount, checkAdmin} = require("../opModules/admin");
 
-//run a command on the machine
-router.post("/software", async (req, res) => {
-    console.log('[ Server - admin /software ] Enpoint started')
-    const {packageName, packageManager, device, operation} = req.body;
-    const PACKAGE_REGEX = /^[a-zA-Z0-9.+:-]+$/;
+router.use(authenticate);
+router.use(checkAdmin);
 
-    console.log('[ Server - admin /software ] doing sanitation checks')
-
-    if (!device || !checkDeviceStructure(device)) return res.status(400).send({success: false})
-
-    if (!packageName || !packageManager || !operation) return res.status(400).send({success: false})
-    //package sanitization
-    if (!PACKAGE_REGEX.test(packageName) || !PACKAGE_REGEX.test(packageName)) return res.status(400).send({success: false})
-
-    console.log(`[ Server - admin /software ] ThisIp: ${getThisIp()}, IP address from dent device: ${device.ip}\nDevice isHost?: ${device.isHost}`)
-
-    if (device.ip === 'metrics-api.emberalive.com' || device.ip === getThisIp() || device.isHost) {
-        console.log('[ Server - admin /software ] managing software locally')
-
-        const result = runSoftwareOperation(packageName, packageManager, operation);
-
-        if (!result || !result.success) return res.status(500).send({ success: false })
-
-        const subProcess = result.process;
-
-        res.status(200);
-
-        console.log(`[ Server - Host API ] starting install logs`)
-        generateLogs(subProcess, res)
-        return
-    }
-    console.log(`[ Server - admin /software ] Installing on remote-device: ${device.name}`)
-
+async function deviceAdminHandler (editUser, device, admin, failLog, res) {
     try {
-        console.log(`[ Server - admin /software ] running operation: ${operation} \n                             on remote-device: ${device.name}`)
-        const response = await fetch(`http://${device.ip}:3000/admin/software`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                packageName: packageName,
-                packageManager: packageManager,
-                operation: operation,
-            })
-        })
+        if (!editUser || !admin) return res.status(400).send({success: false})
+        if (!checkDeviceStructure(device)) res.status(400).send({success: false})
 
-        if (response.ok) {
-            if (await returnReads(response, res)) return
-            res.status(500).send({success: false})
-        }
+        const found = await findDevice(device.id)
+        if (!found) return res.status(404).send({success: false})
+
+        const userList = await readUsers()
+        const updatedUsers = userList.map((u) => {
+            if (u.id === editUser.id) {
+                return editUser
+            }
+            return u
+        })
+        return await writeUser(updatedUsers)
     } catch (e) {
-        console.error(e.message)
+        console.log(`${failLog}\nERROR: ${JSON.stringify(e)}`)
+    }
+}
+
+
+router.post('/removeDevice', async (req, res) => {
+    console.log('[ Server - DELETE /admin/removeDevice ] starting route access')
+    const {editUser, device, admin} = req.body
+
+    if (!admin || !device || !editUser) return res.status(400).send({success: false})
+
+    const response = await deviceAdminHandler(editUser, device, admin,`[Server - POST /users/removeDevice] Revoke access of ${device.name} from the  user: ${editUser.username} failed`, res)
+    if (response.success) {
+        console.log(`[ Server - POST /admin/removeDevice ] User: ${editUser.username} has been revoked of access from device: ${device.name}`)
+        res.status(200).send({success: true})
+    } else {
         res.status(500).send({success: false})
     }
 })
 
-function needPort (rule) {
-    return rule === "allow" || rule === "deny";
-}
+router.post('/createDevice', async (req, res) => {
+    const {device, admin} = req.body
 
-router.post("/fireWallRule", async (req, res) => {
-    console.log('[ Server - admin /firewall ] starting endpoint')
-    const allowedRules = [
-        'allow','deny', 'default allow incoming', 'default deny incoming', 'default allow outgoing', 'default deny outgoing'
-    ]
-    const {chosenPort, rule, device} = req.body;
-
-    console.log('[ Server - admin /firewall ] doing sanitation checks')
-    if (!device || !checkDeviceStructure(device)) return res.status(400).send({success: false})
-    if (!rule || !allowedRules.includes(rule)) {
-        console.log('[ Server - admin /firewall ] rule is not allowed');
-        return res.status(400).send({ success: false });
-    }
-
-    const needAport = needPort(rule);
-
-    if (needAport) {
-        if (chosenPort <= 0 || chosenPort > 65535) return res.status(400).send({success: false})
-    }
-
-    if (device.ip === 'localhost' || device.ip === '127.0.0.1' || device === getThisIp()) {
-        console.log('[ Server - admin /firewall ] Creating rule locally')
-
-        let result
-
-        if (needAport) {
-            result = await addFireWallRule(rule, chosenPort)
-        } else {
-            result = await addFireWallRule(rule)
+    if (!admin || !device) return res.status(400).send({success: false})
+    const response = await addDevice(device)
+    if (response.success) {
+        return res.status(200).send({success: true})
+    } else {
+        if (response.reason) {
+            return res.status(400).send(response)
         }
-
-        if (!result.success) return res.status(500).send({ success: false, reason: 'could not add firewall rule' });
-
-        const subProcess = result.process;
-        generateLogs(subProcess, res)
-        return
+        return res.status(500).send({success: false})
     }
+})
 
-    console.log(`[ Server - admin /firewall ] creating rule on device: ${device.name}`)
+router.post('/addDevice', async (req, res) => {
+    console.log('[ Server - DELETE /admin/addDevice ] starting route access')
+    const {editUser, device, admin} = req.body
 
-    try {
-        const response = await fetch(`http://${device.ip}:3000/admin/fireWallRule`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                chosenPort: chosenPort,
-                rule: rule,
-            })
-        })
+    const response = await deviceAdminHandler(editUser, device, admin,`[ Server - POST /users/addDevice ] Failed to give access of device: ${device.name} for user: ${editUser.username}`, res)
+    if (response.success) {
+        console.log(`[ Server - POST /admin/addDevice ] Added ${device.name} to ${editUser.username}'s allowed devices`)
+        res.status(200).send({success: true})
+    } else {
+        res.status(500).send({success: false})
+    }
+})
 
-        if (response.ok) {
-            if (await returnReads(response, res)) return
-            res.status(500).send({success: false})
+router.delete('/globalDevice', async (req, res) => {
+    console.log('[ Server - DELETE /admin/removeDevice ] starting route access')
+    const {device, admin} = req.body
+    if (!device) return res.status(400).send({success: false})
+    if (!checkDeviceStructure(device)) res.status(400).send({success: false})
+
+    console.log('[ Server - DELETE /admin/removeDevice ] Removed device from the user\'s that hold it')
+    const deleted = await deleteDevice(device.id)
+    if (deleted.success) {
+        const users = await readUsers()
+        for (const u of users) {
+            if (u.devices.some((d) => d.id === device.id)) {
+                const newUserDevices = u.devices.filter((d) => d.id !== device.id)
+                await updateUser(u.username, {...u, devices: newUserDevices})
+            }
         }
-    } catch (e) {
-        console.error(e.message)
-        res.status(500).send({success: false, reason: e.message})
     }
+    return res.status(200).send({ success: true })
+})
+
+
+router.delete('/user', async (req, res) => {
+    console.log('[Server - DELETE /admin/user ] starting route access')
+    const { user, admin} = req.body
+    if (!user || admin) {
+        console.log('[Server - DELETE /admin/user ] no username sent')
+        return res.status(400).send({success: false})
+    }
+    const result = await deactivateAccount(user)
+    if (result.success) {
+        return res.status(200).send({success: true})
+    }
+    return res.status(500).send({success: false})
+})
+
+router.post('/toggleUserActive' ,async (req, res) => {
+    console.log('[ Server - DELETE /admin/deactivateUser ] starting route access')
+    const { user, admin } = req.body
+    if (!admin || !user) return res.status(400).send({success: false})
+    const response = await deactivateAccount(user)
+    if (response.success) {
+        return res.status(200).send({success: true})
+    }
+    return res.status(500).send({success: false})
 })
 
 module.exports = router

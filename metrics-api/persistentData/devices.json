@@ -6,7 +6,7 @@
     "isHost": true
   },
   {
-    "name": "laptop",
+    "name": "LaptopLocal",
     "ip": "192.168.0.184",
     "id": "tQMVV7uSEqai7GWCRwgjQ"
   },
@@ -14,5 +14,10 @@
     "name": "EmberLocal",
     "ip": "192.168.0.208",
     "id": "EIgsAmY-1iT8rd4wzJvih"
+  },
+  {
+    "name": "My Server",
+    "ip": "203.0.113.0",
+    "id": "y6nXHR2PMRqtQN-Jo_G_2"
   }
 ]

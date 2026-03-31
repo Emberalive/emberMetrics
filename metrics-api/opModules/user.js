@@ -7,6 +7,15 @@ const storedFilePath = path.join(__dirname, `../persistentData/user.json`);
 const tmpfilePath = storedFilePath + ".tmp"
 
 
+async function checkDevicePerm (userID, deviceID) {
+    if (!userID) return false
+    const userData = (await getUserById(userID))
+    if (!userData.success || !userData.user.active) return false
+    const userDevices = userData.user.devices
+    const allowed = userDevices.findIndex(device => device.id === deviceID)
+    return allowed !== -1;
+}
+
 async function createUser(username, password, role) {
     try {
         const currentUsers = await readUsers()
@@ -27,7 +36,7 @@ async function createUser(username, password, role) {
             const response = await hashPassword(password, saltRounds);
             if (response.success) {
                 console.log('[Server - createUser] Successfully created!]')
-                return await addUser({username: username, password: response.hash, role, id: nanoid(), devices: [{"name":"localhost","ip":"127.0.0.1","id":"DgxI77r32HDNeBfh0sK8B"}]});
+                return await addUser({username: username, password: response.hash, role, id: nanoid(), details: {bio: '', email: ''}, active: true, devices: [{"name":"localhost","ip":"127.0.0.1","id":"DgxI77r32HDNeBfh0sK8B"}]});
             } else {
                 console.error('[Server - createUser] Error hashing password')
                 return {
@@ -136,6 +145,7 @@ async function writeUser(newUsers) {
         await fs.writeFile(tmpfilePath, JSON.stringify(newUsers, null, 2), 'utf8')
 
         await fs.rename(tmpfilePath, storedFilePath)
+        console.log('[Server - writeUser] Successfully updated user list')
         return {success: true}
     } catch (e) {
         console.error('[Server - writeUser] Internal error: ', e)
@@ -153,7 +163,6 @@ async function readUsers() {
             console.error('[Server - readUsers] Expected array, got:', JSON.stringify(rawUsers));
             return []
         }
-
         return JSON.parse(rawUsers);
     } catch (e) {
         console.error('[Server - readUsers] Internal error: ', e)
@@ -166,7 +175,11 @@ async function readUsers() {
 async function getUser(username) {
     try {
         const users = await readUsers()
-        const user = users.find((user) => user.username === username)
+        let user = users.find((user) => user.username === username)
+        if (!user) {
+            console.log('[ Server - /getUser ] No user found by checking username')
+            return {success: false}
+        }
         console.log('[Server - getUser] user found: ', user)
         return {
             success: true,
@@ -177,6 +190,19 @@ async function getUser(username) {
         return {
             success: false,
         }
+    }
+}
+
+async function getUserById(userId) {
+    const users = await readUsers()
+    let user = users.find((user) => user.id === userId)
+    if (!user) {
+        console.log('[ Server - getUserById] No user found')
+        return {success: false}
+    }
+    return {
+        success: true,
+        user: user
     }
 }
 
@@ -258,4 +284,4 @@ async function checkPassword(password, hashedPassword) {
 }
 
 
-module.exports = {createUser, deleteUser, authenticateUser, updateUser}
+module.exports = {createUser, deleteUser, authenticateUser, updateUser, readUsers, writeUser, checkDevicePerm, getUser, getUserById}
