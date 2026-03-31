@@ -48,7 +48,7 @@ export default function SoftwareManagement({devices, handleNotification, hostIp,
             if (!sessionId) {
                 handleNotification('notice', 'Your session has ran out, please refresh the page');
             }
-            const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp: '127.0.0.1'}:3000/devices/software`, {
+            const response = await fetch(`https://metrics-api.emberalive.com/devices/software`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json',
                 'x-session-id': sessionId,},

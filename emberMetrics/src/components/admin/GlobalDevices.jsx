@@ -36,7 +36,7 @@ export default function GlobalDevices({allDevices, user, handleNotification, dev
                 handleNotification('notice', 'Your session has ran out, please refresh the page');
             }
             // requesting to create a device to the main device.json
-            const response = await fetch(`http://${deviceType === "remote-access" ? hostIp : "127.0.0.1"}:3000/admin/createDevice`, {
+            const response = await fetch(`https://metrics-api.emberalive.com/admin/createDevice`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -70,7 +70,7 @@ export default function GlobalDevices({allDevices, user, handleNotification, dev
 
     async function onSubmit() {
         const sessionId = localStorage.getItem("sessionId");
-        const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp : '127.0.0.1'}:3000/admin/globalDevice`, {
+        const response = await fetch(`https://metrics-api.emberalive.com/admin/globalDevice`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',

@@ -38,7 +38,7 @@ export default function App() {
 
     async function validateSessions(sessionId) {
         try {
-            const response = await fetch(`http://${deviceType === 'remote-device'? hostIp : '127.0.0.1'}:3000/validateSession`, {
+            const response = await fetch(`https://metrics-api.emberalive.com/validateSession`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -439,7 +439,7 @@ export default function App() {
                     if (!sessionId) {
                         handleNotification('notice', 'Your session has ran out, please refresh the page');
                     }
-                    const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp : 'localhost'}:3000`, {
+                    const response = await fetch(`https://metrics-api.emberalive.com`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
