@@ -52,25 +52,6 @@ async function getAmdGpuData() {
         readFile(`${gpuDataPath}/mem_info_vram_used`),
     ])
 
-    console.log(`AMD GPU: ${JSON.stringify({
-        temp: temp ? `${Math.round(parseInt(temp) / 1000)} degreesCelc` : null,               // millidegrees -> °C
-        fanSpeed: fanSpeed ? `${parseInt(fanSpeed)} RPM` : null,                                 // already RPM
-        powerDraw: powerDraw ? `${Math.round(parseInt(powerDraw) / 1000000)} W` : null,       // microwatts -> W
-        powerCap: powerCap ? `${Math.round(parseInt(powerCap) / 1000000)} W` : null,          // microwatts -> W
-        clocks: {
-            gfx: computeClock ? `${computeClock} MHz` : null, // Hz -> MHz
-            mem: memClock ? `${Math.round(parseInt(memClock) / 1000000)} MHz` : null,         // Hz -> MHz
-        },
-        util: {
-            gpu: gpuUtil ? `${parseInt(gpuUtil)} %` : null,                                      // already %
-            mem: {
-                percent: memUtil ? `${parseInt(memUtil)} %` : null,                              // already %
-                total: vramTotal ? getDiskSize(parseInt(vramTotal)) : null,                      // bytes
-                used: vramUsed ? getDiskSize(parseInt(vramUsed)) : null,                         // bytes
-            }
-        }
-    }, null, 2)}`);
-
     return {
         temp: temp ? `${Math.round(parseInt(temp) / 1000)} ℃` : null,                        // millidegrees -> °C
         fanSpeed: fanSpeed ? `${parseInt(fanSpeed)} RPM` : null,                                 // already RPM
