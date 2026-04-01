@@ -610,6 +610,7 @@ export default function App() {
                                                 deviceType={deviceType}
                                                 viewPort={viewPort}
                                                 user={user}
+                                                setUser={setUser}
                                                 checkReservedDeviceProperties={checkReservedDeviceProperties}/>}
           </main>
       </>
