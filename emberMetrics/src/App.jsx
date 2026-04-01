@@ -56,6 +56,7 @@ export default function App() {
                 handleNotification('error', 'Your account has been deactivated')
                 localStorage.removeItem("sessionId")
             } else {
+                localStorage.removeItem("sessionId")
                 handleNotification('error', 'Could not retrieve session: Server error')
             }
 
@@ -474,7 +475,6 @@ export default function App() {
                     setMetrics(null)
                 }
             };
-            fetchMetrics(); // fetch immediately
             interval = setInterval(fetchMetrics, metricInterval);
 
             return () => {
