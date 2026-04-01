@@ -38,7 +38,7 @@ export default function MetricsSettings(props) {
                     </div>
                 </div>
                 <div className={'metrics-settings-entry'}>
-                    <p className="settings-entry__label">Metrics view</p>
+                    <p className="settings-entry__label">Metrics view:</p>
                     <div className={"settings-entry__button-container"} style={{ display: "flex", gap: '20px'}}>
                         <button className={!props.isGraph ? "general-button__selection general-button-selection__clicked disabled-button": "general-button__selection"} onClick={ () => {
                             props.setIsGraph(false)
@@ -50,7 +50,7 @@ export default function MetricsSettings(props) {
                 </div>
                 <div className="metrics-settings-entry">
                     <p className="settings-entry__label">Process filter: </p>
-                    <div className={"settings-entry__value-container"} style={{display: "flex"}}>
+                    <div className={"settings-entry__button-container"} style={{display: "flex"}}>
                         <button
                             className={props.childProcessFilter === 'cpu' ? "general-button__selection general-button-selection__clicked" : "general-button__selection"}
                             onClick={() => {

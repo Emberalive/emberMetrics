@@ -357,9 +357,10 @@ option {
     padding: var(--element-padding);
 }
 
-@media (max-width: 500px) {
+@media (max-width: 550px) {
     .metrics-settings-wrapper {
         height: 415px;
+        overflow: scroll;
     }
 
     .metrics-settings-entry {
@@ -372,7 +373,6 @@ option {
         flex-direction: column;
         justify-content: flex-start;
         align-items: flex-start;
-        border-bottom: 2px solid var(--border-color);
     }
 
     .metrics-settings-entry:last-child {
@@ -663,7 +663,6 @@ section {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
 }
 
 .settings-header {
@@ -707,10 +706,11 @@ section {
 }
 
 .settings-entry__label {
+    font-weight: bold;
     display: flex;
     align-items: center;
     border-right: 2px solid var(--border-color);
-    margin-right: 30px;
+    margin: 0 30px 10px 0;
     max-width: 100px;
     min-width: 130px;
     height: 2rem;
@@ -741,11 +741,19 @@ section {
     font-size: 20px;
 }
 
-@media (max-width: 600px) {
+.settings-entry__button-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: var(--element-padding);
+    border-radius: var(--border-radius);
+    background-color: var(--neutral);
+}
+
+@media (max-width: 550px) {
     .settings-entry {
         height: calc(100px - 1rem);
         flex-direction: column;
-        align-items: flex-start;
         width: fit-content;
         /*border-bottom: 2px solid var(--border-color);*/
         border-radius: 0;
@@ -755,6 +763,9 @@ section {
         border-right: none;
         margin-right: 0;
         height: 2rem;
+        width: calc(100% - var(--element-padding));
+        min-width: calc(100% - var(--element-padding));
+        align-items: center;
     }
 }
 
@@ -1636,26 +1647,47 @@ section {
 .graphics-entry {
     display: flex;
     flex-direction: row;
-    gap: 20px;
+    gap: 10px;
     align-items: center;
 }
 
 .graphics-entry > label {
-    min-width: 130px;
     padding-right: var(--element-padding);
     font-size: var(--font-size);
     color: var(--secondary);
     font-weight: 700;
-    border-right: 2px solid var(--border-color);
-    gap: 10px;
+    flex-shrink: 1;
+    min-width: 0;
 }
 
 .graphics-entry > p {
     font-size: var(--font-size);
     margin: 0;
-    text-wrap: wrap;
-    white-space: wrap;
-    word-break: break-word;
+    flex-grow: 2;
+    min-width: 0;
+}
+
+@media (max-width: 600px) {
+    .graphics-static-data, .gpu-utilisation, .clock-speed {
+        grid-template-columns: 1fr;
+    }
+    .graphic, .video-memory, .gpu-utilisation, .clock-speed {
+        gap: 0;
+    }
+    .graphics-static-data > .video-memory > .graphics-entry {
+        align-items: flex-start;
+        gap: 5px;
+    }
+    .graphics-entry {
+        justify-content: space-between;
+    }
+    .graphics-static-data > .video-memory > .graphics-entry > label {
+        border: none;
+        min-width: 0;
+    }
+    .graphics-entry > p {
+        text-align: right;
+    }
 }
 
 /*login themes*/
