@@ -9,12 +9,13 @@ export default function Graphics({metrics, timeMetrics, isGraph, metricInterval}
     console.log(JSON.stringify(gpuMetrics.util, null, 2))
 
     if (!gpuMetrics) return null
-    const [graphData, setGraphData] = useState([]);
+    const [utilGraphData, setUtilGraphData] = useState([]);
+    const [clockGraphData, setClockGraphData] = useState([]);
 
     useEffect(() => {
         if (!timeMetrics?.length || !isGraph) return;
 
-        const datasets = timeMetrics.map((snapshot, index) => {
+        const utilDatasets = timeMetrics.map((snapshot, index) => {
             return                 {
                 x: index*(metricInterval / 1000),
                 mem: parseFloat(snapshot.gpuData.util.mem.percent),
@@ -22,15 +23,107 @@ export default function Graphics({metrics, timeMetrics, isGraph, metricInterval}
                 temp: parseFloat(snapshot.gpuData.temp)
             }
         })
-        setGraphData(datasets)
+        const clockDatasets = timeMetrics.map((snapshot, index) => {
+            return                 {
+                x: index*(metricInterval / 1000),
+                gfx: parseFloat(snapshot.gpuData.clocks.gfx),
+                mem: parseFloat(snapshot.gpuData.clocks.mem),
+                memUsage: parseFloat(snapshot.gpuData.util.mem.used)
+            }
+        })
+        setClockGraphData(clockDatasets)
+        setUtilGraphData(utilDatasets)
     }, [timeMetrics])
 
-    const renderGraph = () => {
+    const renderClockGraph = () => {
         if (!isGraph) return;
         return(
             <div style={{flex: 1}} >
                 <LineChart
-                    dataset={graphData}
+                    dataset={clockGraphData}
+                    xAxis={[{
+                        dataKey: 'x',
+                        label: `Time (s)`,
+                        min: 20*(metricInterval / 1000),
+                        max: 0,
+                    }]}
+                    yAxis={[
+                        { id: 'mhzAxis', scaleType: 'linear', position: 'left', label: 'MHz' },
+                        { id: 'gbAxis', scaleType: 'linear', min: -1, max: parseFloat(gpuMetrics.util.mem.total), position: 'right', label: 'usage GB' },
+                    ]}
+                    series={[
+                        {
+                            dataKey: 'mem',
+                            label: 'Memory',
+                            color: 'var(--tertiary)',
+                        },
+                        {
+                            dataKey: 'gfx',
+                            label: 'GPU',
+                            color: 'var(--secondary)'
+                        },
+                        {
+                            dataKey: 'memUsage',
+                            label: 'Memory Usage',
+                            color: '#fc2d79',
+                            yAxisId: 'gbAxis'
+                        }
+                    ]}
+                    grid={{ stroke: '#333', strokeWidth: 0.5, vertical: true, horizontal: true }}
+                    height={400}
+                    sx={(theme) => ({
+                        // ===== Point markers =====
+                        [`.${markElementClasses.root}`]: {
+                            strokeWidth: 2,
+                            r: 0,
+                        },
+
+                        // ===== Axis styling =====
+                        [`.${axisClasses.root}`]: {
+                            [`.${axisClasses.line}`]: {
+                                stroke: '#888',
+                                strokeWidth: 2,
+                            },
+                            [`.${axisClasses.tick}`]: {
+                                stroke: '#888',
+                            },
+                            [`.${axisClasses.tickLabel}`]: {
+                                fill: 'var(--accent)',
+                                fontSize: 'var(--font-size)',
+                            },
+                            [`.${axisClasses.label}`]: {
+                                fill: 'var(--accent)',
+                                fontSize: 'var(--font-size)'    ,
+                            },
+                        },
+
+                        [`.${legendClasses.label}`]: {
+                            color: 'var(--accent)',
+                            fontSize: 'var(--font-size)',
+                            fontWeight: 600,
+                        },
+
+                        // ===== Grid styling =====
+                        [`.${chartsGridClasses.line}`]: {
+                            stroke: 'var(--neutral)',
+                            strokeWidth: 2,
+                        },
+
+                        // ===== Container styling =====
+                        backgroundColor: 'var(--primary)',
+                        borderRadius: 8,
+                    })}
+                />
+            </div>
+        )
+    }
+
+    const renderUtilGraph = () => {
+        if (!isGraph) return;
+        return(
+            <div style={{flex: 1}} >
+                <LineChart
+                    dataset={utilGraphData}
                     xAxis={[{
                         dataKey: 'x',
                         label: `Time (s)`,
@@ -133,31 +226,39 @@ export default function Graphics({metrics, timeMetrics, isGraph, metricInterval}
                         <label>Total Memory</label>
                         <p>{gpuMetrics.util.mem.total}</p>
                     </div>
-                    <div className={'graphics-entry'}>
-                        <label>Used Memory</label>
-                        <p>{gpuMetrics.util.mem.used}</p>
-                    </div>
+                    {!isGraph &&
+                        <div className={'graphics-entry'}>
+                            <label>Used Memory</label>
+                            <p>{gpuMetrics.util.mem.used}</p>
+                        </div>
+                    }
                 </div>
             </div>
             <header className={'section-header'} style={{maxWidth: '100%'}}>
                 <h1>Clocks</h1>
             </header>
-            <div className="clock-speed">
-                <div className={'graphics-entry'}>
-                    <label>gfx Compute</label>
-                    <p>{gpuMetrics.clocks.gfx}</p>
+            {isGraph ?
+                <>
+                    {renderClockGraph()}
+                </>
+                :
+                <div className="clock-speed">
+                    <div className={'graphics-entry'}>
+                        <label>gfx Compute</label>
+                        <p>{gpuMetrics.clocks.gfx}</p>
+                    </div>
+                    <div className={'graphics-entry'}>
+                        <label>Memory</label>
+                        <p>{gpuMetrics.clocks.mem}</p>
+                    </div>
                 </div>
-                <div className={'graphics-entry'}>
-                    <label>Memory</label>
-                    <p>{gpuMetrics.clocks.mem}</p>
-                </div>
-            </div>
+            }
             <header className={'section-header'} style={{maxWidth: '100%'}}>
                 <h1>Utilisation</h1>
             </header>
             {isGraph ?
                 <>
-                    {renderGraph()}
+                    {renderUtilGraph()}
                 </>
                 :
                 <div className="gpu-utilisation">
