@@ -53,7 +53,8 @@ async function getAmdGpuData() {
     ])
 
     return {
-        temp: temp ? `${Math.round(parseInt(temp) / 1000)} ℃` : null,                        // millidegrees -> °C
+        temp: temp ? `${Math.round(parseInt(temp) / 1000)} ℃` : await readFile(`${sensorPath}/temp1_input`) ?
+            await readFile(`${sensorPath}/temp1_input`) : null,                             // millidegrees -> °C
         fanSpeed: fanSpeed ? `${parseInt(fanSpeed)} RPM` : null,                                 // already RPM
         powerDraw: powerDraw ? `${Math.round(parseInt(powerDraw) / 1000000)} W` : null,       // microwatts -> W
         powerCap: powerCap ? `${Math.round(parseInt(powerCap) / 1000000)} W` : null,          // microwatts -> W
