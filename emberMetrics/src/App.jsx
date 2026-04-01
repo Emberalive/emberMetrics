@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 // import './index.css'
 import Header from "./components/shared/Header.jsx";
 import Settings from "./components/settings/Settings.jsx";
@@ -156,7 +156,7 @@ export default function App() {
             localStorage.setItem("deviceType", deviceType);
     }, [deviceType])
 
-    const [selectedDevice, setSelectedDevice] = useState();
+    const [selectedDevice, setSelectedDevice] = useState(null);
 
     const [fontClicked, setFontClicked] = useState("medium");
 
@@ -424,64 +424,75 @@ export default function App() {
         }
     }, [isDarkMode])
 
-        useEffect(() => {
-            if (!isLoggedIn || (activeView !== 'resources' && activeView !== 'fullScreen')) return;
-            if (!selectedDevice) return;
+    const isFetching = useRef(false);
 
-            let isMounted = true;
-            let interval
-            //This prevents the interval from setting metrics after the interval has changed. preventing any setMetrics from calling
-            //unexpectedly
+    useEffect(() => {
+        if (!isLoggedIn || (activeView !== 'resources' && activeView !== 'fullScreen')) return;
+        if (!selectedDevice) return;
 
-            const fetchMetrics = async () => {
-                console.info('Fetching metrics');
-                try {
-                    const sessionId = localStorage.getItem('sessionId');
-                    if (!sessionId) {
-                        handleNotification('notice', 'Your session has ran out, please refresh the page');
-                    }
-                    const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp : 'localhost'}:3000`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Accept": "application/json",
-                            'x-session-id': sessionId,
-                        },
-                        body: JSON.stringify({
-                            device: selectedDevice,
-                            childLength: childProcessLength ? childProcessLength.toString() : "10",
-                            user: user
-                        })
-                    });
-                    if (response.ok) {
-                        const resData = await response.json();
-                        if (resData.success) {
-                            if (isMounted) setMetrics(resData.metrics)
-                            return
-                        }
-                    } else if (response.status === 403) {
-                        handleNotification('error', 'You dont have access to this device')
-                    } else {
-                        handleNotification('error', `Failed to fetch metrics for: ${selectedDevice.name}`);
-                    }
-                    //instantly stops the interval, no fetches after initial failed fetch
-                    clearInterval(interval)
-                    setMetrics(null)
-                    isMounted = false;
-                } catch (err) {
-                    clearInterval(interval);
-                    console.error("[APP_METRICS] Error fetching metrics:", err.message);
-                    handleNotification("error", "There was an error fetching metrics");
-                    setMetrics(null)
+        let isMounted = true;
+        let interval
+        //This prevents the interval from setting metrics after the interval has changed. preventing any setMetrics from calling
+        //unexpectedly
+
+        const fetchMetrics = async () => {
+            console.info('Fetching metrics');
+            if(!selectedDevice) return
+
+            if (isFetching.current) return;
+            try {
+                const sessionId = localStorage.getItem('sessionId');
+                if (!sessionId) {
+                    handleNotification('notice', 'Your session has ran out, please refresh the page');
                 }
-            };
-            interval = setInterval(fetchMetrics, metricInterval);
+                isFetching.current = true;
+                const response = await fetch(`http://${deviceType === 'remote-device' ? hostIp : 'localhost'}:3000`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        'x-session-id': sessionId,
+                    },
+                    body: JSON.stringify({
+                        device: selectedDevice,
+                        childLength: childProcessLength ? childProcessLength.toString() : "10",
+                        user: user
+                    })
+                });
+                const resData = await response.json();
 
-            return () => {
+                if (response.ok && resData.success) {
+                    if (isMounted) setMetrics(resData.metrics);
+                    return;
+                }
+
+                if (response.status === 403) {
+                    handleNotification('error', 'You don\'t have access to this device');
+                } else if (resData.reason === 'no_response') {
+                    handleNotification('error', `${selectedDevice.name} did not respond, check the API`);
+                } else {
+                    handleNotification('error', `Failed to fetch metrics for: ${selectedDevice.name}`);
+                }
+                //instantly stops the interval, no fetches after initial failed fetch
+                clearInterval(interval)
+                setMetrics(null)
                 isMounted = false;
+            } catch (err) {
                 clearInterval(interval);
-            };
-        }, [selectedDevice, isLoggedIn, metricInterval, activeView, childProcessLength]);
+                console.error("[APP_METRICS] Error fetching metrics:", err.message);
+                handleNotification("error", "There was an error fetching metrics");
+                setMetrics(null)
+            } finally {
+                isFetching.current = false;
+            }
+        };
+        interval = setInterval(fetchMetrics, metricInterval);
+
+        return () => {
+            isMounted = false;
+            clearInterval(interval);
+        };
+    }, [selectedDevice, isLoggedIn, metricInterval, activeView, childProcessLength]);
 
     function checkReservedDeviceProperties(device) {
         console.log('checking for a reserved device property')
