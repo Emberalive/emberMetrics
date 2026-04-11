@@ -4,6 +4,9 @@ const {getDiskSize} = require("./utils");
 const {getAmdGpuData} = require("./gpu");
 const nSmi = require("node-nvidia-smi");
 
+let isPolling = false;
+let pollingTimeOut
+
 let metrics = {}
 let childLength = 0
 let deviceData
@@ -229,25 +232,41 @@ async function getDiskInfo () {
     }
 }
 
-//constantly updates metrics
-const interval = setInterval(async () => {
-    try {
-        metrics = {
-            hostName: os.hostname(),
-            deviceData: deviceData,
-            memoryUsage: await getMemory(),
-            cpuUsage: await getCpu(),
-            gpuData: await monitorGraphics(),
-            childProcesses: await getChildProcesses(),
-            interfaces: await getInterfaceData(),
-            disks: await getDiskInfo()
+setInterval(async () => {
+    if (isPolling) {
+        console.log(`[Server - metrics] auto re-gather when polling is true`)
+        try {
+            metrics = {
+                hostName: os.hostname(),
+                deviceData: deviceData,
+                memoryUsage: await getMemory(),
+                cpuUsage: await getCpu(),
+                gpuData: await monitorGraphics(),
+                childProcesses: await getChildProcesses(),
+                interfaces: await getInterfaceData(),
+                disks: await getDiskInfo()
+            }
+        } catch (e) {
+            console.error(`There was an issue gathering interval:\n ${e.message}`)
         }
-    } catch (e) {
-        console.error(`There was an issue gathering interval:\n ${e.message}`)
+    } else {
+        console.log(`[Server - metrics] is not gathering due to no active polling`)
     }
 }, 1000)
 
 function getMetrics () {
+    //if polling timeout exist clear it and make a new one
+    if (pollingTimeOut) {
+        console.log(`[Server - metrics] clearing the timeout due to new polling request`)
+        clearInterval(pollingTimeOut)
+    }
+    console.log(`[Server - metrics] starting new timeout for polling request`)
+    //else create a polling time out
+    pollingTimeOut = pollingTimeOut = setTimeout(() => {
+        isPolling = false;
+    }, 30000)
+    //set polling to true
+    isPolling = true
     return metrics
 }
 
