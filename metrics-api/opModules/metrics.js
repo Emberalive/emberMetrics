@@ -264,6 +264,7 @@ function getMetrics () {
     //else create a polling time out
     pollingTimeOut = pollingTimeOut = setTimeout(() => {
         isPolling = false;
+        //sets a timeout for between requests - prevents un-necessary gathering
     }, 30000)
     //set polling to true
     isPolling = true
