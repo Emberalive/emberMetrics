@@ -109,7 +109,7 @@ export default function MemoryData(props) {
                 :
                 <section className="memory-info">
                     <div className="memory-info__content">
-                        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: '30px', alignItems: 'center'}}>
+                        <div className={'memory-info-content__values'}>
                             <p className={'memory-info__content-title'} >Memory used:</p>
                             <p className={'memory-info__content-value'}>{memoryUsage.usage}%</p>
                         </div>
@@ -117,7 +117,7 @@ export default function MemoryData(props) {
                         </div>
                     </div>
                     <div className="memory-info__content">
-                        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: '30px', alignItems: 'center'}}>
+                        <div className={'memory-info-content__values'}>
                             <p className={'memory-info__content-title'} >Memory available:</p>
                             <p className={'memory-info__content-value'}>{memoryUsage.available}%</p>
                         </div>
