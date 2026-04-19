@@ -642,10 +642,32 @@ section {
     text-align: center;
 }
 
+.memory-info-content__values {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 30px;
+    align-items: center;
+}
+
 .memory-info__content-value {
     font-size: var(--font-size);
     font-weight: bold;
     color: var(--secondary);
+}
+
+@media (max-width: 720px) {
+    .memory-info__content > .memory-info-content__values {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
+    .memory-info__content-value {
+        margin: 0;
+    }
+    .memory-info__content-title {
+        margin: 0;
+    }
 }
 
 /*settings*/
