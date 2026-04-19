@@ -2,7 +2,7 @@ import {useState} from "react";
 import Select from 'react-select'
 import YouSure from "../shared/YouSure.jsx";
 
-export default function UserManagement({users, allDevices, handleNotification, deviceType, hostIp, admin, setUsers}) {
+export default function UserManagement({users, allDevices, handleNotification, deviceType, hostIp, admin, setAdmin, setUsers}) {
     let userList =[]
     const [editUser, setEditUser] = useState({
         id:''
@@ -96,6 +96,9 @@ export default function UserManagement({users, allDevices, handleNotification, d
                         return u;
                     });
                     setUsers(updatedUsers);
+                    if (editUser.username === admin.username) {
+                        updateAdminDevices(isAdd)
+                    }
                 } else {
                     handleNotification('error', `Could not update ${editUser.username}'s allowed devices`);
                 }
@@ -108,6 +111,21 @@ export default function UserManagement({users, allDevices, handleNotification, d
             console.error(`[Client - ${isAdd ? 'addDevice' : 'deleteDevice'}] error:`, e);
             handleNotification('error', `Error ${isAdd ? 'adding' : 'deleting'} device`);
         }
+    }
+
+    function updateAdminDevices (isAdd) {
+        let updatedDevices
+        if (isAdd) {
+            updatedDevices = [...admin.devices, selectedAddDevice]
+        } else {
+            updatedDevices = admin.devices.filter(d => d.id !== selectedDeleteDevice.id);
+        }
+        setAdmin(prev => {
+            return {
+                ...prev,
+                devices: updatedDevices,
+            }
+        })
     }
 
     if (Array.isArray(users)) {

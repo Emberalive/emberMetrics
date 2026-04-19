@@ -1,9 +1,102 @@
 const os = require('os')
 const si = require('systeminformation')
 const express = require('express')
-const app = express()
+const nSmi = require("node-nvidia-smi");
+const fs = require('fs').promises;
 
+const app = express()
 const cors = require('cors')
+
+
+function getDiskSize(bytes) {
+    if (!bytes) return false;
+
+    const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+    let i = 0;
+
+    while (bytes >= 1024 && i < units.length - 1) {
+        bytes /= 1024;
+        i++;
+    }
+
+    return bytes.toFixed(2) + units[i];
+}
+
+async function getAmdGpuData() {
+    const drm = await fs.readdir('/sys/class/drm');
+    const findGraphicsCard = drm.find(entry => /^card\d+$/.test(entry));
+    const gpuDataPath = `/sys/class/drm/${findGraphicsCard}/device`;
+    const findSensorSymLink = await fs.readdir(`${gpuDataPath}/hwmon`);
+    const sensorPath = `${gpuDataPath}/hwmon/${findSensorSymLink[0]}`;
+
+    const readFile = async (path) => {
+        try {
+            const val = await fs.readFile(path, 'utf8')
+            return val.trim()
+        } catch {
+            return null
+        }
+    }
+
+    const readSclk = async () => {
+        try {
+            const val = await fs.readFile(`${gpuDataPath}/pp_dpm_sclk`, 'utf8')
+            const activeLine = val.trim().split('\n').find(line => line.includes('*'))
+            const match = activeLine.match(/(\d+)Mhz/)
+            return match ? parseInt(match[1]) : null
+        } catch {
+            return null
+        }
+    }
+
+    const [
+        temp,
+        fanSpeed,
+        powerDraw,
+        powerCap,
+        computeClock,
+        memClock,
+        gpuUtil,
+        memUtil,
+        vramTotal,
+        vramUsed
+    ] = await Promise.all([
+        readFile(`${sensorPath}/temp2_input`),
+        readFile(`${sensorPath}/fan1_input`),
+        readFile(`${sensorPath}/power1_average`),
+        readFile(`${sensorPath}/power1_cap`),
+        readSclk(),
+        readFile(`${sensorPath}/freq2_input`),
+        readFile(`${gpuDataPath}/gpu_busy_percent`),
+        readFile(`${gpuDataPath}/mem_busy_percent`),
+        readFile(`${gpuDataPath}/mem_info_vram_total`),
+        readFile(`${gpuDataPath}/mem_info_vram_used`),
+    ])
+
+    return {
+        temp: temp ? `${Math.round(parseInt(temp) / 1000)} ℃` : await readFile(`${sensorPath}/temp1_input`) ?
+            await readFile(`${sensorPath}/temp1_input`) : null,                             // millidegrees -> °C
+        fanSpeed: fanSpeed ? `${parseInt(fanSpeed)} RPM` : null,                                 // already RPM
+        powerDraw: powerDraw ? `${Math.round(parseInt(powerDraw) / 1000000)} W` : null,       // microwatts -> W
+        powerCap: powerCap ? `${Math.round(parseInt(powerCap) / 1000000)} W` : null,          // microwatts -> W
+        clocks: {
+            gfx: computeClock ? `${computeClock} MHz` : null, // Hz -> MHz
+            mem: memClock ? `${Math.round(parseInt(memClock) / 1000000)} MHz` : null,         // Hz -> MHz
+        },
+        util: {
+            gpu: gpuUtil ? `${parseInt(gpuUtil)} %` : null,                                      // already %
+            mem: {
+                percent: memUtil ? `${parseInt(memUtil)} %` : null,                              // already %
+                total: vramTotal ? getDiskSize(parseInt(vramTotal)) : null,                      // bytes
+                used: vramUsed ? getDiskSize(parseInt(vramUsed)) : null,                         // bytes
+            }
+        }
+    }
+}
+
+
+let isPolling = false;
+let pollingTimeOut
 
 let metrics = {}
 let childLength = 0
@@ -13,30 +106,22 @@ let oldCpus = os.cpus()
 async function monitorGraphics() {
     try {
         const data = await si.graphics();
+        const vendor =data.controllers[0]?.vendor;
 
-        let gpus = []
-
-        data.controllers.forEach((gpu, index) => {
-            const gpuData = {
-                model: gpu.model,
-                memory: {
-                    used: gpu.memoryUsed !== undefined ? gpu.memoryUsed : 'N/A',
-                    total: gpu.memoryTotal !== undefined ? gpu.memoryTotal : 'N/A',
-                    free: gpu.memoryFree !== undefined ? gpu.memoryFree : 'N/A',
-                    utilization: gpu.utilizationMemory !== undefined ? gpu.utilizationMemory : 'N/A',
-                },
-                utilization: gpu.utilizationGpu !== undefined ? gpu.utilizationGpu : 'N/A',
-                temp: gpu.temperatureGpu !== undefined ? gpu.temperatureGpu : 'N/A',
-                power: gpu.powerDraw !== undefined ? gpu.powerDraw : 'N/A',
-                clocks: {
-                    core: gpu.clockCore !== undefined ? gpu.clockCore : 'N/A',
-                    memory: gpu.clockMemory !== undefined ? gpu.clockMemory : 'N/A',
-                }
-            }
-            gpus.push(gpuData)
-        })
-        return gpus
-
+        if (vendor.includes('AMD')) {
+            return getAmdGpuData()
+        } else {
+            return new Promise((resolve, reject) => {
+                nSmi(function (err, data) {
+                    if (err) {
+                        console.log(err)
+                        return reject(err);
+                    }
+                    resolve(data)
+                    console.log(`NVIDIA: ${JSON.stringify(data, null, 2)}`);
+                })
+            })
+        }
     } catch (err) {
         console.error(`There was an issue monitoring the gpu:\n ${err.message}`)
     }
@@ -109,8 +194,7 @@ async function getChildProcesses () {
                 user: process.user
             }
         })
-        //this sorts the processes based on cpu usage
-        childProcesses.sort((a, b) => b.cpu - a.cpu);
+        childProcesses.sort((a, b) => b.cpu - a.cpu)
         if (childProcesses.length > 0) {
             if (childLength === 0) {
                 return childProcesses.splice(0, 10)
@@ -215,7 +299,7 @@ async function getDiskInfo () {
                 type: disk.type ? disk.type : 'unknown',
                 vendor: disk.vendor ? disk.vendor : 'unknown',
                 device: disk.device ? disk.device : 'unknown',
-                size: (disk.size / (1024 ** 3)).toFixed(2).toString().length > 6 ? (disk.size / (1024 ** 4)).toFixed(2).toString() + 'TB': (disk.size / (1024 ** 3)).toFixed(2).toString() + 'GB',
+                size: getDiskSize(disk.size) ? getDiskSize(disk.size) : 'unknown',
                 interfaceType: disk.interfaceType ? disk.interfaceType : 'unknown',
             }
         })
@@ -239,25 +323,42 @@ async function getDiskInfo () {
     }
 }
 
-//constantly updates metrics
-const interval = setInterval(async () => {
-    try {
-        metrics = {
-            hostName: os.hostname(),
-            deviceData: deviceData,
-            memoryUsage: await getMemory(),
-            cpuUsage: await getCpu(),
-            gpuData: await monitorGraphics(),
-            childProcesses: await getChildProcesses(),
-            interfaces: await getInterfaceData(),
-            disks: await getDiskInfo()
+setInterval(async () => {
+    if (isPolling) {
+        console.log(`[Server - metrics] auto re-gather when polling is true`)
+        try {
+            metrics = {
+                hostName: os.hostname(),
+                deviceData: deviceData,
+                memoryUsage: await getMemory(),
+                cpuUsage: await getCpu(),
+                gpuData: await monitorGraphics(),
+                childProcesses: await getChildProcesses(),
+                interfaces: await getInterfaceData(),
+                disks: await getDiskInfo()
+            }
+        } catch (e) {
+            console.error(`There was an issue gathering interval:\n ${e.message}`)
         }
-    } catch (e) {
-        console.error(`There was an issue gathering interval:\n ${e.message}`)
+    } else {
+        console.log(`[Server - metrics] is not gathering due to no active polling`)
     }
 }, 1000)
 
 function getMetrics () {
+    //if polling timeout exist clear it and make a new one
+    if (pollingTimeOut) {
+        console.log(`[Server - metrics] clearing the timeout due to new polling request`)
+        clearInterval(pollingTimeOut)
+    }
+    console.log(`[Server - metrics] starting new timeout for polling request`)
+    //else create a polling time out
+    pollingTimeOut = pollingTimeOut = setTimeout(() => {
+        isPolling = false;
+        //sets a timeout for between requests - prevents un-necessary gathering
+    }, 30000)
+    //set polling to true
+    isPolling = true
     return metrics
 }
 

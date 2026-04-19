@@ -98,4 +98,4 @@ async function editDevice (device) {
     return await writeDevices(editedDevices)
 }
 
-module.exports = {getDevices, addDevice, deleteDevice, editDevice, findDevice}
+module.exports = {getDevices, addDevice, deleteDevice, editDevice, findDevice, readDevices}

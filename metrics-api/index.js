@@ -4,6 +4,7 @@ const {getHostIp} = require('./opModules/utils')
 // functions for metrics gathering
 const {getMetrics, setChildLength} = require('./opModules/metrics')
 const {findDevice} = require('./opModules/device')
+const {checkDeviceConsistency} = require('./opModules/deviceConsistency')
 const cors = require('cors')
 const port = 3000
 const deviceRoutes = require('./routes/deviceRoutes')
@@ -45,6 +46,7 @@ app.post('/validateSession', async (req, res) => {
 
 app.post('/', async (req, res) => {
     const {device, childLength, user} = req.body
+    console.log(`calling device: ${device.name}`);
     if (!device || !childLength) {
         console.log('[ Server - /getMetrics ] no device or childLength sent')
         return res.status(400).send({success: false})
@@ -96,11 +98,14 @@ app.post('/', async (req, res) => {
             if (resData.success) {
                 return res.status(200).send(resData)
             }
+        } else if (res.statusCode !== 500) {
+            console.log('[ Server - /getMetrics ] Device did not respond')
+            return res.status(404).send({success: false, reason: 'no_response'})
         }
         console.log(`[ Server - /getMetrics ] Error from remote device ${resData.reason}`)
         return res.status(500).send({success: false})
     } catch (e) {
-        console.log(`[ Server - /getMetrics ] Error gathering metrics: ${e.message}`)
+        console.log(`[ Server - /getMetrics ] Error gathering metrics: ${e}`)
         res.status(500).send({success: false})
     }
 })
@@ -116,6 +121,7 @@ app.listen(port, async () => {
     await getHostIp()
     //clean all expired sessions on start up
     cleanExpiredSessions()
-// run every hour to clean expired sessions
-    setInterval(cleanExpiredSessions, 60 * 60 * 1000); // every hour
+// run every hour to clean expired sessions and ghost devices
+    setInterval(cleanExpiredSessions, 60 * 60 * 1000);
+    setInterval(checkDeviceConsistency, 60 * 60 * 1000);
 })

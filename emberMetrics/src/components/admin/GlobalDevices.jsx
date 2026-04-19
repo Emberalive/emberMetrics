@@ -3,7 +3,7 @@ import YouSure from "../shared/YouSure.jsx";
 import * as rangeCheck from "range_check";
 import {nanoid} from "nanoid";
 
-export default function GlobalDevices({allDevices, user, handleNotification, deviceType, hostIp, setAllDevices, checkReservedDeviceProperties}) {
+export default function GlobalDevices({allDevices, user, setUser, handleNotification, deviceType, hostIp, setAllDevices, checkReservedDeviceProperties}) {
     const [isEditing, setIsEditing] = useState(false);
     const [deleteDevice, setDeleteDevice] = useState(false);
 
@@ -83,6 +83,13 @@ export default function GlobalDevices({allDevices, user, handleNotification, dev
             })
         })
         if (!response.ok) {
+            const updatedDevices = user.devices.filter(d => d.id !== deleteDevice.id)
+            setUser((prev) => {
+                return{
+                    ...prev,
+                    devices: updatedDevices
+                }
+            })
             handleNotification('error', `Failed to delete the device ${deleteDevice.name} globally`);
         } else {
             const updateDevices = allDevices.filter(device => device.id !== deleteDevice.id);
