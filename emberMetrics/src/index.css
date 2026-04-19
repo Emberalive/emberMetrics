@@ -629,6 +629,7 @@ section {
     background-color: var(--neutral);
     border-radius: var(--border-radius);
     overflow: hidden;
+    align-items: center;
 }
 
 .memory-bar {
@@ -667,6 +668,12 @@ section {
     }
     .memory-info__content-title {
         margin: 0;
+    }
+}
+
+@media (max-width: 500px) {
+    .memory-info-content__values {
+        max-width: 150px;
     }
 }
 
