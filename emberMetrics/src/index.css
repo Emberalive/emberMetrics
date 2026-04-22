@@ -157,7 +157,8 @@ option {
     font-weight: 700;
     padding: 0 5px;
     transition: background-color 0.3s ease-in-out;
-}
+    margin: 0px;
+}x
 
 @media (min-width: 600px) {
     .header-navigation__links:first-child {
