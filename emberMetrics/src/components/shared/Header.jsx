@@ -51,7 +51,7 @@ export default function Header (props) {
                         </div>}
                     </div>
                     <div className={"header-navigation"}>
-                        <a className={
+                        <p className={
                             localStorage.getItem('deviceType') === ""
                                 ? "header-navigation__links disabled-button"
                                 : props.activeView === "resources"
@@ -62,8 +62,8 @@ export default function Header (props) {
                             console.log("view set to Metrics")
                         }}>
                             Metrics
-                        </a>
-                        <a className={
+                        </p>
+                        <p className={
                             localStorage.getItem('deviceType') === ""
                                 ? "header-navigation__links disabled-button"
                                 : props.activeView === "settings"
@@ -74,8 +74,8 @@ export default function Header (props) {
                             console.log("view set to Settings")
                         }}>
                             Settings
-                        </a>
-                        <a className={
+                        </p>
+                        <p className={
                             localStorage.getItem('deviceType') === ""
                                 ? "header-navigation__links disabled-button"
                                 : props.activeView === "admin"
@@ -86,8 +86,8 @@ export default function Header (props) {
                             console.log("view set to Admin")
                         }}>
                             Administration
-                        </a>
-                        <a className={
+                        </p>
+                        <p className={
                             localStorage.getItem('deviceType') === ""
                                 ? "header-navigation__links disabled-button"
                                 : props.activeView === "devices"
@@ -98,7 +98,7 @@ export default function Header (props) {
                             console.log("view set to Devices")
                         }}>
                             Devices
-                        </a>
+                        </p>
                     </div>
             </header>
                 </>
