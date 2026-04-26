@@ -41,7 +41,7 @@ export default function Profile (props) {
                 props.handleNotification('notice', 'Your session has ran out, please refresh the page');
             }
             console.info('[ App.jsx - patchUser ] starting function')
-            const response = await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/users`, {
+            const response = await fetch(`https://metrics.emberalive.com/users`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
