@@ -1,0 +1,19 @@
+[
+  {
+    "username": "admin",
+    "password": "$2b$10$EHQi6dNMCxeiIo5VnuyWVO37XRwcuduFRFKvk3p.HJn6mi5DsJddS",
+    "email": "",
+    "bio": "",
+    "id": "jrG2rAwqUnemUVoWiA0Eo",
+    "role": "admin",
+    "active": true,
+    "devices": [
+      {
+        "name": "localhost",
+        "ip": "127.0.0.1",
+        "id": "DgxI77r32HDNeBfh0sK8B",
+        "isHost": true
+      }
+    ]
+  }
+]

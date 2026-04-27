@@ -2,3 +2,4 @@
 metrics-api/persistentData/devices.json
 metrics-api/persistentData/user.json
 metrics-api/persistentData/sessions.json
+node_modules/
