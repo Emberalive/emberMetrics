@@ -6,6 +6,12 @@ export default function Profile (props) {
     // Only used for admins
     const [isEditing, setEditing] = useState(false);
     const [editUser, setEditUser] = useState(props.user);
+    const [isChangingPassword, setIsChangingPassword] = useState(false);
+    const [passwordFields, setPasswordFields] = useState({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: '',
+    });
 
     useEffect(() => {
         setEditUser(props.user)
@@ -73,6 +79,43 @@ export default function Profile (props) {
             return {
                 success: false,
             }
+        }
+    }
+
+    async function patchPassword () {
+        if (passwordFields.newPassword !== passwordFields.confirmPassword) {
+            props.handleNotification('error', 'New passwords do not match');
+            return;
+        }
+        if (passwordFields.newPassword.length < 6) {
+            props.handleNotification('error', 'Password must be at least 6 characters');
+            return;
+        }
+        try {
+            const sessionId = localStorage.getItem('sessionId');
+            const response = await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/users/password`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-session-id': sessionId,
+                },
+                body: JSON.stringify({
+                    username: props.user.username,
+                    currentPassword: passwordFields.currentPassword,
+                    newPassword: passwordFields.newPassword,
+                })
+            });
+            if (response.ok) {
+                props.handleNotification('notice', 'Password updated successfully');
+                setIsChangingPassword(false);
+                setPasswordFields({ currentPassword: '', newPassword: '', confirmPassword: '' });
+            } else if (response.status === 401) {
+                props.handleNotification('error', 'Current password is incorrect');
+            } else {
+                props.handleNotification('error', 'Something went wrong, please try again');
+            }
+        } catch (e) {
+            props.handleNotification('error', 'Server error, sorry');
         }
     }
 
@@ -168,6 +211,51 @@ export default function Profile (props) {
                             </>
                         }
                     </div>
+                    <header className="section-header">
+                        <h1>Password</h1>
+                    </header>
+
+                    {isChangingPassword ? (
+                        <>
+                            <div className="profile-item__container">
+                                <label>Current Password</label>
+                                <input
+                                    type="password"
+                                    value={passwordFields.currentPassword}
+                                    onChange={(e) => setPasswordFields({ ...passwordFields, currentPassword: e.target.value })}
+                                />
+                            </div>
+                            <div className="profile-item__container">
+                                <label>New Password</label>
+                                <input
+                                    type="password"
+                                    value={passwordFields.newPassword}
+                                    onChange={(e) => setPasswordFields({ ...passwordFields, newPassword: e.target.value })}
+                                />
+                            </div>
+                            <div className="profile-item__container">
+                                <label>Confirm Password</label>
+                                <input
+                                    type="password"
+                                    value={passwordFields.confirmPassword}
+                                    onChange={(e) => setPasswordFields({ ...passwordFields, confirmPassword: e.target.value })}
+                                />
+                            </div>
+                            <div className="profile-button__container">
+                                <button className="general-button danger-button" onClick={() => {
+                                    setIsChangingPassword(false);
+                                    setPasswordFields({ currentPassword: '', newPassword: '', confirmPassword: '' });
+                                }}>Cancel</button>
+                                <button className="general-button success-button" onClick={patchPassword}>Save</button>
+                            </div>
+                        </>
+                    ) : (
+                        <div className="profile-button__container">
+                            <button className="general-button success-button" onClick={() => setIsChangingPassword(true)}>
+                                Change Password
+                            </button>
+                        </div>
+                    )}
                     <header className="section-header">
                         <h1>Allowed Devices</h1>
                     </header>

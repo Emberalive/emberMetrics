@@ -10,6 +10,56 @@ export default function UserManagement({users, allDevices, handleNotification, d
     const [selectedAddDevice, setSelectedAddDevice] = useState(false)
     const [selectedDeleteDevice, setSelectedDeleteDevice] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
+    const [isCreating, setIsCreating] = useState(false);
+    const [newUser, setNewUser] = useState({
+        username: '',
+        password: '',
+        email: '',
+        role: 'user',
+    });
+
+    async function createUser() {
+        if (!newUser.username || !newUser.password) {
+            handleNotification('error','Username and password are required');
+            return;
+        }
+        try {
+            const sessionId = localStorage.getItem('sessionId');
+            if (!sessionId) {
+                handleNotification('notice', 'Your session has run out, please refresh the page');
+                return;
+            }
+            const response = await fetch(`http://${deviceType === 'remote-access' ? hostIp : '127.0.0.1'}:3000/admin/createUser`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-session-id': sessionId,
+                },
+                body: JSON.stringify({
+                    admin: admin,
+                    newUser: newUser,
+                }),
+            });
+            if (response.ok) {
+                const resData = await response.json();
+                if (resData.success) {
+                    setUsers(prev => [...prev, resData.user]);
+                    handleNotification('notice', `User ${newUser.username} has been created`);
+                    setNewUser({ username: '', password: '', email: '', role: 'user' });
+                    setIsCreating(false);
+                    return;
+                }
+                if (resData.status === 409) {
+                    handleNotification('error','A user with that username already exists');
+                    return;
+                }
+            }
+            handleNotification('error','Something went wrong, please try again');
+        } catch (e) {
+            console.error('[Client - createUser] error:', e);
+            handleNotification('error', 'Server error, sorry');
+        }
+    }
 
     async function deactivateUser (account) {
         const sessionId = localStorage.getItem('sessionId');
@@ -273,6 +323,118 @@ export default function UserManagement({users, allDevices, handleNotification, d
             <header className={'section-header'}>
                 <h1>User Management</h1>
             </header>
+            <div className={'user-management__create'}>
+                <div className={'user-management__create-header'}>
+                    <h2>Register New User</h2>
+                    <button className={isCreating ? 'general-button danger-button' : 'general-button success-button'} onClick={() => {
+                        setIsCreating(prev => !prev);
+                        setNewUser({ username: '', password: '', email: '', role: 'user' });
+                    }}>
+                        {isCreating ? 'Cancel' : '+ New User'}
+                    </button>
+                </div>
+                {isCreating && (
+                    <form className={'device-management__form'} onSubmit={async (e) => {
+                        e.preventDefault();
+                        await createUser();
+                    }}>
+                        <div className={'device-management__form-element'}>
+                            <label>Username</label>
+                            <input
+                                type={'text'}
+                                placeholder={'Username'}
+                                value={newUser.username}
+                                onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
+                            />
+                        </div>
+                        <div className={'device-management__form-element'}>
+                            <label>Password</label>
+                            <input
+                                type={'password'}
+                                placeholder={'Password'}
+                                value={newUser.password}
+                                onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                            />
+                        </div>
+                        <div className={'device-management__form-element'}>
+                            <label>Email</label>
+                            <input
+                                type={'text'}
+                                placeholder={'Email (optional)'}
+                                value={newUser.email}
+                                onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                            />
+                        </div>
+                        <div className={'device-management__form-element'}>
+                            <label>Role</label>
+                            <Select options={[{value: 'user', label: 'User'}, {value: 'admin', label: 'Admin'}]} styles={{
+                                container: (base, state) => ({
+                                    ...base,
+                                    width: '90%',
+                                    outline: 'none'
+                                }),
+                                singleValue: (base) => ({
+                                    ...base,
+                                    color: 'var(--accent)',
+                                    fontFamily: "'Inter', sans-serif"
+                                }),
+                                dropdownIndicator: (base) => ({
+                                    ...base,
+                                    '&:hover': {
+                                        color: 'var(--secondary)',
+                                    }
+                                }),
+                                control: (base, state) => ({
+                                    ...base,
+                                    backgroundColor: 'var(--neutral)',
+                                    outline: 'none',
+                                    boxShadow: state.isFocused ? '0 0 0 1px var(--secondary)' : 'none',
+                                    border: state.isFocused ? '1px solid var(--secondary)' : '1px solid var(--accent)',
+                                    '&:hover': {
+                                        border: '1px solid var(--secondary)',
+                                    }
+                                }),
+                                option: (base, state) => ({
+                                    ...base,
+                                    backgroundColor: state.isFocused ? 'var(--secondary-75)' : 'var(--neutral)',
+                                    color: 'var(--accent)',
+                                }),
+                                menu: (base) => ({
+                                    ...base,
+                                    backgroundColor: 'var(--neutral)',
+                                    borderRadius: '0 0 10px 10px',
+                                    padding: '5px',
+                                    borderBottom: '1px solid var(--tertiary)',
+                                })
+                            }} onChange={(selectedOption) => {
+                                setNewUser({...newUser, role: selectedOption.value})
+                            }}     noOptionsMessage={() => 'No more devices to give access'}/>
+                            {/*<select*/}
+                            {/*    value={newUser.role}*/}
+                            {/*    onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}*/}
+                            {/*    style={{*/}
+                            {/*        backgroundColor: 'var(--neutral)',*/}
+                            {/*        color: 'var(--accent)',*/}
+                            {/*        border: '1px solid var(--accent)',*/}
+                            {/*        borderRadius: 'var(--border-radius)',*/}
+                            {/*        padding: '4px 8px',*/}
+                            {/*        fontFamily: "'Inter', sans-serif",*/}
+                            {/*    }}*/}
+                            {/*>*/}
+                            {/*    <option value={'user'}>User</option>*/}
+                            {/*    <option value={'admin'}>Admin</option>*/}
+                            {/*</select>*/}
+                        </div>
+                        <button
+                            className={'general-button success-button'}
+                            style={{ fontSize: '20px', marginTop: '10px' }}
+                            type={'submit'}
+                        >
+                            Create User
+                        </button>
+                    </form>
+                )}
+            </div>
             <div className={'users-container__item'}>
                 <div className={'user-container__header'}>
                     <p>Name</p>

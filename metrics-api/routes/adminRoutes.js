@@ -2,12 +2,29 @@ const express = require('express')
 const router = express.Router()
 const {checkDeviceStructure } = require('../opModules/utils')
 const {findDevice, deleteDevice, addDevice} = require("../opModules/device");
-const {writeUser, readUsers, updateUser} = require("../opModules/user");
+const {writeUser, readUsers, updateUser, createUser} = require("../opModules/user");
 const {authenticate} = require("../opModules/sessionMiddleware");
 const {deactivateAccount, checkAdmin} = require("../opModules/admin");
 
 router.use(authenticate);
 router.use(checkAdmin);
+
+router.post("/createUser", async (req, res) => {
+    const {password, email, role, username} = req.body.newUser;
+    if (!password || !username || !role) {
+        return res.status(400).send({
+            success: false,
+        });
+    }
+    const response = await createUser(username, password, role, email);
+    if (response.reason) {
+        res.status(409).send({success: false});
+    } else if (response.success) {
+        res.status(200).send(response);
+    } else {
+        res.status(500).send({success: false});
+    }
+})
 
 async function deviceAdminHandler (editUser, device, admin, failLog, res) {
     try {
