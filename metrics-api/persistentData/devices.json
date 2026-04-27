@@ -4,15 +4,5 @@
     "ip": "127.0.0.1",
     "id": "DgxI77r32HDNeBfh0sK8B",
     "isHost": true
-  },
-  {
-    "name": "EmberLocal",
-    "ip": "192.168.0.208",
-    "id": "EIgsAmY-1iT8rd4wzJvih"
-  },
-  {
-    "name": "My Server",
-    "ip": "203.0.113.0",
-    "id": "i82uBb4k1ugv8GUzmzqtU"
   }
 ]

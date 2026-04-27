@@ -2,61 +2,12 @@
   {
     "username": "admin",
     "password": "$2b$10$EHQi6dNMCxeiIo5VnuyWVO37XRwcuduFRFKvk3p.HJn6mi5DsJddS",
-    "email": "email",
+    "email": "",
     "bio": "",
     "id": "jrG2rAwqUnemUVoWiA0Eo",
     "role": "admin",
     "active": true,
     "devices": [
-      {
-        "name": "localhost",
-        "ip": "127.0.0.1",
-        "id": "DgxI77r32HDNeBfh0sK8B",
-        "isHost": true
-      },
-      {
-        "name": "My Server",
-        "ip": "203.0.113.0",
-        "id": "i82uBb4k1ugv8GUzmzqtU"
-      }
-    ]
-  },
-  {
-    "username": "Ember",
-    "id": "HXm1Ynv_kjER73gM4Ftqr",
-    "password": "$2b$10$vZ1Q2I1D83zOf9nMgbyk7eFJXdCXZTlhuShtU9TntftS1kDYvXnOS",
-    "email": "email",
-    "role": "admin",
-    "bio": "This is my bio and i need to add some large text to see what is happening, when there is a lot of text, I need some more text, how about some more",
-    "active": true,
-    "devices": [
-      {
-        "name": "EmberLocal",
-        "ip": "192.168.0.208",
-        "id": "EIgsAmY-1iT8rd4wzJvih"
-      },
-      {
-        "name": "localhost",
-        "ip": "127.0.0.1",
-        "id": "DgxI77r32HDNeBfh0sK8B",
-        "isHost": true
-      }
-    ]
-  },
-  {
-    "username": "user",
-    "password": "$2b$10$LM2KAepFCn09TWyyC69RReKgg4k7nVA3LMsWezX5paNIdzQPz83pO",
-    "email": "",
-    "bio": "",
-    "role": "user",
-    "id": "331Z_FFxLU7bPL2j5QxNT",
-    "active": true,
-    "devices": [
-      {
-        "name": "EmberLocal",
-        "ip": "192.168.0.208",
-        "id": "EIgsAmY-1iT8rd4wzJvih"
-      },
       {
         "name": "localhost",
         "ip": "127.0.0.1",
