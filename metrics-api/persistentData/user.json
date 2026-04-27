@@ -2,7 +2,7 @@
   {
     "username": "admin",
     "password": "$2b$10$EHQi6dNMCxeiIo5VnuyWVO37XRwcuduFRFKvk3p.HJn6mi5DsJddS",
-    "email": "",
+    "email": "email",
     "bio": "",
     "id": "jrG2rAwqUnemUVoWiA0Eo",
     "role": "admin",
@@ -13,6 +13,11 @@
         "ip": "127.0.0.1",
         "id": "DgxI77r32HDNeBfh0sK8B",
         "isHost": true
+      },
+      {
+        "name": "My Server",
+        "ip": "203.0.113.0",
+        "id": "i82uBb4k1ugv8GUzmzqtU"
       }
     ]
   },
@@ -35,11 +40,6 @@
         "ip": "127.0.0.1",
         "id": "DgxI77r32HDNeBfh0sK8B",
         "isHost": true
-      },
-      {
-        "name": "LaptopLocal",
-        "ip": "192.168.0.184",
-        "id": "kOiCMd3SEazo1ejIhjnjO"
       }
     ]
   },
