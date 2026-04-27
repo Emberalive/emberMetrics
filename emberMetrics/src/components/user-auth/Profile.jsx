@@ -93,7 +93,7 @@ export default function Profile (props) {
         }
         try {
             const sessionId = localStorage.getItem('sessionId');
-            const response = await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/users/password`, {
+            const response = await fetch(`https://metrics-api.emberalive.com/users/password`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

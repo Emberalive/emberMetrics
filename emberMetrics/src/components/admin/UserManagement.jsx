@@ -29,7 +29,7 @@ export default function UserManagement({users, allDevices, handleNotification, d
                 handleNotification('notice', 'Your session has run out, please refresh the page');
                 return;
             }
-            const response = await fetch(`http://${deviceType === 'remote-access' ? hostIp : '127.0.0.1'}:3000/admin/createUser`, {
+            const response = await fetch(`https://metrics-api.emberalive.com/admin/createUser`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
