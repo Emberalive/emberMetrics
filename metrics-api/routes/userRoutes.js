@@ -4,6 +4,8 @@ const {checkDeviceStructure} = require("../opModules/utils");
 const {findDevice} = require("../opModules/device");
 const {createSession} = require("../opModules/sessionUtils");
 const { authenticate } = require("../opModules/sessionMiddleware");
+const bcrypt = require('bcrypt')
+
 const router = express.Router()
 
 
@@ -122,7 +124,36 @@ router.patch('/', async (req, res) => {
             })
         }
     }
-
 })
+
+router.patch('/password', authenticate, async (req, res) => {
+    console.log('[Server - PATCH /users/password] starting route access')
+    const { username, currentPassword, newPassword } = req.body;
+    if (!username || !currentPassword || !newPassword) {
+        console.log('[Server - PATCH /users] incorrect parameters sent')
+        return res.status(400).send({success:false})
+    }
+    const users = await readUsers();
+    const user = users.find(u => u.username === username);
+    if (!user) {
+        console.log('[Server - PATCH /users/password] user not found')
+        return res.status(404).json({success: false});
+    }
+
+    const match = await bcrypt.compare(currentPassword, user.password);
+    if (!match) {
+        console.log('[Server - PATCH /users/password] passwords did not match')
+        return res.status(401).json({success: false, message: 'Incorrect password'});
+    }
+    user.password = await bcrypt.hash(newPassword, 10);
+    const response = await writeUser(users);
+    if (response.success) {
+        console.log('[Server - PATCH /users/password] users password updated successfully')
+        res.status(200).send({ success: true });
+    } else {
+        console.log('[Server - PATCH /users/password] passwords was not updated')
+        res.status(500).send({ success: false });
+    }
+});
 
 module.exports = router

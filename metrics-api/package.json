@@ -17,6 +17,7 @@
     "network": "^0.7.0",
     "node-nvidia-smi": "^1.0.0",
     "nodemon": "^3.1.10",
-    "systeminformation": "^5.27.8"
+    "systeminformation": "^5.27.8",
+    "uuid": "^14.0.0"
   }
 }
