@@ -16,12 +16,12 @@ async function checkDevicePerm (userID, deviceID) {
     return allowed !== -1;
 }
 
-async function createUser(username, password, role) {
+async function createUser(username, password, role, email) {
     try {
         const currentUsers = await readUsers()
         console.log('[Server - createUser] Current Users', currentUsers)
         const exist = await currentUsers.find(e => e.username === username)
-        if (!password || !username) {
+        if (!password || !username || !role) {
             console.error('[Server - createUser] Password and username required!');
             return {
                 success: false,
@@ -36,7 +36,7 @@ async function createUser(username, password, role) {
             const response = await hashPassword(password, saltRounds);
             if (response.success) {
                 console.log('[Server - createUser] Successfully created!]')
-                return await addUser({username: username, password: response.hash, role, id: nanoid(), details: {bio: '', email: ''}, active: true, devices: [{"name":"localhost","ip":"127.0.0.1","id":"DgxI77r32HDNeBfh0sK8B"}]});
+                return await addUser({username: username, password: response.hash, role, id: nanoid(), details: {bio: '', email: email ? email : ''}, active: true, devices: [{"name":"localhost","ip":"127.0.0.1","id":"DgxI77r32HDNeBfh0sK8B"}]});
             } else {
                 console.error('[Server - createUser] Error hashing password')
                 return {
@@ -218,7 +218,7 @@ async function addUser(user) {
             console.log('[Server - addUser] updated users: ', JSON.stringify(userData));
             return {
                 success: await writeUser(userData),
-                user: userData
+                user: user
             }
         }
         return {
