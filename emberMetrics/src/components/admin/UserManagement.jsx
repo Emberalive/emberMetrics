@@ -409,21 +409,6 @@ export default function UserManagement({users, allDevices, handleNotification, d
                             }} onChange={(selectedOption) => {
                                 setNewUser({...newUser, role: selectedOption.value})
                             }}     noOptionsMessage={() => 'No more devices to give access'}/>
-                            {/*<select*/}
-                            {/*    value={newUser.role}*/}
-                            {/*    onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}*/}
-                            {/*    style={{*/}
-                            {/*        backgroundColor: 'var(--neutral)',*/}
-                            {/*        color: 'var(--accent)',*/}
-                            {/*        border: '1px solid var(--accent)',*/}
-                            {/*        borderRadius: 'var(--border-radius)',*/}
-                            {/*        padding: '4px 8px',*/}
-                            {/*        fontFamily: "'Inter', sans-serif",*/}
-                            {/*    }}*/}
-                            {/*>*/}
-                            {/*    <option value={'user'}>User</option>*/}
-                            {/*    <option value={'admin'}>Admin</option>*/}
-                            {/*</select>*/}
                         </div>
                         <button
                             className={'general-button success-button'}
