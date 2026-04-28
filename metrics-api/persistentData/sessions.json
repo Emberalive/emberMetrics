@@ -1,3 +1,10 @@
 {
-  "sessions": []
+  "sessions": [
+    {
+      "sessionId": "68eb0966-cd08-46a7-9def-a4f8b31ed6e4",
+      "userId": "jrG2rAwqUnemUVoWiA0Eo",
+      "createdAt": "2026-04-27T19:23:14.933Z",
+      "expiresAt": "2026-04-28T19:23:14.933Z"
+    }
+  ]
 }
