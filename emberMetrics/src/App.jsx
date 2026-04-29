@@ -10,22 +10,22 @@ import Profile from "./components/user-auth/Profile.jsx";
 import HoveringButtons from "./components/metrics/HoveringButtons.jsx";
 import Metrics from "./components/metrics/Metrics.jsx";
 import Admin from "./components/admin/Admin.jsx"
-import Sparkr from "./assets/SVG 2.1 | Original Sparkr.svg";
-import Ocean from "./assets/SVG 2.1 | Ocean Blues.svg";
-import Forest from "./assets/SVG 2.1 | Forest Green.svg";
-import Royal from "./assets/SVG 2.1 | Royal Purple.svg";
-import Berry from "./assets/SVG 2.1 | Berry red.svg";
-import Magenta from "./assets/SVG 2.1 | Sunset Magenta.svg";
-import Sunrise from "./assets/SVG 2.1 | orange sunrise.svg";
-import Teal from "./assets/SVG 2.1 | Teal Lagoon.svg";
-import Lavander from "./assets/SVG 2.1 | Lavander Mist.svg";
-import Minty from "./assets/SVG 2.1 | Minty Fresh.svg";
-import Sapphire from "./assets/SVG 2.1 | Midnight Sapphire.svg";
-import Crimson from "./assets/SVG 2.1 | Crimson Ember.svg";
-import Arctic from "./assets/SVG 2.1 | Arctic Cyan.svg";
-import Copper from "./assets/SVG 2.1 | Copper Flame.svg";
-import Emerald from "./assets/SVG 2.1 | Emerald Depths.svg";
-import Violet from "./assets/SVG 2.1 | Violet Storm.svg";
+import Sparkr from "./assets/SVG 2.1 - Original Sparkr.svg";
+import Ocean from "./assets/SVG 2.1 - Ocean Blues.svg";
+import Forest from "./assets/SVG 2.1 - Forest Green.svg";
+import Royal from "./assets/SVG 2.1 - Royal Purple.svg";
+import Berry from "./assets/SVG 2.1 - Berry red.svg";
+import Magenta from "./assets/SVG 2.1 - Sunset Magenta.svg";
+import Sunrise from "./assets/SVG 2.1 - orange sunrise.svg";
+import Teal from "./assets/SVG 2.1 - Teal Lagoon.svg";
+import Lavander from "./assets/SVG 2.1 - Lavander Mist.svg";
+import Minty from "./assets/SVG 2.1 - Minty Fresh.svg";
+import Sapphire from "./assets/SVG 2.1 - Midnight Sapphire.svg";
+import Crimson from "./assets/SVG 2.1 - Crimson Ember.svg";
+import Arctic from "./assets/SVG 2.1 - Arctic Cyan.svg";
+import Copper from "./assets/SVG 2.1 - Copper Flame.svg";
+import Emerald from "./assets/SVG 2.1 - Emerald Depths.svg";
+import Violet from "./assets/SVG 2.1 - Violet Storm.svg";
 import {nanoid} from "nanoid";
 
 export default function App() {
