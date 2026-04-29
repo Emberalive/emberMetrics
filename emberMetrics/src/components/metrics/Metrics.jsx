@@ -24,7 +24,7 @@ export default function Metrics({metrics, isGraph, timeMetrics, metricInterval, 
                                     {metrics.deviceData && <DeviceData metrics={metrics}
                                                  metricInterval={metricInterval}
                                                  isDarkMode={isDarkMode}/>}
-                                    {metrics.gpuData && <Graphics metrics={metrics}
+                                    {(metrics.gpuData && metrics.gpuData.vendor.includes('AMD')) && <Graphics metrics={metrics}
                                                timeMetrics={timeMetrics}
                                                isGraph={isGraph}
                                                metricInterval={metricInterval}/>}
@@ -35,7 +35,7 @@ export default function Metrics({metrics, isGraph, timeMetrics, metricInterval, 
                                                      handleNotification={handleNotification}
                                                      childProcessFilter={childProcessFilter}/>}
                                     {metrics.disks && <DiskData metrics={metrics}/>}
-                                    {(metrics.gpuData || metrics.gpuData.vendor.includes('NVIDIA')) && <Graphics metrics={metrics}
+                                    {(metrics.gpuData && metrics.gpuData.vendor.includes('AMD')) && <Graphics metrics={metrics}
                                                timeMetrics={timeMetrics}
                                                isGraph={isGraph}
                                                metricInterval={metricInterval}/>}
