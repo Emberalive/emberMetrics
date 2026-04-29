@@ -20,16 +20,17 @@ async function monitorGraphics() {
         if (vendor.includes('AMD')) {
             return getAmdGpuData()
         } else {
-            return new Promise((resolve, reject) => {
-                nSmi(function (err, data) {
-                    if (err) {
-                        console.log(err)
-                        return reject(err);
-                    }
-                    resolve(data)
-                    console.log(`NVIDIA: ${JSON.stringify(data, null, 2)}`);
-                })
-            })
+            // return new Promise((resolve, reject) => {
+            //     nSmi(function (err, data) {
+            //         if (err) {
+            //             console.log(err)
+            //             return reject(err);
+            //         }
+            //         resolve(data)
+            //         console.log(`NVIDIA: ${JSON.stringify(data, null, 2)}`);
+            //     })
+            // })
+            return null;
         }
     } catch (err) {
         console.error(`There was an issue monitoring the gpu:\n ${err.message}`)
