@@ -16,29 +16,29 @@ export default function Metrics({metrics, isGraph, timeMetrics, metricInterval, 
                         <div className={"left-column"}>
                             {isGraph?
                                 <>
-                                    <NetworkData metrics={metrics}
-                                                 isGraph={isGraph}
-                                                 timeMetrics={timeMetrics}
+                                    {metrics.interfaces && <NetworkData metrics={metrics}
+                                                  isGraph={isGraph}
+                                                  timeMetrics={timeMetrics}
+                                                  metricInterval={metricInterval}
+                                                  isDarkMode={isDarkMode}/>}
+                                    {metrics.deviceData && <DeviceData metrics={metrics}
                                                  metricInterval={metricInterval}
-                                                 isDarkMode={isDarkMode}/>
-                                    <DeviceData metrics={metrics}
-                                                metricInterval={metricInterval}
-                                                isDarkMode={isDarkMode}/>
-                                    <Graphics metrics={metrics}
-                                              timeMetrics={timeMetrics}
-                                              isGraph={isGraph}
-                                              metricInterval={metricInterval}/>
+                                                 isDarkMode={isDarkMode}/>}
+                                    {metrics.gpuData && <Graphics metrics={metrics}
+                                               timeMetrics={timeMetrics}
+                                               isGraph={isGraph}
+                                               metricInterval={metricInterval}/>}
                                 </>:
                                 <>
-                                    <DeviceData metrics={metrics}/>
-                                    <ChildProcesses metrics={metrics}
-                                                    handleNotification={handleNotification}
-                                                    childProcessFilter={childProcessFilter}/>
-                                    <DiskData metrics={metrics}/>
-                                    <Graphics metrics={metrics}
-                                              timeMetrics={timeMetrics}
-                                              isGraph={isGraph}
-                                              metricInterval={metricInterval}/>
+                                    {metrics.deviceData && <DeviceData metrics={metrics}/>}
+                                    {metrics.childProcesses && <ChildProcesses metrics={metrics}
+                                                     handleNotification={handleNotification}
+                                                     childProcessFilter={childProcessFilter}/>}
+                                    {metrics.disks && <DiskData metrics={metrics}/>}
+                                    {metrics.gpuData && <Graphics metrics={metrics}
+                                               timeMetrics={timeMetrics}
+                                               isGraph={isGraph}
+                                               metricInterval={metricInterval}/>}
                                 </>
                             }
                         </div>
@@ -46,39 +46,39 @@ export default function Metrics({metrics, isGraph, timeMetrics, metricInterval, 
                         <div className={"right-column"}>
                             {isGraph?
                                 <>
-                                    <MemoryData metrics={metrics}
-                                                viewPort={viewPort}
-                                                isGraph={isGraph}
-                                                timeMetrics={timeMetrics}
-                                                metricInterval={metricInterval}
-                                                isDarkMode={isDarkMode}
-                                    />
-                                    <CpuData metrics={metrics}
-                                             isGraph={isGraph}
-                                             timeMetrics={timeMetrics}
-                                             themes={themes}
-                                             randomColour={randomColour}
-                                             metricInterval={metricInterval}
-                                             isDarkMode={isDarkMode}/>
-                                    <ChildProcesses metrics={metrics}
-                                                    isDarkMode={isDarkMode}
-                                                    childProcessFilter={childProcessFilter}/>
-                                    <DiskData metrics={metrics}
+                                    {metrics.memoryUsage && <MemoryData metrics={metrics}
+                                                 viewPort={viewPort}
+                                                 isGraph={isGraph}
+                                                 timeMetrics={timeMetrics}
+                                                 metricInterval={metricInterval}
+                                                 isDarkMode={isDarkMode}
+                                    />}
+                                    {metrics.cpuUsage && <CpuData metrics={metrics}
                                               isGraph={isGraph}
                                               timeMetrics={timeMetrics}
+                                              themes={themes}
+                                              randomColour={randomColour}
                                               metricInterval={metricInterval}
-                                              isDarkMode={isDarkMode}/>
+                                              isDarkMode={isDarkMode}/>}
+                                    {metrics.childProcesses && <ChildProcesses metrics={metrics}
+                                                     isDarkMode={isDarkMode}
+                                                     childProcessFilter={childProcessFilter}/>}
+                                    {metrics.disks && <DiskData metrics={metrics}
+                                               isGraph={isGraph}
+                                               timeMetrics={timeMetrics}
+                                               metricInterval={metricInterval}
+                                               isDarkMode={isDarkMode}/>}
                                 </>:
                                 <>
-                                    <CpuData metrics={metrics} themes={themes}/>
-                                    <MemoryData metrics={metrics}
-                                                viewPort={viewPort}
-                                                isGraph={isGraph}
-                                                timeMetrics={timeMetrics}
-                                    />
-                                    <NetworkData metrics={metrics}
+                                    {metrics.cpuUsage && <CpuData metrics={metrics} themes={themes}/>}
+                                    {metrics.memoryUsage && <MemoryData metrics={metrics}
+                                                 viewPort={viewPort}
                                                  isGraph={isGraph}
-                                                 timeMetrics={timeMetrics}/>
+                                                 timeMetrics={timeMetrics}
+                                    />}
+                                    {metrics.interfaces && <NetworkData metrics={metrics}
+                                                  isGraph={isGraph}
+                                                  timeMetrics={timeMetrics}/>}
                                 </>
                             }
                         </div>
