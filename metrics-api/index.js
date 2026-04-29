@@ -46,7 +46,6 @@ app.post('/validateSession', async (req, res) => {
 
 app.post('/', async (req, res) => {
     const {device, childLength, user} = req.body
-    console.log(`calling device: ${device.name}`);
     if (!device || !childLength) {
         console.log('[ Server - /getMetrics ] no device or childLength sent')
         return res.status(400).send({success: false})

@@ -1495,7 +1495,7 @@ section {
 
 .network-interface__name {
     font-size: var(--font-size);
-    color: var(--tertiary);
+    color: var(--secondary);
     font-weight: 700;
 }
 
@@ -1527,7 +1527,7 @@ section {
 }
 
 .network-interface__item > label {
-    color: var(--secondary);
+    color: var(--tertiary);
     font-size: var(--font-size);
 }
 
@@ -1684,10 +1684,14 @@ section {
 .graphics-entry > label {
     padding-right: var(--element-padding);
     font-size: var(--font-size);
-    color: var(--secondary);
+    color: var(--tertiary);
     font-weight: 700;
     flex-shrink: 1;
     min-width: 0;
+}
+
+.graphics-name > label {
+    color: var(--secondary);
 }
 
 .graphics-entry > p {

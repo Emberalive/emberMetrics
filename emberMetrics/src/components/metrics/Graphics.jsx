@@ -6,7 +6,8 @@ import {chartsGridClasses} from "@mui/x-charts/ChartsGrid";
 
 export default function Graphics({metrics, timeMetrics, isGraph, metricInterval}) {
     const gpuMetrics = metrics.gpuData
-    console.log(JSON.stringify(gpuMetrics.util, null, 2))
+    const gpuName = gpuMetrics.name
+    const gpuName_short = gpuName.length > 25 ? gpuName.slice(0, 25).trimEnd() + '…' : gpuName;
 
     if (!gpuMetrics) return null
     const [utilGraphData, setUtilGraphData] = useState([]);
@@ -208,6 +209,10 @@ export default function Graphics({metrics, timeMetrics, isGraph, metricInterval}
             </header>
             <div className="graphics-static-data">
                 <div className="graphic">
+                    <div className={'graphics-entry graphics-name'}>
+                        <label>Name</label>
+                        <p title={gpuName}>{gpuName_short ? gpuName_short : gpuName}</p>
+                    </div>
                     <div className={'graphics-entry'}>
                         <label>Fan Speed</label>
                         <p>{gpuMetrics.fanSpeed}</p>
