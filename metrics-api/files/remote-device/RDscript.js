@@ -2,43 +2,46 @@ const os = require('os')
 const si = require('systeminformation')
 const express = require('express')
 const app = express()
-
 const cors = require('cors')
+const {getDiskSize} = require("../../opModules/utils");
+const {getAmdGpuData} = require("../../opModules/gpu");
+const nSmi = require("node-nvidia-smi");
+
+let isPolling = false;
+let pollingTimeOut
 
 let metrics = {}
-let childData = []
+let childLength = 0
 let deviceData
 let oldCpus = os.cpus()
-//getting Device information
+
 module.exports = metrics
 
 async function monitorGraphics() {
     try {
         const data = await si.graphics();
+        const vendor = data.controllers[0]?.vendor;
+        const model = data.controllers[0]?.model;
+        const name = model.length > 25 ? model.slice(0, 25).trimEnd() + '…' : model;
 
-        let gpus = []
-
-        data.controllers.forEach((gpu, index) => {
-            const gpuData = {
-                model: gpu.model,
-                memory: {
-                    used: gpu.memoryUsed !== undefined ? gpu.memoryUsed : 'N/A',
-                    total: gpu.memoryTotal !== undefined ? gpu.memoryTotal : 'N/A',
-                    free: gpu.memoryFree !== undefined ? gpu.memoryFree : 'N/A',
-                    utilization: gpu.utilizationMemory !== undefined ? gpu.utilizationMemory : 'N/A',
-                },
-                utilization: gpu.utilizationGpu !== undefined ? gpu.utilizationGpu : 'N/A',
-                temp: gpu.temperatureGpu !== undefined ? gpu.temperatureGpu : 'N/A',
-                power: gpu.powerDraw !== undefined ? gpu.powerDraw : 'N/A',
-                clocks: {
-                    core: gpu.clockCore !== undefined ? gpu.clockCore : 'N/A',
-                    memory: gpu.clockMemory !== undefined ? gpu.clockMemory : 'N/A',
-                }
-            }
-            gpus.push(gpuData)
-        })
-        return gpus
-
+        if (vendor.includes('AMD')) {
+            const gpuData = await getAmdGpuData()
+            gpuData.name = model
+            return gpuData;
+        } else {
+            // NVIDIA support commented out as in host script
+            // return new Promise((resolve, reject) => {
+            //     nSmi(function (err, data) {
+            //         if (err) {
+            //             console.log(err)
+            //             return reject(err);
+            //         }
+            //         resolve(data)
+            //         console.log(`NVIDIA: ${JSON.stringify(data, null, 2)}`);
+            //     })
+            // })
+            return null;
+        }
     } catch (err) {
         console.error(`There was an issue monitoring the gpu:\n ${err.message}`)
     }
@@ -62,6 +65,12 @@ async function getNetworkInterfaces () {
         return data.map(interfaceObject => ({
             name: interfaceObject.iface,
             default: interfaceObject.default,
+            mac: interfaceObject.mac,
+            type: interfaceObject.type,
+            addresses: {
+                ip4: interfaceObject.ip4,
+                ip6: interfaceObject.ip6,
+            },
         }))
     } catch (e) {
         console.error(`There was an error getting the interfaces\n ${e.message}`)
@@ -72,18 +81,22 @@ async function getInterfaceData () {
     try {
         const interfaces = await getNetworkInterfaces()
 
-        return await Promise.all(
+        return (await Promise.all(
             interfaces.map(async interfaceObject => {
                 const [stats] = await si.networkStats(interfaceObject.name)
                 return {
                     name: interfaceObject.name,
+                    default: interfaceObject.default,
+                    mac: interfaceObject.mac,
+                    type: interfaceObject.type,
+                    addresses: interfaceObject.addresses,
                     data: {
                         transmitted: stats.tx_sec ? stats.tx_sec.toFixed(2) : '0.00',
-                        received: stats.rx_sec ? stats.rx_sec.toFixed(2): '0.00',
+                        received: stats.rx_sec ? stats.rx_sec.toFixed(2) : '0.00',
                     }
                 }
             })
-        )
+        )).reverse()
     } catch (e) {
         console.error('Error fetching network stats:', e);
     }
@@ -94,31 +107,31 @@ async function getChildProcesses () {
         const {list} = (await si.processes())
         const childProcesses = list.map(process => {
             return {
-                pid: process.pid,
+                pid: process.pid ? process.pid : 'unknown',
                 name: process.name,
                 cpu: process.cpu,
                 memory: process.mem,
                 user: process.user
             }
         })
-        //this sorts the processes based on cpu usage
-        childProcesses.sort((a, b) => b.cpu - a.cpu);
+        childProcesses.sort((a, b) => b.cpu - a.cpu)
         if (childProcesses.length > 0) {
-            childData = childProcesses.splice(0, 10)
+            if (childLength === 0) {
+                return childProcesses.splice(0, 10)
+            } else {
+                if (typeof childLength === 'number') {
+                    return childProcesses.splice(0, childLength)
+                } else {
+                    return childProcesses.splice(0, 10)
+                }
+            }
+        } else {
+            return childProcesses.sort((a, b) => b.cpu - a.cpu);
         }
     } catch (e) {
         console.error(`There was an issue monitoring the child processes:\n ${e.message}`)
     }
 }
-
-//make child processes gathered every minute, as there is a lot of data to gather.
-;(async () => {
-    await getChildProcesses()
-
-    setInterval(() => {
-        getChildProcesses().catch(console.error)
-    }, 60000)
-})().catch(console.error)
 
 async function getCpuTemperature() {
     try {
@@ -148,8 +161,8 @@ async function getMemory() {
         const memoryAvailable = await (os.freemem() / os.totalmem()) * 100
         const memoryUsed = 100 - memoryAvailable
         return {
-            available: memoryAvailable.toFixed(2),
-            usage: memoryUsed.toFixed(2),
+            available: memoryAvailable ? memoryAvailable.toFixed(2) : 'unknown',
+            usage: memoryUsed ? memoryUsed.toFixed(2) : 'unknown',
         }
     } catch (e) {
         console.error(`There was an issue monitoring the memory:\n ${e.message}`)
@@ -158,8 +171,6 @@ async function getMemory() {
 
 async function getCpu () {
     try {
-        // processing cpu data initial
-
         const newCpus = os.cpus()
         const cpuUsagePercentage = []
 
@@ -177,7 +188,6 @@ async function getCpu () {
             const usage = total > 0
                 ? ((total - deltaIdle) / total) * 100
                 : 0;
-
 
             cpuUsagePercentage.push({
                 usage: usage.toFixed(2),
@@ -204,67 +214,90 @@ async function getDiskInfo () {
         const disks = await si.diskLayout()
         const diskList = disks.map((disk) => {
             return {
-                name: disk.name,
-                type: disk.type,
-                vendor: disk.vendor,
-                device: disk.device,
-                size: (disk.size / (1024 ** 3)).toFixed(2).toString().length > 6 ? (disk.size / (1024 ** 4)).toFixed(2).toString() + 'TB': (disk.size / (1024 ** 3)).toFixed(2).toString() + 'GB',
-                interfaceType: disk.interfaceType,
+                name: disk.name ? disk.name : 'unknown',
+                type: disk.type ? disk.type : 'unknown',
+                vendor: disk.vendor ? disk.vendor : 'unknown',
+                device: disk.device ? disk.device : 'unknown',
+                size: getDiskSize(disk.size) ? getDiskSize(disk.size) : 'unknown',
+                interfaceType: disk.interfaceType ? disk.interfaceType : 'unknown',
             }
         })
 
         const diskUsage = await si.disksIO()
-        console.log('diskUsage', diskUsage)
+        const stats = await si.fsStats();
 
-        return diskList
+        return {
+            totalDiskUsage: {
+                rIO: diskUsage.rIO,
+                wIO: diskUsage.wIO,
+                rIO_sec: diskUsage.rIO_sec ? diskUsage.rIO_sec.toFixed(2) : 0.00,
+                wIO_sec: diskUsage.wIO_sec ? diskUsage.wIO_sec.toFixed(2) : 0.00,
+                rx_sec: stats.rx_sec,
+                wx_sec: stats.wx_sec,
+            },
+            disks: diskList,
+        }
     } catch (e) {
         console.error(`There was an issue monitoring the disk:\n ${e.message}`)
     }
 }
 
-//constantly updates metrics
-const interval = setInterval(async () => {
-    try {
-        metrics = {
-            hostName: os.hostname(),
-            deviceData: deviceData,
-            memoryUsage: await getMemory(),
-            cpuUsage: await getCpu(),
-            gpuData: await monitorGraphics(),
-            childProcesses: childData,
-            interfaces: await getInterfaceData(),
-            disks: await getDiskInfo()
+// Changed to match host's conditional gathering approach
+setInterval(async () => {
+    if (isPolling) {
+        console.log(`[Server - metrics] auto re-gather when polling is true`)
+        try {
+            metrics = {
+                hostName: os.hostname(),
+                deviceData: deviceData,
+                memoryUsage: await getMemory(),
+                cpuUsage: await getCpu(),
+                gpuData: await monitorGraphics(),
+                childProcesses: await getChildProcesses(),
+                interfaces: await getInterfaceData(),
+                disks: await getDiskInfo()
+            }
+        } catch (e) {
+            console.error(`There was an issue gathering interval:\n ${e.message}`)
         }
-        console.log(metrics)
-    } catch (e) {
-        console.error(`There was an issue gathering interval:\n ${e.message}`)
     }
 }, 1000)
 
 function getMetrics () {
+    // Polling timeout management from host script
+    if (pollingTimeOut) {
+        clearInterval(pollingTimeOut)
+    }
+
+    pollingTimeOut = setTimeout(() => {
+        isPolling = false;
+    }, 30000)
+
+    isPolling = true
     return metrics
+}
+
+function setChildLength(length) {
+    childLength = length
 }
 
 const port = 3000
 
-app.use(cors(
-    {
-        origin: "*",
-        methods: ["GET", "HEAD", "OPTIONS"]
-    }
-));
+app.use(cors({
+    origin: "*",
+    methods: ["GET", "HEAD", "OPTIONS"]
+}));
 
-//returns the metrics
 app.get('/', (req, res) => {
-    // I need to add some form of authentication? maybe
     const metrics = getMetrics();
-// checks if metrics is available
-    if (!metrics || metrics === {} || metrics === null) res.status(500).send('Metrics Data not available')
+    if (!metrics || metrics === {} || metrics === null) {
+        return res.status(500).send('Metrics Data not available')
+    }
     res.status(200).send(metrics)
 })
 
 app.post('/', (req, res) => {
-
+    // Placeholder for future functionality
 })
 
 app.listen(port, () => {

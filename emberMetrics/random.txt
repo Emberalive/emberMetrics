@@ -1,0 +1,2 @@
+Client -> Host API -> Chosen Device -> Resource Endpoint
+

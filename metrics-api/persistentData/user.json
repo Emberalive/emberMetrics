@@ -1,7 +1,7 @@
 [
   {
     "username": "admin",
-    "password": "$2b$10$2qxtWzopp1yoPdf0tZAb5eJyagB60XwAKg3njrvP5qFH1OySTwXCa",
+    "password": "$2b$10$Cp4NLACIZcjaSgHufBPF9.1YG8PvURJbvff8iYyRZp6kq59TAsrW.",
     "email": "",
     "bio": "",
     "id": "jrG2rAwqUnemUVoWiA0Eo",
@@ -13,6 +13,11 @@
         "ip": "127.0.0.1",
         "id": "DgxI77r32HDNeBfh0sK8B",
         "isHost": true
+      },
+      {
+        "name": "laptop",
+        "ip": "192.168.0.184",
+        "id": "u6g2gOKCtc5VYk_hxEZYj"
       }
     ]
   }
