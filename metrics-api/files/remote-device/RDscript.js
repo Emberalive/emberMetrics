@@ -242,6 +242,26 @@ async function getDiskInfo () {
     }
 }
 
+// Initial metrics gathering
+;(async () => {
+    try {
+        console.log('[Server - metrics] Gathering initial metrics...')
+        metrics = {
+            hostName: os.hostname(),
+            deviceData: deviceData,
+            memoryUsage: await getMemory(),
+            cpuUsage: await getCpu(),
+            gpuData: await monitorGraphics(),
+            childProcesses: await getChildProcesses(),
+            interfaces: await getInterfaceData(),
+            disks: await getDiskInfo()
+        }
+        console.log('[Server - metrics] Initial metrics gathered successfully')
+    } catch (e) {
+        console.error(`There was an issue gathering initial metrics:\n ${e.message}`)
+    }
+})().catch(console.error)
+
 // Changed to match host's conditional gathering approach
 setInterval(async () => {
     if (isPolling) {
