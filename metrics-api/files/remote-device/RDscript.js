@@ -17,6 +17,22 @@ let oldCpus = os.cpus()
 
 module.exports = metrics
 
+// initial metrics gathering
+try {
+    metrics = {
+        hostName: os.hostname(),
+        deviceData: deviceData,
+        memoryUsage: await getMemory(),
+        cpuUsage: await getCpu(),
+        gpuData: await monitorGraphics(),
+        childProcesses: await getChildProcesses(),
+        interfaces: await getInterfaceData(),
+        disks: await getDiskInfo()
+    }
+} catch (e) {
+    console.error(`There was an issue gathering interval:\n ${e.message}`)
+}
+
 async function monitorGraphics() {
     try {
         const data = await si.graphics();
@@ -263,7 +279,7 @@ setInterval(async () => {
     }
 }, 1000)
 
-function getMetrics () {
+async function getMetrics() {
     // Polling timeout management from host script
     if (pollingTimeOut) {
         clearInterval(pollingTimeOut)
@@ -274,6 +290,7 @@ function getMetrics () {
     }, 30000)
 
     isPolling = true
+
     return metrics
 }
 
@@ -291,7 +308,7 @@ app.use(cors({
 app.post('/', (req, res) => {
     const metrics = getMetrics();
     if (metrics && typeof metrics === 'object' && Object.keys(metrics).length !== 0) {
-        console.log('Metrics not available')
+        console.log('[ Server - metrics ] Metrics not available')
         return res.status(500).send({reason: 'Metrics Data not available'})
     }
     res.status(200).json({
