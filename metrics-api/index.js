@@ -46,8 +46,8 @@ app.post('/validateSession', async (req, res) => {
 
 app.post('/', async (req, res) => {
     const {device, childLength, user} = req.body
-    if (!device || !childLength) {
-        console.log('[ Server - /getMetrics ] no device or childLength sent')
+    if (!device || !childLength || !user) {
+        console.log('[ Server - /getMetrics ] no device, childLength or user sent')
         return res.status(400).send({success: false})
     }
 
@@ -73,6 +73,8 @@ app.post('/', async (req, res) => {
                 success: true
             }); // always send JSON
         }
+        console.log('[ Server - /getMetrics ] No metrics available')
+        return res.status(404).send({success: false})
     }
 
     const found = await findDevice(device.id)
@@ -97,7 +99,7 @@ app.post('/', async (req, res) => {
             if (resData.success) {
                 return res.status(200).send(resData)
             }
-        } else if (res.statusCode !== 500) {
+        } else if (response.statusCode !== 500) {
             console.log('[ Server - /getMetrics ] Device did not respond')
             return res.status(404).send({success: false, reason: 'no_response'})
         }

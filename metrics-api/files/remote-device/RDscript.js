@@ -285,19 +285,15 @@ const port = 3000
 
 app.use(cors({
     origin: "*",
-    methods: ["GET", "HEAD", "OPTIONS"]
+    methods: ["POST", "HEAD", "OPTIONS"]
 }));
 
-app.get('/', (req, res) => {
+app.post('/', (req, res) => {
     const metrics = getMetrics();
     if (!metrics || metrics === {} || metrics === null) {
         return res.status(500).send('Metrics Data not available')
     }
     res.status(200).send(metrics)
-})
-
-app.post('/', (req, res) => {
-    // Placeholder for future functionality
 })
 
 app.listen(port, () => {
