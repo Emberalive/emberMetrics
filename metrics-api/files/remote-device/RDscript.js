@@ -291,9 +291,13 @@ app.use(cors({
 app.post('/', (req, res) => {
     const metrics = getMetrics();
     if (metrics && typeof metrics === 'object' && Object.keys(metrics).length !== 0) {
+        console.log('Metrics not available')
         return res.status(500).send({reason: 'Metrics Data not available'})
     }
-    res.status(200).send(metrics)
+    res.status(200).json({
+        metrics: metrics,
+        success: true
+    }); // always send JSON
 })
 
 app.listen(port, () => {
