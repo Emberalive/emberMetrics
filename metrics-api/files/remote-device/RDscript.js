@@ -290,7 +290,7 @@ app.use(cors({
 
 app.post('/', (req, res) => {
     const metrics = getMetrics();
-    if (!metrics || metrics === {} || metrics === null) {
+    if (metrics && typeof metrics === 'object' && Object.keys(metrics).length !== 0) {
         return res.status(500).send('Metrics Data not available')
     }
     res.status(200).send(metrics)
