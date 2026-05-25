@@ -311,7 +311,7 @@ app.use(cors({
 
 app.post('/', (req, res) => {
     const metrics = getMetrics();
-    if (metrics && typeof metrics === 'object' && Object.keys(metrics).length !== 0) {
+    if (!metrics && typeof metrics !== 'object' && Object.keys(metrics).length === 0) {
         console.log('[ Server - metrics ] Metrics not available')
         return res.status(500).send({reason: 'Metrics Data not available'})
     }
