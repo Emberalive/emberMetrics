@@ -17,22 +17,6 @@ let oldCpus = os.cpus()
 
 module.exports = metrics
 
-// initial metrics gathering
-try {
-    metrics = {
-        hostName: os.hostname(),
-        deviceData: deviceData,
-        memoryUsage: await getMemory(),
-        cpuUsage: await getCpu(),
-        gpuData: await monitorGraphics(),
-        childProcesses: await getChildProcesses(),
-        interfaces: await getInterfaceData(),
-        disks: await getDiskInfo()
-    }
-} catch (e) {
-    console.error(`There was an issue gathering interval:\n ${e.message}`)
-}
-
 async function monitorGraphics() {
     try {
         const data = await si.graphics();
@@ -257,6 +241,23 @@ async function getDiskInfo () {
         console.error(`There was an issue monitoring the disk:\n ${e.message}`)
     }
 }
+
+// initial metrics gathering
+try {
+    metrics = {
+        hostName: os.hostname(),
+        deviceData: deviceData,
+        memoryUsage: await getMemory(),
+        cpuUsage: await getCpu(),
+        gpuData: await monitorGraphics(),
+        childProcesses: await getChildProcesses(),
+        interfaces: await getInterfaceData(),
+        disks: await getDiskInfo()
+    }
+} catch (e) {
+    console.error(`There was an issue gathering interval:\n ${e.message}`)
+}
+
 
 // Changed to match host's conditional gathering approach
 setInterval(async () => {
