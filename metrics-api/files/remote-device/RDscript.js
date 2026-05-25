@@ -242,23 +242,6 @@ async function getDiskInfo () {
     }
 }
 
-// initial metrics gathering
-try {
-    metrics = {
-        hostName: os.hostname(),
-        deviceData: deviceData,
-        memoryUsage: await getMemory(),
-        cpuUsage: await getCpu(),
-        gpuData: await monitorGraphics(),
-        childProcesses: await getChildProcesses(),
-        interfaces: await getInterfaceData(),
-        disks: await getDiskInfo()
-    }
-} catch (e) {
-    console.error(`There was an issue gathering interval:\n ${e.message}`)
-}
-
-
 // Changed to match host's conditional gathering approach
 setInterval(async () => {
     if (isPolling) {
