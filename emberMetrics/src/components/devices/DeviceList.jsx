@@ -24,7 +24,7 @@ export default function DeviceList (props) {
                 props.handleNotification('notice', 'Your session has ran out, please refresh the page');
             }
             // DELETE device from server
-            const response = await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/devices`, {
+            const response = await fetch(`https://metrics-api.emberalive.com/devices`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -74,7 +74,7 @@ export default function DeviceList (props) {
                 props.handleNotification('notice', 'Your session has ran out, please refresh the page');
             }
             // PATCH the device on the server
-            const response = await fetch(`http://${props.deviceType === "remote-access" ? props.hostIp : "127.0.0.1"}:3000/devices`, {
+            const response = await fetch(`https://metrics-api.emberalive.com/devices`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

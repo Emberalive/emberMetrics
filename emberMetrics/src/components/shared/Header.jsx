@@ -58,7 +58,7 @@ export default function Header (props) {
                                     ? "header-navigation__links disabled-button"
                                     : "header-navigation__links"
                         } onClick={() => {
-                            props.setActiveView("resources");
+                            props.setActiveView("resources")
                             console.log("view set to Metrics")
                         }}>
                             Metrics

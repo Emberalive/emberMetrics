@@ -16,7 +16,7 @@ const {getSession, cleanExpiredSessions} = require("./opModules/sessionUtils");
 
 app.use(express.json())
 app.use(cors({
-    origin: "*",
+    origin: "https://metrics.emberalive.com",
     methods: ["GET", "HEAD", "OPTIONS", "POST","DELETE", "PATCH"],
 }));
 
@@ -109,6 +109,12 @@ app.post('/', async (req, res) => {
         console.log(`[ Server - /getMetrics ] Error gathering metrics: ${e}`)
         res.status(500).send({success: false})
     }
+})
+
+app.get('/hostIp', (req, res) => {
+    res.status(200).send({
+        ip: getHostIp()
+    });
 })
 
 app.listen(port, async () => {

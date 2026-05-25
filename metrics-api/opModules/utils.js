@@ -1,32 +1,21 @@
 let thisIp = false;
 
-async function returnReads (response, res) {
-    console.log("[ Server - returnReads] Starting function\n")
-    if (!response || !response.body) {
-        console.log("[ Server - returnReads] failed to return reads")
-        return false
-    }
-    res.status(200);
-    res.setHeader('Content-Type', 'text/plain');
-    res.setHeader('Transfer-Encoding', 'chunked');
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let isDone = false;
-
-    while(!isDone) {
-        const {value, done} = await reader.read();
-        isDone = done;
-
-        if(value) {
-            const chunk = decoder.decode(value, {stream: true});
-
-            console.log(chunk)
-            res.write(chunk);
+async function getHostIp () {
+    try {
+        const response = await fetch(`http://api.ipify.org?format=json`)
+        if (response.ok) {
+            const resData = await response.json()
+            thisIp = resData.ip
+            console.log('[Server - getHostIp] IP address acquired: ', thisIp)
         }
+    } catch (e) {
+        console.error(`[ Server ] ERROR: \n${e.message}`)
     }
-    console.log("[ Server - returnReads ] Operation on remote-device completed");
-    res.end()
-    return true
+}
+
+function getThisIp () {
+    if(thisIp) return thisIp
+    else return false
 }
 
 function checkDeviceStructure (device) {
@@ -76,22 +65,50 @@ function generateLogs(subProcess, res) {
     });
 }
 
-async function getHostIp () {
-    try {
-        const response = await fetch(`http://api.ipify.org?format=json`)
-        if (response.ok) {
-            const resData = await response.json()
-            thisIp = resData.ip
-            console.log('[Server - getHostIp] IP address acquired: ', thisIp)
-        }
-    } catch (e) {
-        console.error(`[ Server ] ERROR: \n${e.message}`)
+async function returnReads (response, res) {
+    console.log("[ Server - returnReads] Starting function\n")
+    if (!response || !response.body) {
+        console.log("[ Server - returnReads] failed to return reads")
+        return false
     }
+    res.status(200);
+    res.setHeader('Content-Type', 'text/plain');
+    res.setHeader('Transfer-Encoding', 'chunked');
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let isDone = false;
+
+    while(!isDone) {
+        const {value, done} = await reader.read();
+        isDone = done;
+
+        if(value) {
+            const chunk = decoder.decode(value, {stream: true});
+
+            console.log(chunk)
+            res.write(chunk);
+        }
+    }
+    console.log("[ Server - returnReads ] Operation on remote-device completed");
+    res.end()
+    return true
 }
 
-function getThisIp () {
-    if(thisIp) return thisIp
-    else return false
+async function retryRollbackDeviceOps(operation, attempts = 8) {
+    let result
+    let retry = 0
+
+    do {
+        try {
+            result = await operation()
+        } catch {
+            result = {success: false}
+        }
+
+        retry++
+    } while (!result.success && retry < attempts)
+
+    return result
 }
 
 function getDiskSize(bytes) {
@@ -108,4 +125,5 @@ function getDiskSize(bytes) {
     return bytes.toFixed(2) + units[i];
 }
 
-module.exports = {getHostIp, getThisIp, getDiskSize, checkDeviceStructure, generateLogs, returnReads }
+module.exports = {getHostIp, getThisIp, getDiskSize,
+    checkDeviceStructure, generateLogs, returnReads, retryRollbackDeviceOps}
