@@ -315,7 +315,7 @@ app.post('/', (req, res) => {
         console.log('[ Server - metrics ] Metrics not available')
         return res.status(500).send({reason: 'Metrics Data not available'})
     }
-    res.status(200).json({
+    res.status(200).send({
         metrics: metrics,
         success: true
     }); // always send JSON
