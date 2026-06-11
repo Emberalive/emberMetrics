@@ -17,6 +17,12 @@ All client requests are routed through the Host API, which authenticates and aut
 ```
 Client -> Host API -> Remote Device API -> Resource
 ```
+---
+
+## Documentation
+
+Full setup and usage documentation is available at:
+[https://ember-metrics.docs.emberalive.com](https://ember-metrics.docs.emberalive.com)
 
 ---
 
@@ -140,13 +146,6 @@ All endpoints are protected by authentication middleware. Admin-only endpoints a
 - Draggable and customisable dashboard layout
 - Multiple GPU support
 - API versioning
-
----
-
-## Documentation
-
-Full setup and usage documentation is available at:
-[https://ember-metrics.docs.emberalive.com](https://ember-metrics.docs.emberalive.com)
 
 ---
 
